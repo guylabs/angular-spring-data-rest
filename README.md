@@ -2,8 +2,6 @@
 
 > An AngularJS module with an additional interceptor which wraps the Angular [$resource](https://docs.angularjs.org/api/ngResource/service/$resource) function and therefore eases the use with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
 
-==========================
-
 ## Overview
 
 *Spring Data REST* integrates [Spring HATEOAS](http://projects.spring.io/spring-hateoas) by default. This simplifies the creation of REST presentations which are generated with the [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) principle.
