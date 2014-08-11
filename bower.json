@@ -2,7 +2,6 @@
     "name": "angular-spring-data-rest",
     "version": "0.1.0",
     "authors": [
-        "Jeremy Marquis <jeremy@jeremymarquis.com>",
         "Guy Brûlé <admin@guylabs.org>"
     ],
     "description": "An AngularJS module for using `$resource` with a Spring Data REST backend.",
