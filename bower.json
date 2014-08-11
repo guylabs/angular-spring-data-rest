@@ -1,0 +1,25 @@
+{
+    "name": "angular-spring-data-rest",
+    "version": "0.1.0",
+    "authors": [
+        "Jeremy Marquis <jeremy@jeremymarquis.com>",
+        "Guy Brûlé <admin@guylabs.org>"
+    ],
+    "description": "An AngularJS module for using `$resource` with a Spring Data REST backend.",
+    "keywords": [
+        "angular",
+        "resource",
+        "spring",
+        "spring data rest",
+        "rest",
+        "api"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/guylabs/angular-spring-data-rest",
+    "main": "src/angular-spring-data-rest.js",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components"
+    ]
+}
