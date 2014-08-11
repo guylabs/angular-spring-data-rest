@@ -211,3 +211,13 @@ The `apply` method will automatically add the `SpringDataRestInterceptor` to the
 ## Dependencies
 
 The `spring-data-rest` *Angular* module requires the `ngResource` *Angular* module.
+
+## Acknowledgements
+
+When I first searched for an *Angular* module for Spring Data REST I just found the marvelous project of Jeremy which is useful if you just use [Spring HATEOAS](http://projects.spring.io/spring-hateoas). So please have a look at his [angular-hateoas](https://github.com/jmarquis/angular-hateoas) project because he gave me the full permissions to use his code base and project structure for this project here. At this point I want to thank him for his nice work.
+
+## License
+
+This *Angular* module is available under the MIT license.
+
+(c) All rights reserved Guy Brûlé
