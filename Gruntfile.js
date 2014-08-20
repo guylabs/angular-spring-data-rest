@@ -4,11 +4,11 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON("package.json"),
 		uglify: {
 			options: {
-				banner: "/*!\n * <%= pkg.name %> <%= pkg.version %>-<%= grunt.template.today('yyyymmdd') %>\n * Copyright <%= grunt.template.today('yyyy') %> Guy Brûlé (@guy_labs)\n * https://github.com/guylabs/angular-spring-data-rest\n */\n"
+                banner: "/*!\n * <%= pkg.name %> <%= pkg.version %>\n * Copyright <%= grunt.template.today('yyyy') %> Guy Brûlé (@guy_labs)\n * https://github.com/guylabs/angular-spring-data-rest\n */\n"
 			},
 			build: {
 				src: "src/<%= pkg.name %>.js",
-				dest: "build/<%= pkg.name %>.min.js"
+                dest: "build/<%= pkg.name %>.<%= pkg.version %>.min.js"
 			}
 		},
 		karma: {
