@@ -6,7 +6,7 @@
 
 *Spring Data REST* integrates [Spring HATEOAS](http://projects.spring.io/spring-hateoas) by default. This simplifies the creation of REST presentations which are generated with the [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) principle.
 
-Therefore the *Spring Data REST* responses have links and embedded resources like in the following JSON response example:
+Therefore the *Spring Data REST* responses have resources and embedded resources like in the following JSON response example:
 
 ```json
 {
@@ -50,11 +50,11 @@ Therefore the *Spring Data REST* responses have links and embedded resources lik
     }
 }
 ```
-The above response is the result of calling the endpoint to get all categories(`http://localhost:8080/categories`). It contains the `_links` property which holds an object with several named links(e.g. `self`). These links are used to navigate to a related entity(e.g. `parentCategory`) or to a specific endpoint defined by the backend.
+The above response is the result of calling the endpoint to get all categories(`http://localhost:8080/categories`). It contains the `_links` property which holds an object with several named resources(e.g. `self`). These resources are used to navigate to a related entity(e.g. `parentCategory`) or to a specific endpoint defined by the backend.
 
-The `_embedded` property holds an array of the requested items, and each of the items has again a `_links` property which defines the links for the specific item. You can find more about how the responses of *Spring Data REST* [here](http://projects.spring.io/spring-data-rest).
+The `_embedded` property holds an array of the requested items, and each of the items has again a `_links` property which defines the resources for the specific item. You can find more about how the responses of *Spring Data REST* look like [here](http://projects.spring.io/spring-data-rest).
 
-This *Angular* module provides two ways of processing a response from the *Spring Data REST* backend and ease the usage with the links and embedded resources:
+This *Angular* module provides two ways of processing a response from the *Spring Data REST* backend and ease the usage with the resources and embedded items:
 
 1. Using a new instance of the `SpringDataRestAdapter`.
 2. Add the `SpringDataRestInterceptor` to the Angular `$httpProvider.interceptors` such that all responses are processed.
@@ -63,8 +63,32 @@ This *Angular* module provides two ways of processing a response from the *Sprin
 
 The `spring-data-rest` *Angular* module provides a provider for the `SpringDataRestAdapter` object. This object is the core of the module and it processes a given response and adds the following additional properties/methods to it:
 
-1. `_resource`: this method wraps the *Angular* `$resource` function and adds an easy way to call the links defined in the `_links` property. Read more about this property [here](#usage-of-_resource-property).
+1. `_resources`: this method wraps the *Angular* `$resource` function and adds an easy way to retrieve the resources defined in the `_links` property. It is also used to retrieve all available resources of the given object. Read more about this property [here](#usage-of-_resources-property).
 2. `_embeddedItems`: this property replaces the `_embedded` property and sets the named array (`categories` in the upper example response) with the embedded items as its value. Read more about this property [here](#usage-of-_embeddedItems-property).
+
+Spring Data REST also generates an index response when you make a `GET` response to the configured base url of the dispatcher servlet. This response looks like the following example:
+
+```javascript
+{
+  "_links" : {
+    "users" : {
+      "href" : "http://localhost:8080/users{?page,size,sort}",
+      "templated" : true
+    },
+    "categories" : {
+      "href" : "http://localhost:8080/categories{?page,size,sort}",
+      "templated" : true
+    },
+    "accounts" : {
+      "href" : "http://localhost:8080/accounts{?page,size,sort}",
+      "templated" : true
+    },
+    ...
+  }
+}
+```
+
+This response shows all configured Spring Data REST repositories and the links to these resources. The `SpringDataRestAdapter` is also able to handle this response and to provide an easy method to retrieve all the available resources with the `_resources` method. Please read more about this [here](#the-_resources-method-parameters-and-return-type).
 
 ### Usage of `SpringDataRestAdapter`
 
@@ -80,11 +104,11 @@ Now you are able to instantiate the `SpringDataRestAdapter` object and process a
 var processedResponse = new SpringDataRestAdapter(response);
 ```
 
-Please read on on how to use the `_resource` method and the `_embeddedItems` property to ease the handling of links and embedded items.
+Please read on on how to use the `_resources` method and the `_embeddedItems` property to ease the handling of resources and embedded items.
 
-### Usage of `_resource` method
+### Usage of `_resources` method
 
-The `_resource` property is added on the same level of the JSON response object where a `_links` property exists. When for example the following JSON response object is given:
+The `_resources` property is added on the same level of the JSON response object where a `_links` property exists. When for example the following JSON response object is given:
 
 ```javascript
 var response = {
@@ -102,32 +126,60 @@ var response = {
 var processedResponse = new SpringDataRestAdapter(response);
 ```
 
-Then the `SpringDataRestAdapter` will add the `_resource` method to the same level such that you can call it the following way:
+Then the `SpringDataRestAdapter` will add the `_resources` method to the same level such that you can call it the following way:
 
 ```javascript
-processedResponse._resource(linkName, paramDefaults, actions, options);
+processedResponse._resources(linkName, paramDefaults, actions, options);
 ```
 
-This `_resource` method is added recursively to all the properties of the JSON response object where a `_links` property exists.
+This `_resources` method is added recursively to all the properties of the JSON response object where a `_links` property exists.
 
-#### The `_resource` method parameters and return type
+#### The `_resources` method parameters and return type
 
-The `_resource` method takes the following four parameters:
+The `_resources` method takes the following four parameters:
 
 1. `linkName`: the name of the link's `href` you want to call with the underlying *Angular* `$resource` function.
 2. `paramDefaults`: the default values for url parameters. Read more  [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 3. `actions`: custom action that should extend the default set of the `$resource` actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 4. `options`: custom settings that should extend the default `$resourceProvider` behavior Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 
-The `_resource` method returns the *Angular* resource "class" object with methods for the default set of resource actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
+The `_resources` method returns the *Angular* resource "class" object with methods for the default set of resource actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
+
+If no parameter is given the `_resources` method will return all available resources on the given object. When for example the following JSON response object is given:
+
+```javascript
+var response = {
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/categories{?page,size,sort}",
+            "templated": true
+        },
+        "parentCategory": {
+            "href": "http://localhost:8080/categories/1/parentCategory"
+        }
+    },
+    "_embedded": {
+        ...
+    }
+    ...
+}
+var processedResponse = new SpringDataRestAdapter(response);
+```
+Then the following call to the `_resources` method without any parameter will return an array of all the resources available.
+
+```javascript
+var availableResources = processedResponse._resources();
+```
+
+The above call will result in the following return value: `['self', 'parentCategory']`. This functionality is useful if you want to first check all available resources before using the `_resources` method to retrieve the specific resource.
 
 ##### Example
 
-This example refers to the JSON response in the [Overview](#overview). If you want to get the parent category of a category you would call the `_resource` method the following way:
+This example refers to the JSON response in the [Overview](#overview). If you want to get the parent category of a category you would call the `_resources` method the following way:
 
 ```javascript
 var processedResponse = new SpringDataRestAdapter(response);
-var parentCategoryResource = processedResponse._embeddedItems[0]._resource("parentCategory");
+var parentCategoryResource = processedResponse._embeddedItems[0]._resources("parentCategory");
 
 // create a GET request, with the help of the Angular resource class, to the parent category
 // url and log the response to the console
@@ -138,7 +190,7 @@ var parentCategory = parentCategoryResource.get(function() {
 
 ### Usage of `_embeddedItems` property
 
-The `_embeddedItems` property is just a convention property created by the `SpringDataRestAdapter` to easily iterate over the `_emebedded` items in the response. Like with the `_resource` method, the `SpringDataRestAdapter` will recursively create an `_embeddedItems` property on the same level as a `_embedded` property exists for all the JSON response properties.
+The `_embeddedItems` property is just a convention property created by the `SpringDataRestAdapter` to easily iterate over the `_emebedded` items in the response. Like with the `_resources` method, the `SpringDataRestAdapter` will recursively create an `_embeddedItems` property on the same level as a `_embedded` property exists for all the JSON response properties.
 
 #### Example
 
@@ -160,7 +212,7 @@ angular.forEach(processedResponse._embeddedItems, function (category, key) {
 
 The `SpringDataRestAdapter` is designed to be configurable and you are able to configure the following properties:
 
-* `links.key` (default: `_links`): the property name where the links are stored.
+* `links.key` (default: `_links`): the property name where the resources are stored.
 * `embedded.key` (default: `_embedded`): the property name where the embedded items are stored.
 * `embedded.value` (default: `_embeddedItems`): the property name where the array of embedded items are stored.
 * `hrefKey` (default: `href`): the property name where the url is stored under each specific link.
