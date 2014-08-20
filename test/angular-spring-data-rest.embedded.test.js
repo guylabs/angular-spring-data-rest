@@ -23,10 +23,10 @@ describe("the response with the embedded values", function () {
         for (var key in this.response[this.config.embedded.value]) {
 
             // the resource key must be defined
-            expect(this.response[this.config.embedded.value][key][this.config.resourceKey]).toBeDefined();
+            expect(this.response[this.config.embedded.value][key][this.config.resourcesKey]).toBeDefined();
 
             // the resource value must be a valid function with the given parameters
-            spyOnResourceExecution(this.response[this.config.embedded.value][key], this.config.resourceKey);
+            spyOnResourceExecution(this.response[this.config.embedded.value][key], this.config.resourcesKey);
         }
     });
 
@@ -50,7 +50,7 @@ describe("the response with the embedded values", function () {
                 this.httpBackend.whenGET(linkHrefs[i]).respond(200, expectedResult);
                 this.httpBackend.expectGET(linkHrefs[i]);
 
-                var result = this.response[this.config.embedded.value][key][this.config.resourceKey](linkNames[i]).get(function () {
+                var result = this.response[this.config.embedded.value][key][this.config.resourcesKey](linkNames[i]).get(function () {
                     expect(result.categoryId).toEqual(expectedResult.categoryId);
                 });
                 this.httpBackend.flush();

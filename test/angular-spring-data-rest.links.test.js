@@ -16,7 +16,7 @@ describe("the response with the link values", function () {
         var expectedResult = {categoryId: '123'};
         this.httpBackend.whenGET(linkHref).respond(200, expectedResult);
         this.httpBackend.expectGET(linkHref);
-        var result = this.response[this.config.resourceKey](linkName).get(function() {
+        var result = this.response[this.config.resourcesKey](linkName).get(function () {
             expect(result.categoryId).toEqual(expectedResult.categoryId);
         });
         this.httpBackend.flush();

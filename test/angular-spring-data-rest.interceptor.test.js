@@ -43,17 +43,17 @@ describe("if the spring data rest interceptor is not added", function () {
         // define the link name and the correct link href url
         var linkName = "self";
         var linkHref = "http://localhost:8080/categories";
-        var resourceKey = this.config.resourceKey;
+        var resourcesKey = this.config.resourcesKey;
         var embeddedItemsKey = this.config.embedded.value;
 
         // check if the underlying $resource method is called with the correct href url
         var response = mockData();
         this.httpBackend.whenGET(linkHref).respond(200, response);
         this.httpBackend.expectGET(linkHref);
-        var result = this.response[this.config.resourceKey](linkName).get(function () {
+        var result = this.response[this.config.resourcesKey](linkName).get(function () {
 
             // if the interceptor is not added the resource method must not be added
-            expect(result[resourceKey]).not.toBeDefined();
+            expect(result[resourcesKey]).not.toBeDefined();
 
             // if the interceptor is not added the _embeddedItems property must not be added
             expect(result[embeddedItemsKey]).not.toBeDefined();
@@ -108,17 +108,17 @@ describe("if the spring data rest interceptor is added", function () {
         // define the link name and the correct link href url
         var linkName = "self";
         var linkHref = "http://localhost:8080/categories";
-        var resourceKey = this.config.resourceKey;
+        var resourcesKey = this.config.resourcesKey;
         var embeddedItemsKey = this.config.embedded.value;
 
         // check if the underlying $resource method is called with the correct href url
         var response = mockData();
         this.httpBackend.whenGET(linkHref).respond(200, response);
         this.httpBackend.expectGET(linkHref);
-        var result = this.response[this.config.resourceKey](linkName).get(function () {
+        var result = this.response[this.config.resourcesKey](linkName).get(function () {
 
             // if the interceptor is added the resource method must not be added
-            expect(result[resourceKey]).toBeDefined();
+            expect(result[resourcesKey]).toBeDefined();
 
             // if the interceptor is added the _embeddedItems property must not be added
             expect(result[embeddedItemsKey]).toBeDefined();

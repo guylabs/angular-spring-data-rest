@@ -31,7 +31,7 @@ describe("the spring data rest adapter", function () {
 
         // expect that the links key and the resource method is not present
         expect(this.response[this.config.links.key]).not.toBeDefined();
-        expect(this.response[this.config.resourceKey]).not.toBeDefined();
+        expect(this.response[this.config.resourcesKey]).not.toBeDefined();
     });
 
     it("must only add the embedded value key if there is a embedded key in the data object", function () {
@@ -49,7 +49,7 @@ describe("the spring data rest adapter", function () {
 
         // expect that the links key and the resource method is not present
         expect(this.response[this.config.links.key]).not.toBeDefined();
-        expect(this.response[this.config.resourceKey]).not.toBeDefined();
+        expect(this.response[this.config.resourcesKey]).not.toBeDefined();
 
         // expect that the embedded key and value is not present
         expect(this.response[this.config.embedded.key]).not.toBeDefined();

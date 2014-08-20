@@ -36,11 +36,11 @@ var beforeEachFunction = function () {
  * Executes the spied resource method and validate the call and the parameters.
  *
  * @param {object} data the data object in which the resource key exists
- * @param {string} resourceKey the resource key
+ * @param {string} resourcesKey the resource key
  * @param {string} inLinkName the link name for which the correct link href must be used
  */
-var spyOnResourceExecution = function (data, resourceKey, inLinkName) {
-    spyOn(data, resourceKey);
+var spyOnResourceExecution = function (data, resourcesKey, inLinkName) {
+    spyOn(data, resourcesKey);
 
     // create parameters
     var linkName = (inLinkName == undefined) ? "linkName" : inLinkName;
@@ -48,10 +48,10 @@ var spyOnResourceExecution = function (data, resourceKey, inLinkName) {
     var actions = { charge: {method: 'POST', params: {charge: true}} };
 
     // call the resource method
-    data[resourceKey](linkName, paramDefaults, actions);
+    data[resourcesKey](linkName, paramDefaults, actions);
 
     // expect that the resource method has been called with the given parameters
-    expect(data[resourceKey]).toHaveBeenCalledWith(linkName, paramDefaults, actions);
+    expect(data[resourcesKey]).toHaveBeenCalledWith(linkName, paramDefaults, actions);
 };
 
 var mockData = function () {
@@ -177,6 +177,27 @@ var mockDataWithoutAnyKey = function () {
                 "totalElements": 2,
                 "totalPages": 1,
                 "number": 0
+            }
+        }
+    );
+};
+
+var mockIndexData = function () {
+    return angular.copy(
+        {
+            "_links": {
+                "users": {
+                    "href": "http://localhost:8080/users{?page,size,sort}",
+                    "templated": true
+                },
+                "categories": {
+                    "href": "http://localhost:8080/categories{?page,size,sort}",
+                    "templated": true
+                },
+                "accounts": {
+                    "href": "http://localhost:8080/accounts{?page,size,sort}",
+                    "templated": true
+                }
             }
         }
     );

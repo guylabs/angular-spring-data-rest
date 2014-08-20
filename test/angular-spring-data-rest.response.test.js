@@ -14,10 +14,10 @@ describe("the response", function () {
     it("must contain a resource key which wraps the angular $resource method", function () {
 
         // the resource key must be defined
-        expect(this.response[this.config.resourceKey]).toBeDefined();
+        expect(this.response[this.config.resourcesKey]).toBeDefined();
 
         // the resource value must be a valid function with the given parameters
-        spyOnResourceExecution(this.response, this.config.resourceKey);
+        spyOnResourceExecution(this.response, this.config.resourcesKey);
     });
 
     it("must retain all original object properties", function () {

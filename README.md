@@ -164,7 +164,7 @@ The `SpringDataRestAdapter` is designed to be configurable and you are able to c
 * `embedded.key` (default: `_embedded`): the property name where the embedded items are stored.
 * `embedded.value` (default: `_embeddedItems`): the property name where the array of embedded items are stored.
 * `hrefKey` (default: `href`): the property name where the url is stored under each specific link.
-* `resourceKey` (default: `_resource`): the property name where the resource method is stored.
+* `resourcesKey` (default: `_resources`): the property name where the resource method is stored.
 
 You are able to configure the `SpringDataRestAdapter` provider in a *Angular* configuration block in the following way:
 
@@ -192,7 +192,7 @@ The config method of the `SpringDataRestAdapterProvider` takes a configuration o
         "value': "_embeddedItems"
     },
     "hrefKey": "href",
-    "resourceKey": "_resource"
+    "resourcesKey": "_resources"
 }
 ```
 

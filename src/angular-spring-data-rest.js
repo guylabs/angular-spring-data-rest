@@ -23,7 +23,7 @@ angular.module("spring-data-rest", ["ngResource"])
                 'value': '_embeddedItems'
             },
             'hrefKey': 'href',
-            'resourceKey': '_resource'
+            'resourcesKey': '_resources'
         };
 
 
@@ -93,17 +93,18 @@ angular.module("spring-data-rest", ["ngResource"])
                 };
 
                 /**
-                 * Wraps the angular $resource method and adds the ability to call the endpoint of a link name.
+                 * Wraps the angular $resource method and adds the ability to call the endpoint of a link name. If no
+                 * parameter is given it will return an array with the available resources in this object.
                  *
                  * @param {string} linkName the link name to be called
                  * @param {object} paramDefaults optional $resource method parameter defaults
                  * @param {object} actions optional $resource method actions
                  * @param {object} options additional $resource method options
-                 * @returns {object} the result of the $resource method
+                 * @returns {object|array} the result of the $resource method or the available resources as an array
                  *
                  * @see https://docs.angularjs.org/api/ngResource/service/$resource
                  */
-                var resource = function (linkName, paramDefaults, actions, options) {
+                var resources = function (linkName, paramDefaults, actions, options) {
                     if (linkName in this[config.links.key]) {
                         var url = this[config.links.key][linkName][config.hrefKey];
                         if (this[config.links.key][linkName].templated) {
@@ -111,7 +112,11 @@ angular.module("spring-data-rest", ["ngResource"])
                         }
                         return $injector.get("$resource")(url, paramDefaults, actions, options);
                     } else {
-                        throw new Error("Link '" + linkName + "' is not present in object.");
+                        var resources = [];
+                        angular.forEach(this[config.links.key], function (value, key) {
+                            resources.push(key);
+                        });
+                        return resources;
                     }
                 };
 
@@ -146,9 +151,9 @@ angular.module("spring-data-rest", ["ngResource"])
                     // only add the resource method to the object if the links key is present
                     if (config.links.key in data) {
 
-                        // add angular resource property to object
+                        // add angular resources property to object
                         var resourceObject = {};
-                        resourceObject[config.resourceKey] = resource;
+                        resourceObject[config.resourcesKey] = resources;
                         processedData = angular.extend(this, angular.copy(data), resourceObject);
                     }
 

@@ -12,7 +12,7 @@ describe("the configuration", function () {
                 'value': '_embeddedItems'
             },
             'hrefKey': 'href',
-            'resourceKey': '_resource'
+            'resourcesKey': '_resources'
         };
         expect(this.config).toEqual(defaultConfiguration);
     });
@@ -39,7 +39,7 @@ describe("the configuration", function () {
                 'value': 'embeddedNew'
             },
             'hrefKey': 'hrefNew',
-            'resourceKey': 'resourceNew'
+            'resourcesKey': 'resourcesNew'
         };
 
         expect(springDataRestAdapterProvider.config(newConfiguration)).toEqual(newConfiguration);
@@ -67,7 +67,7 @@ describe("the configuration", function () {
                 'value': 'embeddedNew'
             },
             'hrefKey': 'hrefNew',
-            'resourceKey': '_resource'
+            'resourcesKey': '_resources'
         };
 
         expect(springDataRestAdapterProvider.config(partialConfiguration)).toEqual(newConfiguration);
