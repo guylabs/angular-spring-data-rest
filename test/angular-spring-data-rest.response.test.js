@@ -17,7 +17,7 @@ describe("the response", function () {
         expect(this.response[this.config.resourcesKey]).toBeDefined();
 
         // the resource value must be a valid function with the given parameters
-        spyOnResourceExecution(this.response, this.config.resourcesKey);
+        expectResourceExecution(this.response, this.config.resourcesKey, this.response[this.config.links.key]["self"].href, this.httpBackend, "self");
     });
 
     it("must retain all original object properties", function () {

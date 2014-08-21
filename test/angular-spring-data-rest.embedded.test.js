@@ -26,7 +26,8 @@ describe("the response with the embedded values", function () {
             expect(this.response[this.config.embedded.value][key][this.config.resourcesKey]).toBeDefined();
 
             // the resource value must be a valid function with the given parameters
-            spyOnResourceExecution(this.response[this.config.embedded.value][key], this.config.resourcesKey);
+            expectResourceExecution(this.response[this.config.embedded.value][key], this.config.resourcesKey,
+                this.response[this.config.embedded.value][key][this.config.links.key]["self"].href, this.httpBackend, "self");
         }
     });
 

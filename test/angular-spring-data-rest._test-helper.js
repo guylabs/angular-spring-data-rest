@@ -37,21 +37,25 @@ var beforeEachFunction = function () {
  *
  * @param {object} data the data object in which the resource key exists
  * @param {string} resourcesKey the resource key
- * @param {string} inLinkName the link name for which the correct link href must be used
+ * @param {string} expectedUrl the expected url
+ * @param {object} httpBackend the angular http backend object
+ * @param {string|object} inResourceName the resource name or the resource object
+ * @param {object} parameters the parameter object
  */
-var spyOnResourceExecution = function (data, resourcesKey, inLinkName) {
-    spyOn(data, resourcesKey);
+var expectResourceExecution = function (data, resourcesKey, expectedUrl, httpBackend, inResourceName, parameters) {
+    // create resource name and parameters
+    var resourceName = (inResourceName == undefined) ? "self" : inResourceName;
 
-    // create parameters
-    var linkName = (inLinkName == undefined) ? "linkName" : inLinkName;
-    var paramDefaults = {userId: 123, cardId: '@id'};
-    var actions = { charge: {method: 'POST', params: {charge: true}} };
+    // remove template parameters from url
+    expectedUrl = expectedUrl.replace(/{.*}/g, '');
+
+    // expect the url
+    httpBackend.whenGET(expectedUrl).respond(200);
+    httpBackend.expectGET(expectedUrl);
 
     // call the resource method
-    data[resourcesKey](linkName, paramDefaults, actions);
-
-    // expect that the resource method has been called with the given parameters
-    expect(data[resourcesKey]).toHaveBeenCalledWith(linkName, paramDefaults, actions);
+    data[resourcesKey](resourceName, parameters).get();
+    httpBackend.flush();
 };
 
 var mockData = function () {
