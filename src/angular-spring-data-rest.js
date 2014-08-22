@@ -144,11 +144,11 @@
                                 }
                             }
 
-                            return $injector.get("$resource")(extractUrl(this, resourceObject.name), parameters, actions, options);
+                            return callBackend(extractUrl(this, resourceObject.name), parameters, actions, options);
 
                         } else if (resourceObject in this[config.links.key]) {
-                            // get the url out of the resource name, remove the template parameters and return the Angular $resource method
-                            return $injector.get("$resource")(extractUrl(this, resourceObject), paramDefaults, actions, options);
+                            // get the url out of the resource name and return the backend function
+                            return callBackend(extractUrl(this, resourceObject), paramDefaults, actions, options);
                         }
 
                         // return the available resources if the resource object is not set
@@ -159,6 +159,19 @@
                         return resources;
 
                     };
+
+                    /**
+                     * Returns the Angular $resource method which is configured with the given parameters.
+                     *
+                     * @param {string} url the url at which the resource is available
+                     * @param {object} paramDefaults optional $resource method parameter defaults
+                     * @param {object} actions optional $resource method actions
+                     * @param {object} options additional $resource method options
+                     * @returns {*}
+                     */
+                    function callBackend(url, paramDefaults, actions, options) {
+                        return $injector.get("$resource")(url, paramDefaults, actions, options);
+                    }
 
                     /**
                      * Removes the template parameters of the given url. e.g. from this url
