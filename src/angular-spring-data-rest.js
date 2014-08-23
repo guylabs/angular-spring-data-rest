@@ -117,11 +117,14 @@
                      * @param {object} paramDefaults optional $resource method parameter defaults
                      * @param {object} actions optional $resource method actions
                      * @param {object} options additional $resource method options
-                     * @returns {object|array} the result of the $resource method or the available resources as an array
+                     * @returns {object} the result of the $resource method or the available resources as a resource object array
                      *
                      * @see https://docs.angularjs.org/api/ngResource/service/$resource
                      */
                     var resources = function (resourceObject, paramDefaults, actions, options) {
+                        var resources = this[config.links.key];
+
+                        // if a resource object is given process it
                         if (angular.isObject(resourceObject)) {
                             if (!resourceObject.name) {
                                 throw new Error("The provided resource object must contain a name property.");
@@ -146,18 +149,22 @@
 
                             return callBackend(extractUrl(this, resourceObject.name), parameters, actions, options);
 
-                        } else if (resourceObject in this[config.links.key]) {
+                        } else if (resourceObject in resources) {
                             // get the url out of the resource name and return the backend function
                             return callBackend(extractUrl(this, resourceObject), paramDefaults, actions, options);
                         }
 
-                        // return the available resources if the resource object is not set
-                        var resources = [];
-                        angular.forEach(this[config.links.key], function (value, key) {
-                            resources.push(key);
+                        // return the available resources as resource object array if the resource object parameter is not set
+                        var availableResources = [];
+                        angular.forEach(resources, function (value, key) {
+                            if (value.templated) {
+                                var templateParameters = extractTemplateParameters(value[config.hrefKey]);
+                                availableResources.push({"name": key, "parameters": templateParameters});
+                            } else {
+                                availableResources.push({"name": key});
+                            }
                         });
-                        return resources;
-
+                        return availableResources;
                     };
 
                     /**
@@ -183,6 +190,27 @@
                      */
                     var removeTemplateParameters = function (url) {
                         return url.replace(/{.*}/g, '');
+                    };
+
+                    /**
+                     * Returns the template parameters of the given url as array. e.g. from this url
+                     * 'http://localhost:8080/categories{?page,size,sort}' it will return the following array:
+                     * ['page', 'size', 'sort']
+                     *
+                     * @param {string} url the url with the template parameters
+                     * @returns {object} the array containing the template parameters
+                     */
+                    var extractTemplateParameters = function (url) {
+                        var templateParametersObject = {};
+
+                        var regexp = /{\?(.*)}/g;
+                        var templateParametersArray = regexp.exec(url)[1].split(',');
+
+                        angular.forEach(templateParametersArray, function (value) {
+                            templateParametersObject[value] = undefined;
+                        });
+
+                        return templateParametersObject;
                     };
 
                     /**

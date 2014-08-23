@@ -145,7 +145,7 @@ The `_resources` method takes the following four parameters:
 
 The `_resources` method returns the *Angular* resource "class" object with methods for the default set of resource actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 
-If no parameter is given the `_resources` method will return all available resources on the given object. When for example the following JSON response object is given:
+If no parameter is given the `_resources` method will return all available resources objects of the given object. When for example the following JSON response object is given:
 
 ```javascript
 var response = {
@@ -165,13 +165,31 @@ var response = {
 }
 var processedResponse = new SpringDataRestAdapter(response);
 ```
-Then the following call to the `_resources` method without any parameter will return an array of all the resources available.
+Then the following call to the `_resources` method without any parameter will return an array of all available resource objects.
 
 ```javascript
 var availableResources = processedResponse._resources();
 ```
 
-The above call will result in the following return value: `['self', 'parentCategory']`. This functionality is useful if you want to first check all available resources before using the `_resources` method to retrieve the specific resource.
+The above call will result in the following return value: 
+
+```json
+[
+    {
+        "name":"self",
+        "parameters": {
+            page: undefined,
+            size: undefined,
+            sort: undefined
+        }
+    }
+    {
+        "name":"parentCategory"
+    }
+]   
+``` 
+
+This functionality is useful if you want to first check all available resources before using the `_resources` method to retrieve the specific resource.
 
 ##### Example
 

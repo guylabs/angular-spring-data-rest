@@ -119,7 +119,36 @@ describe("the resources property", function () {
         expect(this.response[this.config.resourcesKey]).toBeDefined();
 
         // expect that the resource method returns the available resources on the object
-        expect(this.response[this.config.resourcesKey]()).toEqual(['self']);
+        expect(this.response[this.config.resourcesKey]()).toEqual([
+                {
+                    name: 'self',
+                    parameters: {
+                        page: undefined,
+                        size: undefined,
+                        sort: undefined
+                    }
+                }
+            ]
+        );
+    });
+
+    it("must return the resources of the object with empty parameters if the templated property is false", function () {
+        this.rawResponse = mockWithoutTemplateParametersData();
+        this.response = new SpringDataRestAdapter(this.rawResponse);
+
+        // expect that the resources method is present
+        expect(this.response[this.config.resourcesKey]).toBeDefined();
+
+        // expect that the resource method returns the available resources on the object
+        expect(this.response[this.config.resourcesKey]()).toEqual([
+                {
+                    name: 'users'
+                },
+                {
+                    name: 'categories'
+                }
+            ]
+        );
     });
 
     it("must return the resources of the index response", function () {
@@ -130,7 +159,33 @@ describe("the resources property", function () {
         expect(this.response[this.config.resourcesKey]).toBeDefined();
 
         // expect that the resource method returns the available resources on the index response
-        expect(this.response[this.config.resourcesKey]()).toEqual(['users', 'categories', 'accounts']);
+        expect(this.response[this.config.resourcesKey]()).toEqual([
+                {
+                    name: 'users',
+                    parameters: {
+                        page: undefined,
+                        size: undefined,
+                        sort: undefined
+                    }
+                },
+                {
+                    name: 'categories',
+                    parameters: {
+                        page: undefined,
+                        size: undefined,
+                        sort: undefined
+                    }
+                },
+                {
+                    name: 'accounts',
+                    parameters: {
+                        page: undefined,
+                        size: undefined,
+                        sort: undefined
+                    }
+                }
+            ]
+        );
     });
 
 });

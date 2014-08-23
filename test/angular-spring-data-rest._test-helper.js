@@ -207,3 +207,20 @@ var mockIndexData = function () {
     );
 };
 
+var mockWithoutTemplateParametersData = function () {
+    return angular.copy(
+        {
+            "_links": {
+                "users": {
+                    "href": "http://localhost:8080/users",
+                    "templated": false
+                },
+                "categories": {
+                    "href": "http://localhost:8080/categories",
+                    "templated": false
+                }
+            }
+        }
+    );
+};
+
