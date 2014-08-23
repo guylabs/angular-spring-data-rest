@@ -2,6 +2,24 @@
 
 > An AngularJS module with an additional interceptor which wraps the Angular [$resource](https://docs.angularjs.org/api/ngResource/service/$resource) function and therefore eases the use with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
 
+#Table of contents
+
+- [Overview](#overview)
+- [The `SpringDataRestAdapter`](#the-springdatarestadapter)
+    - [Usage of `SpringDataRestAdapter`](#usage-of-springdatarestadapter)
+    - [Usage of `_resources` method](#usage-of-resources-method)
+        - [The `_resources` method parameters and return type](#the-resources-method-parameters-and-return-type)
+            - [`_resources` usage example](#resources-usage-example)
+    - [Usage of `_embeddedItems` property](#usage-of-embeddedItems-property)
+        - [`_embeddedItems` usage example](#embeddedItems-usage-example)
+    - [Configuration of the `SpringDataRestAdapter`](#configuration-of-the-springdatarestadapter)
+- [The `SpringDataRestInterceptor`](#the-springdatarestinterceptor)
+- [Dependencies](#dependencies)
+- [Release notes](#release-notes)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+
+
 ## Overview
 
 *Spring Data REST* integrates [Spring HATEOAS](http://projects.spring.io/spring-hateoas) by default. This simplifies the creation of REST presentations which are generated with the [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) principle.
@@ -187,7 +205,7 @@ var availableResources = processedResponse._resources();
 
 The above call will result in the following return value: `['self', 'parentCategory']`. This functionality is useful if you want to first check all available resources before using the `_resources` method to retrieve the specific resource.
 
-##### Example
+#### `_resources` usage example
 
 This example refers to the JSON response in the [Overview](#overview). If you want to get the parent category of a category you would call the `_resources` method the following way:
 
@@ -206,7 +224,7 @@ var parentCategory = parentCategoryResource.get(function() {
 
 The `_embeddedItems` property is just a convention property created by the `SpringDataRestAdapter` to easily iterate over the `_emebedded` items in the response. Like with the `_resources` method, the `SpringDataRestAdapter` will recursively create an `_embeddedItems` property on the same level as a `_embedded` property exists for all the JSON response properties.
 
-#### Example
+#### `_embeddedItems` usage example
 
 This example refers to the JSON response in the [Overview](#overview). If you want to iterate over all categories in the response you would do it in the following way:
 
