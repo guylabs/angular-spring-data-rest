@@ -138,10 +138,24 @@ This `_resources` method is added recursively to all the properties of the JSON 
 
 The `_resources` method takes the following four parameters:
 
-1. `linkName`: the name of the link's `href` you want to call with the underlying *Angular* `$resource` function.
-2. `paramDefaults`: the default values for url parameters. Read more  [here](https://docs.angularjs.org/api/ngResource/service/$resource).
-3. `actions`: custom action that should extend the default set of the `$resource` actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
-4. `options`: custom settings that should extend the default `$resourceProvider` behavior Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
+* `linkName`: the name of the link's `href` you want to call with the underlying *Angular* `$resource` function. You can also pass in a resource object with parameters in the following way:
+
+```javascript
+var resourceObject = {
+    "name": "self",
+    "parameters": {
+        "size": 20,
+        "sort": "asc"
+    }
+}
+processedResponse._resources(resourceObject, paramDefaults, actions, options);
+```
+
+This will call *Angular* `$resource` method with the `href` of the `self` resource and will add the parameters `size` and `sort` as query string to the URL. If the resource object parameters and the `paramDefaults` parameters are set, then these two objects are merged such that the resource object parameters appear first in the new object and the `paramDefaults` parameters last.
+
+* `paramDefaults`: the default values for url parameters. Read more  [here](https://docs.angularjs.org/api/ngResource/service/$resource).
+* `actions`: custom action that should extend the default set of the `$resource` actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
+* `options`: custom settings that should extend the default `$resourceProvider` behavior Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 
 The `_resources` method returns the *Angular* resource "class" object with methods for the default set of resource actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 
