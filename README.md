@@ -210,9 +210,9 @@ The above call will result in the following return value:
     {
         "name":"self",
         "parameters": {
-            page: undefined,
-            size: undefined,
-            sort: undefined
+            "page": undefined,
+            "size": undefined,
+            "sort": undefined
         }
     }
     {
