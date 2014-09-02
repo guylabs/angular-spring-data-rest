@@ -3,8 +3,8 @@
  * configuration, raw and processed response.
  */
 var beforeEachFunction = function () {
-    module("ngResource");
-    module("spring-data-rest");
+    module('ngResource');
+    module('spring-data-rest');
 
     // initialize the provider by injecting it to a config block of a test module
     // and assign it to the this scope such that it is available in each test
@@ -17,8 +17,6 @@ var beforeEachFunction = function () {
     // initialize test module injector
     module('testModule');
 
-    // start the injectors previously registered with calls to angular.mock.module and assign it to the
-    // this scope. See above for the description.
     var httpBackendVar = undefined;
     inject(function (_SpringDataRestAdapter_, $httpBackend) {
         SpringDataRestAdapter = _SpringDataRestAdapter_;

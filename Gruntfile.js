@@ -2,14 +2,29 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
+        concat: {
+            options: {
+                separator: '\n'
+            },
+            dist: {
+                src: [
+                    'src/angular-spring-data-rest-module.js',
+                    'src/angular-spring-data-rest-provider.js',
+                    'src/angular-spring-data-rest-interceptor-provider.js',
+                    'src/angular-spring-data-rest-utils.js',
+                ],
+                dest: 'dist/<%= pkg.name %>.<%= pkg.version %>.js'
+            }
+        },
 		uglify: {
 			options: {
                 banner: "/*!\n * <%= pkg.name %> <%= pkg.version %>\n * Copyright <%= grunt.template.today('yyyy') %> Guy Brûlé (@guy_labs)\n * https://github.com/guylabs/angular-spring-data-rest\n */\n"
 			},
-			build: {
-				src: "src/<%= pkg.name %>.js",
-                dest: "build/<%= pkg.name %>.<%= pkg.version %>.min.js"
-			}
+            dist: {
+                files: {
+                    'dist/<%= pkg.name %>.<%= pkg.version %>.min.js': ['<%= concat.dist.dest %>']
+                }
+            }
 		},
 		karma: {
 			unit: {
@@ -22,10 +37,11 @@ module.exports = function (grunt) {
 		}
 	});
 
+    grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-karma");
 
-	grunt.registerTask("default", ["karma:continuous", "uglify"]);
+    grunt.registerTask("default", ["karma:continuous", "concat", "uglify"]);
 
 	grunt.registerTask("startTestServer", ["karma:unit:start"]);
 	grunt.registerTask("runTests", ["karma:unit:run"]);

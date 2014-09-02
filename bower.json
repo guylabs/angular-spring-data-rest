@@ -9,6 +9,7 @@
         "angular",
         "resource",
         "spring",
+        "spring data",
         "spring data rest",
         "rest",
         "api"
@@ -19,6 +20,9 @@
     "ignore": [
         "**/.*",
         "node_modules",
-        "bower_components"
+        "bower_components",
+        "dist",
+        ".idea",
+        "*.iml"
     ]
 }
