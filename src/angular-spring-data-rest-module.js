@@ -1,7 +1,7 @@
 /**
  * @module spring-data-rest
- * @version 0.1.0
+ * @version <%= pkg.version %>
  *
- * An AngularJS module for using `$resource` with a Spring Data REST backend.
+ * An AngularJS module to ease the work with a Spring Data REST backend.
  */
 angular.module("spring-data-rest", ["ngResource"]);

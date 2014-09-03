@@ -1,6 +1,6 @@
 /**
  * @module spring-data-rest
- * @version 0.1.0
+ * @version <%= pkg.version %>
  *
  * Provider for the interceptor which wraps the SpringDataRestAdapter around the response object.
  */

@@ -1,13 +1,13 @@
 {
     "name": "angular-spring-data-rest",
     "version": "0.1.0",
-    "description": "An AngularJS module for a Spring Data REST backend.",
+    "description": "An AngularJS module to ease the work with a Spring Data REST backend.",
     "keywords": ["AngularJS", "angular", "Spring", "Spring Data", "REST", "Spring Data REST"],
-    "homepage": "https://github.com/guylabs/angular-spring-data-rest",
+    "homepage": "http://guylabs.ch/project/angular-spring-data-rest",
     "bugs": "https://github.com/guylabs/angular-spring-data-rest/issues",
     "author": {
         "name": "Guy Brûlé",
-        "email": "adming@guylabs.org",
+        "email": "admin@guylabs.org",
         "url": "http://guylabs.ch"
     },
     "repository": {

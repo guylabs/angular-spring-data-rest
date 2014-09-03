@@ -40,6 +40,66 @@ describe("the resources property", function () {
         this.httpBackend.flush();
     });
 
+    it("it must call the overridden resource function with the given resource name", function () {
+        var url = undefined, paramDefaults = undefined, actions = undefined, options = undefined;
+        var resourcesFunctionConfiguration = {
+            'resourcesFunction': function (inUrl, inParamDefaults, inActions, inOptions) {
+                url = inUrl;
+                paramDefaults = inParamDefaults;
+                actions = inActions;
+                options = inOptions;
+                return 'foo';
+            }
+        };
+
+        // define the resource name and the correct resource href url
+        var resourceName = "self";
+        var resourceHref = "http://localhost:8080/categories";
+
+        // set the new resource function with the given parameters
+        springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
+        this.response = new SpringDataRestAdapter(this.rawResponse);
+
+        // call the new resource method and expect the response and the call to the method
+        var resourceResponse = this.response[this.config.resourcesKey](resourceName, 'paramDefaults', 'actions', 'options');
+        expect(resourceResponse).toEqual('foo');
+        expect(url).toEqual(resourceHref);
+        expect(paramDefaults).toEqual('paramDefaults');
+        expect(actions).toEqual('actions');
+        expect(options).toEqual('options');
+    });
+
+    it("it must call the overridden resource function with the given resource object", function () {
+        var url = undefined, paramDefaults = undefined, actions = undefined, options = undefined;
+        var resourcesFunctionConfiguration = {
+            'resourcesFunction': function (inUrl, inParamDefaults, inActions, inOptions) {
+                url = inUrl;
+                paramDefaults = inParamDefaults;
+                actions = inActions;
+                options = inOptions;
+                return 'foo';
+            }
+        };
+
+        // define the resource name and the correct resource href url
+        var resourceObject = {
+            'name': 'self'
+        };
+        var resourceHref = "http://localhost:8080/categories";
+
+        // set the new resource function with the given parameters
+        springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
+        this.response = new SpringDataRestAdapter(this.rawResponse);
+
+        // call the new resource method and expect the response and the call to the method
+        var resourceResponse = this.response[this.config.resourcesKey](resourceObject, 'paramDefaults', 'actions', 'options');
+        expect(resourceResponse).toEqual('foo');
+        expect(url).toEqual(resourceHref);
+        expect(paramDefaults).toEqual('paramDefaults');
+        expect(actions).toEqual('actions');
+        expect(options).toEqual('options');
+    });
+
     it("must throw an exception if a wrong resource object is given", function () {
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();

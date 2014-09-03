@@ -12,7 +12,8 @@ describe("the configuration", function () {
                 'value': '_embeddedItems'
             },
             'hrefKey': 'href',
-            'resourcesKey': '_resources'
+            'resourcesKey': '_resources',
+            'resourcesFunction': undefined
         };
         expect(this.config).toEqual(defaultConfiguration);
     });
@@ -21,12 +22,12 @@ describe("the configuration", function () {
         var invalidIntegerConfig = 42;
         expect(function () {
             springDataRestAdapterProvider.config(invalidIntegerConfig)
-        }).toThrow("The given configuration " + invalidIntegerConfig + " is not an object.");
+        }).toThrow("The given configuration '" + invalidIntegerConfig + "' is not an object.");
 
         var invalidStringConfig = "invalid";
         expect(function () {
             springDataRestAdapterProvider.config(invalidStringConfig)
-        }).toThrow("The given configuration " + invalidStringConfig + " is not an object.");
+        }).toThrow("The given configuration '" + invalidStringConfig + "' is not an object.");
     });
 
     it("must return the updated configuration object when a valid configuration object is given", function () {
@@ -39,13 +40,13 @@ describe("the configuration", function () {
                 'value': 'embeddedNew'
             },
             'hrefKey': 'hrefNew',
-            'resourcesKey': 'resourcesNew'
+            'resourcesKey': 'resourcesNew',
+            'resourcesFunction': undefined
         };
 
         expect(springDataRestAdapterProvider.config(newConfiguration)).toEqual(newConfiguration);
         expect(springDataRestAdapterProvider.config()).toEqual(newConfiguration);
     });
-
 
     it("must return the updated configuration object when a partial configuration object is given", function () {
         var partialConfiguration = {
@@ -67,11 +68,41 @@ describe("the configuration", function () {
                 'value': 'embeddedNew'
             },
             'hrefKey': 'hrefNew',
-            'resourcesKey': '_resources'
+            'resourcesKey': '_resources',
+            'resourcesFunction': undefined
         };
 
         expect(springDataRestAdapterProvider.config(partialConfiguration)).toEqual(newConfiguration);
         expect(springDataRestAdapterProvider.config()).toEqual(newConfiguration);
+    });
+
+    it("must be able to add a function to the resourcesFunction key", function () {
+        var value = 1;
+
+        var partialConfiguration = {
+            'resourcesFunction': function () {
+                value = 2;
+            }
+        };
+
+        // set the new configuration and check that the resourcesFunction is type of function
+        springDataRestAdapterProvider.config(partialConfiguration);
+        expect(typeof(springDataRestAdapterProvider.config().resourcesFunction) == "function").toEqual(true);
+
+        // call the method and check the value
+        springDataRestAdapterProvider.config().resourcesFunction();
+        expect(value).toEqual(2);
+    });
+
+    it("must throw an error if the given resourcesFunction is not a function", function () {
+        var invalidResourceFunctionConfiguration = {
+            'resourcesFunction': 'function'
+        };
+
+        // set the new configuration and check that the resourcesFunction is type of function
+        expect(function () {
+            springDataRestAdapterProvider.config(invalidResourceFunctionConfiguration)
+        }).toThrow("The given resource function 'function' is not of type function.");
     });
 
 });

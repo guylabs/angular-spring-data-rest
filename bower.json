@@ -1,22 +1,8 @@
 {
     "name": "angular-spring-data-rest",
-    "version": "0.1.0",
-    "authors": [
-        "Guy Brûlé <admin@guylabs.org>"
-    ],
-    "description": "An AngularJS module for using `$resource` with a Spring Data REST backend.",
-    "keywords": [
-        "angular",
-        "resource",
-        "spring",
-        "spring data",
-        "spring data rest",
-        "rest",
-        "api"
-    ],
+    "description": "An AngularJS module to ease the work with a Spring Data REST backend.",
+    "main": "dist/angular-spring-data-rest.js",
     "license": "MIT",
-    "homepage": "https://github.com/guylabs/angular-spring-data-rest",
-    "main": "src/angular-spring-data-rest.js",
     "ignore": [
         "**/.*",
         "node_modules",
@@ -24,5 +10,36 @@
         "dist",
         ".idea",
         "*.iml"
-    ]
+    ],
+    "keywords": [
+        "angular",
+        "angularjs",
+        "spring",
+        "spring data",
+        "spring data rest",
+        "rest",
+        "api"
+    ],
+    "authors": [
+        "Guy Brûlé <admin@guylabs.org>"
+    ],
+    "homepage": "http://guylabs.ch/project/angular-spring-data-rest",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/guylabs/angular-spring-data-rest.git"
+    },
+    "devDependencies": {
+        "grunt": "0.4.5",
+        "grunt-contrib-uglify": "0.5.1",
+        "grunt-contrib-concat": "0.5.0",
+        "grunt-karma": "0.8.3",
+        "karma": "0.12.22",
+        "karma-chrome-launcher": "0.1.4",
+        "karma-coffee-preprocessor": "0.2.1",
+        "karma-firefox-launcher": "0.1.3",
+        "karma-jasmine": "0.1.5",
+        "karma-phantomjs-launcher": "0.1.3",
+        "karma-requirejs": "0.2.2",
+        "requirejs": "2.1.14"
+    }
 }

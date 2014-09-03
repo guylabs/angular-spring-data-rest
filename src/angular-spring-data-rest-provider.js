@@ -1,6 +1,6 @@
 /**
  * @module spring-data-rest
- * @version 0.1.0
+ * @version <%= pkg.version %>
  *
  * Provider for the SpringDataRestAdapter which is the core of this module.
  */
@@ -18,7 +18,8 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
             'value': '_embeddedItems'
         },
         'hrefKey': 'href',
-        'resourcesKey': '_resources'
+        'resourcesKey': '_resources',
+        'resourcesFunction': undefined
     };
 
     return {
@@ -34,8 +35,14 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
             if (typeof newConfig !== 'undefined') {
                 // throw an error if the given configuration is not an object
                 if (!angular.isObject(newConfig)) {
-                    throw new Error("The given configuration " + newConfig + " is not an object.");
+                    throw new Error("The given configuration '" + newConfig + "' is not an object.");
                 }
+
+                // check if the given resource function is not undefined and is of type function
+                if (newConfig.resourcesFunction != undefined && typeof(newConfig.resourcesFunction) != "function") {
+                    throw new Error("The given resource function '" + newConfig.resourcesFunction + "' is not of type function.")
+                }
+
                 // override the default configuration properties with the given new configuration
                 config = deepExtend(config, newConfig);
             }
@@ -54,7 +61,11 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              * @returns {*}
              */
             function callBackend(url, paramDefaults, actions, options) {
-                return $injector.get("$resource")(url, paramDefaults, actions, options);
+                if (config.resourcesFunction == undefined) {
+                    return $injector.get("$resource")(url, paramDefaults, actions, options);
+                } else {
+                    return config.resourcesFunction(url, paramDefaults, actions, options);
+                }
             }
 
             /**
@@ -88,7 +99,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                             throw new Error("The provided resource object must contain a name property.");
                         }
 
-                        var parameters = undefined;
+                        var parameters = paramDefaults;
                         var resourceObjectParameters = resourceObject.parameters;
 
                         // if the default parameters and the resource object parameters are objects, then merge these two objects
@@ -105,12 +116,12 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                             }
                         }
 
-                        return callBackend(extractUrl(this, data[config.links.key][resourceObject.name][config.hrefKey],
+                        return callBackend(extractUrl(data[config.links.key][resourceObject.name][config.hrefKey],
                             data[config.links.key][resourceObject.name].templated), parameters, actions, options);
 
                     } else if (resourceObject in resources) {
                         // get the url out of the resource name and return the backend function
-                        return callBackend(extractUrl(this, data[config.links.key][resourceObject][config.hrefKey],
+                        return callBackend(extractUrl(data[config.links.key][resourceObject][config.hrefKey],
                             data[config.links.key][resourceObject].templated), paramDefaults, actions, options);
                     }
 

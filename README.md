@@ -1,6 +1,6 @@
 # angular-spring-data-rest
 
-> An AngularJS module with an additional interceptor which wraps the Angular [$resource](https://docs.angularjs.org/api/ngResource/service/$resource) function and therefore eases the use with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
+> An AngularJS module with an additional interceptor which eases the work with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
 
 #Table of contents
 
@@ -9,7 +9,8 @@
     - [Usage of `SpringDataRestAdapter`](#usage-of-springdatarestadapter)
     - [Usage of `_resources` method](#usage-of-_resources-method)
         - [The `_resources` method parameters and return type](#the-_resources-method-parameters-and-return-type)
-            - [`_resources` usage example](#_resources-usage-example)
+        - [`_resources` usage example](#_resources-usage-example)
+        - [Exchange the underlying Angular `$resource` function](#exchange-the-underlying-angular-$resource-function)
     - [Usage of `_embeddedItems` property](#usage-of-_embeddeditems-property)
         - [`_embeddedItems` usage example](#_embeddeditems-usage-example)
     - [Configuration of the `SpringDataRestAdapter`](#configuration-of-the-springdatarestadapter)
@@ -81,7 +82,7 @@ This *Angular* module provides two ways of processing a response from the *Sprin
 
 The `spring-data-rest` *Angular* module provides a provider for the `SpringDataRestAdapter` object. This object is the core of the module and it processes a given response and adds the following additional properties/methods to it:
 
-1. `_resources`: this method wraps the *Angular* `$resource` function and adds an easy way to retrieve the resources defined in the `_links` property. It is also used to retrieve all available resources of the given object. Read more about this property [here](#usage-of-_resources-property).
+1. `_resources`: this method wraps the *Angular* `$resource` function by default (this is [exchangeable](#exchange-the-underlying-angular-$resource-function)) and adds an easy way to retrieve the resources defined in the `_links` property. It is also used to retrieve all available resources of the given object. Read more about this property [here](#usage-of-_resources-property).
 2. `_embeddedItems`: this property replaces the `_embedded` property and sets the named array (`categories` in the upper example response) with the embedded items as its value. Read more about this property [here](#usage-of-_embeddedItems-property).
 
 Spring Data REST also generates an index response when you make a `GET` response to the configured base url of the dispatcher servlet. This response looks like the following example:
@@ -169,7 +170,7 @@ var resourceObject = {
 processedResponse._resources(resourceObject, paramDefaults, actions, options);
 ```
 
-This will call *Angular* `$resource` method with the `href` of the `self` resource and will add the parameters `size` and `sort` as query string to the URL. If the resource object parameters and the `paramDefaults` parameters are set, then these two objects are merged such that the resource object parameters appear first in the new object and the `paramDefaults` parameters last.
+This will call *Angular* `$resource` method by default (this is [exchangeable](#exchange-the-underlying-angular-$resource-function)) with the `href` of the `self` resource and will add the parameters `size` and `sort` as query string to the URL. If the resource object parameters and the `paramDefaults` parameters are set, then these two objects are merged such that the resource object parameters appear first in the new object and the `paramDefaults` parameters last.
 
 * `paramDefaults`: the default values for url parameters. Read more  [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 * `actions`: custom action that should extend the default set of the `$resource` actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
@@ -238,6 +239,26 @@ var parentCategory = parentCategoryResource.get(function() {
 });
 ```
 
+#### Exchange the underlying Angular `$resource` function
+
+If you want to exchange the underlying call to the *Angular* `$resource` method then you are able to do this within the configuration of the `SpringDataRestAdapter`. By default it will use the *Angular* `$resource` function.
+
+The following example shows how to set a custom function:
+
+```javascript
+myApp.config(function (SpringDataRestAdapterProvider) {
+
+    // set the new resource function
+    SpringDataRestAdapterProvider.config({
+        'resourcesFunction': function (url, paramDefaults, actions, options) {
+            // do the call to the backend and return your desired object
+        }
+    });
+});
+```
+
+The description of the parameters you will find [here](#the-_resources-method-parameters-and-return-type). You can also read more about the configuration of the `SpringDataRestAdapter` [here](#configuration-of-the-springdatarestadapter)
+
 ### Usage of `_embeddedItems` property
 
 The `_embeddedItems` property is just a convention property created by the `SpringDataRestAdapter` to easily iterate over the `_emebedded` items in the response. Like with the `_resources` method, the `SpringDataRestAdapter` will recursively create an `_embeddedItems` property on the same level as a `_embedded` property exists for all the JSON response properties.
@@ -267,6 +288,7 @@ The `SpringDataRestAdapter` is designed to be configurable and you are able to c
 * `embedded.value` (default: `_embeddedItems`): the property name where the array of embedded items are stored.
 * `hrefKey` (default: `href`): the property name where the url is stored under each specific link.
 * `resourcesKey` (default: `_resources`): the property name where the resource method is stored.
+* `resourcesFunction` (default: `undefined`): the function to use to call the backend. Read more how to do this [here](#exchange-the-underlying-angular-$resource-function)
 
 You are able to configure the `SpringDataRestAdapter` provider in a *Angular* configuration block in the following way:
 
@@ -294,10 +316,10 @@ The config method of the `SpringDataRestAdapterProvider` takes a configuration o
         "value': "_embeddedItems"
     },
     "hrefKey": "href",
-    "resourcesKey": "_resources"
+    "resourcesKey": "_resources",
+    "resourcesFunction": undefined
 }
 ```
-
 
 ## The `SpringDataRestInterceptor`
 

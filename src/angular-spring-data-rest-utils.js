@@ -41,14 +41,14 @@ var moveArray = function (object, sourceKey, destinationKey) {
 };
 
 /**
- * Extracts the url out of a resource object. If template parameters exist, they will be removed from the
+ * Extracts the url out of a url string. If template parameters exist, they will be removed from the
  * returned url.
  *
- * @param {object} data the data object to get the resource object from
- * @param {string} resourceName the name of the resource
+ * @param {string} url the url string from which to extract the url
+ * @param {boolean} templated true if the url is templated
  * @returns {string} the url of the resource object
  */
-function extractUrl(data, url, templated) {
+function extractUrl(url, templated) {
     if (templated) {
         url = removeTemplateParameters(url)
     }
