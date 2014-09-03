@@ -4,6 +4,7 @@
 
 #Table of contents
 
+- [Quick start](#quick-start)
 - [Overview](#overview)
 - [The `SpringDataRestAdapter`](#the-springdatarestadapter)
     - [Usage of `SpringDataRestAdapter`](#usage-of-springdatarestadapter)
@@ -20,6 +21,14 @@
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
+
+## Quick start
+
+To use the `SpringDataRestAdapter` *Angular* module with [bower](http://bower.io) execute the following command to install the pacakge:
+
+```bash
+bower install angular-spring-data-rest
+```
 
 ## Overview
 
