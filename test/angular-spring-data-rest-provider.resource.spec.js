@@ -163,7 +163,7 @@ describe("the resources property", function () {
             this.httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
     });
 
-    it("must use the correct resource object name and merge the  resource object parameters with the given parameters", function () {
+    it("must use the correct resource object name and merge the resource object parameters with the given parameters", function () {
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();
 
@@ -246,6 +246,48 @@ describe("the resources property", function () {
                 }
             ]
         );
+    });
+
+    it("must throw an exception if the href property is empty", function () {
+        this.rawResponse = mockWithEmptyHrefPropertyData();
+        this.response = new SpringDataRestAdapter(this.rawResponse);
+
+        // expect that the resources method is present
+        expect(this.response[this.config.resourcesKey]).toBeDefined();
+
+        var response = this.response;
+        var resourceKey = this.config.resourcesKey;
+
+        // expect that the resource method with the specified resource name throws an exception
+        expect(function () {
+            response[resourceKey]("self")
+        }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+
+        // expect that the resource method with the specified resource object throws an exception
+        expect(function () {
+            response[resourceKey]({'name': 'self'})
+        }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+    });
+
+    it("must throw an exception if the href property is empty", function () {
+        this.rawResponse = mockWithoutHrefPropertyData();
+        this.response = new SpringDataRestAdapter(this.rawResponse);
+
+        // expect that the resources method is present
+        expect(this.response[this.config.resourcesKey]).toBeDefined();
+
+        var response = this.response;
+        var resourceKey = this.config.resourcesKey;
+
+        // expect that the resource method with the specified resource name throws an exception
+        expect(function () {
+            response[resourceKey]("self")
+        }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+
+        // expect that the resource method with the specified resource object throws an exception
+        expect(function () {
+            response[resourceKey]({'name': 'self'})
+        }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
     });
 
 });

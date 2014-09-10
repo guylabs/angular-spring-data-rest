@@ -92,6 +92,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                  */
                 var resources = function (resourceObject, paramDefaults, actions, options) {
                     var resources = this[config.links.key];
+                    var parameters = paramDefaults;
 
                     // if a resource object is given process it
                     if (angular.isObject(resourceObject)) {
@@ -99,7 +100,6 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                             throw new Error("The provided resource object must contain a name property.");
                         }
 
-                        var parameters = paramDefaults;
                         var resourceObjectParameters = resourceObject.parameters;
 
                         // if the default parameters and the resource object parameters are objects, then merge these two objects
@@ -116,13 +116,10 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                             }
                         }
 
-                        return callBackend(extractUrl(data[config.links.key][resourceObject.name][config.hrefKey],
-                            data[config.links.key][resourceObject.name].templated), parameters, actions, options);
+                        return processUrlAndCallBackend(resourceObject.name, parameters, actions, options);
 
                     } else if (resourceObject in resources) {
-                        // get the url out of the resource name and return the backend function
-                        return callBackend(extractUrl(data[config.links.key][resourceObject][config.hrefKey],
-                            data[config.links.key][resourceObject].templated), paramDefaults, actions, options);
+                        return processUrlAndCallBackend(resourceObject, parameters, actions, options);
                     }
 
                     // return the available resources as resource object array if the resource object parameter is not set
@@ -136,6 +133,18 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         }
                     });
                     return availableResources;
+
+                    function processUrlAndCallBackend(resourceName, parameters, actions, options) {
+                        // get the raw URL out of the resource name and check if it is valid
+                        var rawUrl = checkUrl(data[config.links.key][resourceName][config.hrefKey], resourceName,
+                            config.hrefKey);
+
+                        // extract the template parameters of the raw URL
+                        var url = extractUrl(rawUrl, data[config.links.key][resourceName].templated);
+
+                        // call the backend method with the processed URL, parameters, actions and options
+                        return callBackend(url, parameters, actions, options);
+                    }
                 };
 
                 // throw an exception if given data parameter is not of type object

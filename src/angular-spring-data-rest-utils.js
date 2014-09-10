@@ -27,7 +27,7 @@ function deepExtend(destination) {
  * @param {string} destinationKey the destination key to which the array is moved
  * @returns {object} the processed object
  */
-var moveArray = function (object, sourceKey, destinationKey) {
+function moveArray(object, sourceKey, destinationKey) {
     var embeddedObject = object[sourceKey];
     if (embeddedObject) {
         var key = Object.keys(embeddedObject)[0];
@@ -38,7 +38,7 @@ var moveArray = function (object, sourceKey, destinationKey) {
         delete object[sourceKey];
     }
     return object;
-};
+}
 
 /**
  * Extracts the url out of a url string. If template parameters exist, they will be removed from the
@@ -56,6 +56,24 @@ function extractUrl(url, templated) {
 }
 
 /**
+ * Checks the given URL if it is valid and throws a parameterized exception containing the resource name and the
+ * URL property name.
+ *
+ * @param {string} url the URL to check
+ * @param {string} resourceName the name of the resource
+ * @param {string} hrefKey the URL property key
+ * @returns {string} the URL if it is valid
+ * @throws Error if the URL is not valid
+ */
+function checkUrl(url, resourceName, hrefKey) {
+    if (url == undefined || !url) {
+        throw new Error("The provided resource name '" + resourceName + "' has no valid URL in the '" +
+            hrefKey + "' property.");
+    }
+    return url
+}
+
+/**
  * Removes the template parameters of the given url. e.g. from this url
  * 'http://localhost:8080/categories{?page,size,sort}' it will remove the curly braces
  * and everything within.
@@ -63,9 +81,9 @@ function extractUrl(url, templated) {
  * @param {string} url the url with the template parameters
  * @returns {string} the url without the template parameters
  */
-var removeTemplateParameters = function (url) {
+function removeTemplateParameters(url) {
     return url.replace(/{.*}/g, '');
-};
+}
 
 /**
  * Returns the template parameters of the given url as array. e.g. from this url
@@ -75,7 +93,7 @@ var removeTemplateParameters = function (url) {
  * @param {string} url the url with the template parameters
  * @returns {object} the array containing the template parameters
  */
-var extractTemplateParameters = function (url) {
+function extractTemplateParameters(url) {
     var templateParametersObject = {};
 
     var regexp = /{\?(.*)}/g;
@@ -86,4 +104,4 @@ var extractTemplateParameters = function (url) {
     });
 
     return templateParametersObject;
-};
+}

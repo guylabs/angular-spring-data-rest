@@ -222,3 +222,28 @@ var mockWithoutTemplateParametersData = function () {
     );
 };
 
+var mockWithEmptyHrefPropertyData = function () {
+    return angular.copy(
+        {
+            "_links": {
+                "self": {
+                    "href": "",
+                    "templated": false
+                }
+            }
+        }
+    );
+};
+
+var mockWithoutHrefPropertyData = function () {
+    return angular.copy(
+        {
+            "_links": {
+                "self": {
+                    "templated": false
+                }
+            }
+        }
+    );
+};
+
