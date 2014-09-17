@@ -3,7 +3,7 @@ describe("the resources property", function () {
     beforeEach(beforeEachFunction);
 
     it("must contain the 'links key' key", function () {
-        expect(this.response[this.config.links.key]).toBeDefined();
+        expect(this.response[this.config.linksKey]).toBeDefined();
     });
 
     it("must call the correct href url if a resource name is passed to the $resource method", function () {
@@ -121,7 +121,7 @@ describe("the resources property", function () {
 
         // the parameters must not be used in the resources method
         expectResourceExecution(this.response, this.config.resourcesKey,
-            this.response[this.config.links.key]["self"].href, this.httpBackend, "self")
+            this.response[this.config.linksKey]["self"].href, this.httpBackend, "self")
     });
 
     it("must use the given parameters if the resource object is a string", function () {
@@ -130,7 +130,7 @@ describe("the resources property", function () {
 
         // the given parameters must be used in the resources method
         expectResourceExecution(this.response, this.config.resourcesKey,
-                this.response[this.config.links.key]["self"].href + "?parameterName=parameterValue", this.httpBackend, "self",
+                this.response[this.config.linksKey]["self"].href + "?parameterName=parameterValue", this.httpBackend, "self",
             {'parameterName': 'parameterValue'});
     });
 
@@ -140,7 +140,7 @@ describe("the resources property", function () {
 
         // the given resource name must be used
         expectResourceExecution(this.response, this.config.resourcesKey,
-            this.response[this.config.links.key]["self"].href, this.httpBackend, {'name': 'self'})
+            this.response[this.config.linksKey]["self"].href, this.httpBackend, {'name': 'self'})
     });
 
     it("must use the correct resource object name and the given parameters", function () {
@@ -149,7 +149,7 @@ describe("the resources property", function () {
 
         // the given parameters must be used in the resources method
         expectResourceExecution(this.response, this.config.resourcesKey,
-                this.response[this.config.links.key]["self"].href + "?parameterName=parameterValue",
+                this.response[this.config.linksKey]["self"].href + "?parameterName=parameterValue",
             this.httpBackend, {'name': 'self'}, {'parameterName': 'parameterValue'})
     });
 
@@ -159,7 +159,7 @@ describe("the resources property", function () {
 
         // the given parameters must be used in the resources method
         expectResourceExecution(this.response, this.config.resourcesKey,
-                this.response[this.config.links.key]["self"].href + "?parameterName=parameterValue",
+                this.response[this.config.linksKey]["self"].href + "?parameterName=parameterValue",
             this.httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
     });
 
@@ -169,7 +169,7 @@ describe("the resources property", function () {
 
         // the given parameters must be used in the resources method
         expectResourceExecution(this.response, this.config.resourcesKey,
-                this.response[this.config.links.key]["self"].href + "?objectParameterName=objectParameterValue&parameterName=parameterValue",
+                this.response[this.config.linksKey]["self"].href + "?objectParameterName=objectParameterValue&parameterName=parameterValue",
             this.httpBackend, {'name': 'self', 'parameters': {'objectParameterName': 'objectParameterValue'}},
             {'parameterName': 'parameterValue'})
     });

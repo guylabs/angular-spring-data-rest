@@ -4,19 +4,15 @@ describe("the configuration", function () {
 
     it("must return the default configuration object when no parameter is given", function () {
         var defaultConfiguration = {
-            'links': {
-                'key': '_links',
-                'selfKey': 'self'
-            },
-            'embedded': {
-                'key': '_embedded',
-                'value': '_embeddedItems'
-            },
-            'hrefKey': 'href',
+            'linksKey': '_links',
+            'linksHrefKey': 'href',
+            'linksSelfKey': 'self',
+            'embeddedKey': '_embedded',
+            'embeddedNewKey': '_embeddedItems',
             'resourcesKey': '_resources',
             'resourcesFunction': undefined,
             'fetchFunction': undefined,
-            'fetchAllLinkNamesKey': '_allLinks'
+            'fetchAllKey': '_allLinks'
         };
         expect(this.config).toEqual(defaultConfiguration);
     });
@@ -35,19 +31,15 @@ describe("the configuration", function () {
 
     it("must return the updated configuration object when a valid configuration object is given", function () {
         var newConfiguration = {
-            'links': {
-                'key': '_linksNew',
-                'selfKey': 'newSelf'
-            },
-            'embedded': {
-                'key': '_embeddedNew',
-                'value': 'embeddedNew'
-            },
-            'hrefKey': 'hrefNew',
-            'resourcesKey': 'resourcesNew',
+            'linksKey': '_linksNew',
+            'linksHrefKey': 'hrefNew',
+            'linksSelfKey': 'selfNew',
+            'embeddedKey': '_embeddedNew',
+            'embeddedNewKey': '_embeddedItemsNew',
+            'resourcesKey': '_resourcesNew',
             'resourcesFunction': undefined,
             'fetchFunction': undefined,
-            'fetchAllLinkNamesKey': '_allLinksNew'
+            'fetchAllKey': '_allLinksNew'
         };
 
         expect(springDataRestAdapterProvider.config(newConfiguration)).toEqual(newConfiguration);
@@ -56,29 +48,21 @@ describe("the configuration", function () {
 
     it("must return the updated configuration object when a partial configuration object is given", function () {
         var partialConfiguration = {
-            'links': {
-                'key': '_linksNew'
-            },
-            'embedded': {
-                'value': 'embeddedNew'
-            },
-            'hrefKey': 'hrefNew'
+            'linksKey': '_linksNew',
+            'embeddedNewKey': '_embeddedItemsNew',
+            'fetchAllKey': '_allLinksNew'
         };
 
         var newConfiguration = {
-            'links': {
-                'key': '_linksNew',
-                'selfKey': 'self'
-            },
-            'embedded': {
-                'key': '_embedded',
-                'value': 'embeddedNew'
-            },
-            'hrefKey': 'hrefNew',
+            'linksKey': '_linksNew',
+            'linksHrefKey': 'href',
+            'linksSelfKey': 'self',
+            'embeddedKey': '_embedded',
+            'embeddedNewKey': '_embeddedItemsNew',
             'resourcesKey': '_resources',
             'resourcesFunction': undefined,
             'fetchFunction': undefined,
-            'fetchAllLinkNamesKey': '_allLinks'
+            'fetchAllKey': '_allLinksNew'
         };
 
 
@@ -104,6 +88,24 @@ describe("the configuration", function () {
         expect(value).toEqual(2);
     });
 
+    it("must be able to add a function to the fetchFunction key", function () {
+        var value = 1;
+
+        var partialConfiguration = {
+            'fetchFunction': function () {
+                value = 2;
+            }
+        };
+
+        // set the new configuration and check that the fetchFunction is type of function
+        springDataRestAdapterProvider.config(partialConfiguration);
+        expect(typeof(springDataRestAdapterProvider.config().fetchFunction) == "function").toEqual(true);
+
+        // call the method and check the value
+        springDataRestAdapterProvider.config().fetchFunction();
+        expect(value).toEqual(2);
+    });
+
     it("must throw an error if the given resourcesFunction is not a function", function () {
         var invalidResourceFunctionConfiguration = {
             'resourcesFunction': 'function'
@@ -113,6 +115,17 @@ describe("the configuration", function () {
         expect(function () {
             springDataRestAdapterProvider.config(invalidResourceFunctionConfiguration)
         }).toThrow("The given resource function 'function' is not of type function.");
+    });
+
+    it("must throw an error if the given fetchFunction is not a function", function () {
+        var invalidFetchFunctionConfiguration = {
+            'fetchFunction': 'function'
+        };
+
+        // set the new configuration and check that the fetchFunction is type of function
+        expect(function () {
+            springDataRestAdapterProvider.config(invalidFetchFunctionConfiguration)
+        }).toThrow("The given fetch function 'function' is not of type function.");
     });
 
 });

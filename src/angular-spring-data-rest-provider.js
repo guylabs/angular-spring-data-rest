@@ -10,19 +10,15 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
      * Default configuration for spring data rest defaults
      */
     var config = {
-        'links': {
-            'key': '_links',
-            'selfKey': 'self'
-        },
-        'embedded': {
-            'key': '_embedded',
-            'value': '_embeddedItems'
-        },
-        'hrefKey': 'href',
+        'linksKey': '_links',
+        'linksHrefKey': 'href',
+        'linksSelfKey': 'self',
+        'embeddedKey': '_embedded',
+        'embeddedNewKey': '_embeddedItems',
         'resourcesKey': '_resources',
         'resourcesFunction': undefined,
         'fetchFunction': undefined,
-        'fetchAllLinkNamesKey': '_allLinks'
+        'fetchAllKey': '_allLinks'
     };
 
     return {
@@ -44,6 +40,11 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 // check if the given resource function is not undefined and is of type function
                 if (newConfig.resourcesFunction != undefined && typeof(newConfig.resourcesFunction) != "function") {
                     throw new Error("The given resource function '" + newConfig.resourcesFunction + "' is not of type function.")
+                }
+
+                // check if the given fetch function is not undefined and is of type function
+                if (newConfig.fetchFunction != undefined && typeof(newConfig.fetchFunction) != "function") {
+                    throw new Error("The given fetch function '" + newConfig.fetchFunction + "' is not of type function.")
                 }
 
                 // override the default configuration properties with the given new configuration
@@ -118,7 +119,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                  * @see https://docs.angularjs.org/api/ngResource/service/$resource
                  */
                 var resources = function (resourceObject, paramDefaults, actions, options) {
-                    var resources = this[config.links.key];
+                    var resources = this[config.linksKey];
                     var parameters = paramDefaults;
 
                     // if a resource object is given process it
@@ -157,7 +158,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                         // if the URL is templated add the available template parameters to the returned object
                         if (value.templated) {
-                            var templateParameters = extractTemplateParameters(value[config.hrefKey]);
+                            var templateParameters = extractTemplateParameters(value[config.linksHrefKey]);
                             availableResources.push({"name": key, "parameters": templateParameters});
                         } else {
                             availableResources.push({"name": key});
@@ -179,7 +180,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 var processedData = undefined;
 
                 // only add the resource method to the object if the links key is present
-                if (config.links.key in data) {
+                if (config.linksKey in data) {
 
                     // add Angular resources property to object
                     var resourcesObject = {};
@@ -195,16 +196,16 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         }
 
                         // process all links
-                        angular.forEach(data[config.links.key], function (linkValue, linkName) {
+                        angular.forEach(data[config.linksKey], function (linkValue, linkName) {
 
                             // if the link name is not 'self' then process the link name
-                            if (linkName != config.links.selfKey) {
+                            if (linkName != config.linksSelfKey) {
 
                                 // check if:
                                 // 1. the all link names key is given then fetch the link
                                 // 2. the given key is equal
                                 // 3. the given key is inside the array
-                                if (fetchLinkNames == config.fetchAllLinkNamesKey ||
+                                if (fetchLinkNames == config.fetchAllKey ||
                                     (typeof fetchLinkNames === "string" && linkName == fetchLinkNames) ||
                                     (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0)) {
                                     fetchFunction(getProcessedUrl(data, linkName), linkName, processedData);
@@ -215,7 +216,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 }
 
                 // only move the embedded values to a top level property if the embedded key is present
-                if (config.embedded.key in data) {
+                if (config.embeddedKey in data) {
 
                     // make a defensive copy if the processedData variable is undefined
                     if (!processedData) {
@@ -223,11 +224,11 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                     }
 
                     // process the embedded key and move it to an embedded value key
-                    processedData = moveArray(processedData, config.embedded.key, config.embedded.value);
+                    processedData = moveArray(processedData, config.embeddedKey, config.embeddedNewKey);
 
                     // recursively process all contained objects in the embedded value array
-                    angular.forEach(processedData[config.embedded.value], function (value, key) {
-                        processedData[config.embedded.value][key] = new SpringDataRestAdapter(value, fetchLinkNames);
+                    angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
+                        processedData[config.embeddedNewKey][key] = new SpringDataRestAdapter(value, fetchLinkNames);
                     });
                 }
 
@@ -242,11 +243,11 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                  */
                 function getProcessedUrl(data, resourceName) {
                     // get the raw URL out of the resource name and check if it is valid
-                    var rawUrl = checkUrl(data[config.links.key][resourceName][config.hrefKey], resourceName,
-                        config.hrefKey);
+                    var rawUrl = checkUrl(data[config.linksKey][resourceName][config.linksHrefKey], resourceName,
+                        config.linksHrefKey);
 
                     // extract the template parameters of the raw URL
-                    return extractUrl(rawUrl, data[config.links.key][resourceName].templated);
+                    return extractUrl(rawUrl, data[config.linksKey][resourceName].templated);
                 }
             };
             return SpringDataRestAdapter;

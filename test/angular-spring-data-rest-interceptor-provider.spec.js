@@ -44,7 +44,7 @@ describe("if the spring data rest interceptor is not added", function () {
         var linkName = "self";
         var linkHref = "http://localhost:8080/categories";
         var resourcesKey = this.config.resourcesKey;
-        var embeddedItemsKey = this.config.embedded.value;
+        var embeddedItemsKey = this.config.embeddedNewKey;
 
         // check if the underlying $resource method is called with the correct href url
         var response = mockData();
@@ -109,7 +109,7 @@ describe("if the spring data rest interceptor is added", function () {
         var linkName = "self";
         var linkHref = "http://localhost:8080/categories";
         var resourcesKey = this.config.resourcesKey;
-        var embeddedItemsKey = this.config.embedded.value;
+        var embeddedItemsKey = this.config.embeddedNewKey;
 
         // check if the underlying $resource method is called with the correct href url
         var response = mockData();

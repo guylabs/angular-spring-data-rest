@@ -3,31 +3,31 @@ describe("the response with the embedded values", function () {
     beforeEach(beforeEachFunction);
 
     it("must not contain the 'embedded key' key anymore", function () {
-        expect(this.response[this.config.embedded.key]).not.toBeDefined();
+        expect(this.response[this.config.embeddedKey]).not.toBeDefined();
     });
 
     it("must contain the 'embedded value key' as key", function () {
-        expect(this.response[this.config.embedded.value]).toBeDefined();
+        expect(this.response[this.config.embeddedNewKey]).toBeDefined();
     });
 
     it("must be an array with the size of two", function () {
 
         // expect that the embedded key value is an array of the size 2
-        expect(this.response[this.config.embedded.value] instanceof Array).toBe(true);
-        expect(this.response[this.config.embedded.value].length).toBe(2);
+        expect(this.response[this.config.embeddedNewKey] instanceof Array).toBe(true);
+        expect(this.response[this.config.embeddedNewKey].length).toBe(2);
     });
 
     it("must contain a resource key in all embedded values", function () {
 
         // iterate over all entries of the embedded values and test the resource method
-        for (var key in this.response[this.config.embedded.value]) {
+        for (var key in this.response[this.config.embeddedNewKey]) {
 
             // the resource key must be defined
-            expect(this.response[this.config.embedded.value][key][this.config.resourcesKey]).toBeDefined();
+            expect(this.response[this.config.embeddedNewKey][key][this.config.resourcesKey]).toBeDefined();
 
             // the resource value must be a valid function with the given parameters
-            expectResourceExecution(this.response[this.config.embedded.value][key], this.config.resourcesKey,
-                this.response[this.config.embedded.value][key][this.config.links.key]["self"].href, this.httpBackend, "self");
+            expectResourceExecution(this.response[this.config.embeddedNewKey][key], this.config.resourcesKey,
+                this.response[this.config.embeddedNewKey][key][this.config.linksKey]["self"].href, this.httpBackend, "self");
         }
     });
 
@@ -43,7 +43,7 @@ describe("the response with the embedded values", function () {
         var i = 0;
 
         // iterate over all entries of the embedded values and test the resource method
-        for (var key in this.response[this.config.embedded.value]) {
+        for (var key in this.response[this.config.embeddedNewKey]) {
 
             for (var j = 0; j < 2; j++) {
                 // check if the underlying $resource method is called with the correct href url
@@ -51,7 +51,7 @@ describe("the response with the embedded values", function () {
                 this.httpBackend.whenGET(linkHrefs[i]).respond(200, expectedResult);
                 this.httpBackend.expectGET(linkHrefs[i]);
 
-                var result = this.response[this.config.embedded.value][key][this.config.resourcesKey](linkNames[i]).get(function () {
+                var result = this.response[this.config.embeddedNewKey][key][this.config.resourcesKey](linkNames[i]).get(function () {
                     expect(result.categoryId).toEqual(expectedResult.categoryId);
                 });
                 this.httpBackend.flush();

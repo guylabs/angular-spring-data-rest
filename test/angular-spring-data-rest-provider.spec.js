@@ -42,7 +42,7 @@ describe("the spring data rest adapter", function () {
         this.response = new SpringDataRestAdapter(this.rawResponse);
 
         // expect that the links key and the resource method is not present
-        expect(this.response[this.config.links.key]).not.toBeDefined();
+        expect(this.response[this.config.linksKey]).not.toBeDefined();
         expect(this.response[this.config.resourcesKey]).not.toBeDefined();
     });
 
@@ -51,8 +51,8 @@ describe("the spring data rest adapter", function () {
         this.response = new SpringDataRestAdapter(this.rawResponse);
 
         // expect that the embedded key and value is not present
-        expect(this.response[this.config.embedded.key]).not.toBeDefined();
-        expect(this.response[this.config.embedded.value]).not.toBeDefined();
+        expect(this.response[this.config.embeddedKey]).not.toBeDefined();
+        expect(this.response[this.config.embeddedNewKey]).not.toBeDefined();
     });
 
     it("must return the original data object if no links key or embedded key is present", function () {
@@ -60,12 +60,12 @@ describe("the spring data rest adapter", function () {
         this.response = new SpringDataRestAdapter(this.rawResponse);
 
         // expect that the links key and the resource method is not present
-        expect(this.response[this.config.links.key]).not.toBeDefined();
+        expect(this.response[this.config.linksKey]).not.toBeDefined();
         expect(this.response[this.config.resourcesKey]).not.toBeDefined();
 
         // expect that the embedded key and value is not present
-        expect(this.response[this.config.embedded.key]).not.toBeDefined();
-        expect(this.response[this.config.embedded.value]).not.toBeDefined();
+        expect(this.response[this.config.embeddedKey]).not.toBeDefined();
+        expect(this.response[this.config.embeddedNewKey]).not.toBeDefined();
 
         // check that the original response is the one which is returned
         expect(this.rawResponse === this.response).toBe(true);

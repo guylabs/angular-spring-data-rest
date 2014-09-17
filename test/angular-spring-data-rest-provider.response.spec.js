@@ -17,12 +17,12 @@ describe("the response", function () {
         expect(this.response[this.config.resourcesKey]).toBeDefined();
 
         // the resource value must be a valid function with the given parameters
-        expectResourceExecution(this.response, this.config.resourcesKey, this.response[this.config.links.key]["self"].href, this.httpBackend, "self");
+        expectResourceExecution(this.response, this.config.resourcesKey, this.response[this.config.linksKey]["self"].href, this.httpBackend, "self");
     });
 
     it("must retain all original object properties", function () {
         for (var key in this.rawResponse) {
-            if (key !== this.config.links.key && key !== this.config.embedded.key) {
+            if (key !== this.config.linksKey && key !== this.config.embeddedKey) {
                 expect(this.response[key]).toEqual(this.rawResponse[key]);
             }
         }

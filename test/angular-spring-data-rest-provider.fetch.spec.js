@@ -40,8 +40,8 @@ describe("the fetch function", function () {
         this.httpBackend.verifyNoOutstandingExpectation();
 
         // expect the fetched objects
-        expect(this.response[this.config.embedded.value][0][fetchLinkName]).toEqual(firstExpectedResult);
-        expect(this.response[this.config.embedded.value][1][fetchLinkName]).toEqual(secondExpectedResult);
+        expect(this.response[this.config.embeddedNewKey][0][fetchLinkName]).toEqual(firstExpectedResult);
+        expect(this.response[this.config.embeddedNewKey][1][fetchLinkName]).toEqual(secondExpectedResult);
     });
 
     it("must call all links if the fetch all link names key", function () {
@@ -74,16 +74,16 @@ describe("the fetch function", function () {
             respond(200, testParentCategoryExpectedResult);
         this.httpBackend.expectGET(testParentCategoryHref);
 
-        this.response = new SpringDataRestAdapter(this.rawResponse, this.config.fetchAllLinkNamesKey);
+        this.response = new SpringDataRestAdapter(this.rawResponse, this.config.fetchAllKey);
         this.httpBackend.flush();
         this.httpBackend.verifyNoOutstandingRequest();
         this.httpBackend.verifyNoOutstandingExpectation();
 
         // expect the fetched objects
         expect(this.response['testLink']).toEqual(testLinkExpectedResult);
-        expect(this.response[this.config.embedded.value][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
-        expect(this.response[this.config.embedded.value][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
-        expect(this.response[this.config.embedded.value][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
+        expect(this.response[this.config.embeddedNewKey][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
+        expect(this.response[this.config.embeddedNewKey][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
+        expect(this.response[this.config.embeddedNewKey][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
     });
 
     it("must call all links of the given fetch link names array", function () {
@@ -113,7 +113,7 @@ describe("the fetch function", function () {
 
         // expect the fetched objects
         expect(this.response[fetchLinkNames[0]]).toEqual(testLinkExpectedResult);
-        expect(this.response[this.config.embedded.value][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
+        expect(this.response[this.config.embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
     });
 
     it("it must call the overridden fetch function with the given resource name", function () {
@@ -129,13 +129,13 @@ describe("the fetch function", function () {
                 if (i == 0) {
                     expect(inUrl).toEqual("http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54/parentCategory");
                     expect(inKey).toEqual(fetchLinkName);
-                    expect(inData[localConfig.links.key][localConfig.links.selfKey][localConfig.hrefKey]).
+                    expect(inData[localConfig.linksKey][localConfig.linksSelfKey][localConfig.linksHrefKey]).
                         toEqual("http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54");
                     i++;
                 } else if (i == 1) {
                     expect(inUrl).toEqual("http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/parentCategory");
                     expect(inKey).toEqual(fetchLinkName);
-                    expect(inData[localConfig.links.key][localConfig.links.selfKey][localConfig.hrefKey]).
+                    expect(inData[localConfig.linksKey][localConfig.linksSelfKey][localConfig.linksHrefKey]).
                         toEqual("http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697");
                     i++;
                 } else if (i > 1) {
