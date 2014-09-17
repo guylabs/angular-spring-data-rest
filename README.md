@@ -14,6 +14,8 @@
         - [Exchange the underlying Angular `$resource` function](#exchange-the-underlying-angular-resource-function)
     - [Usage of `_embeddedItems` property](#usage-of-_embeddeditems-property)
         - [`_embeddedItems` usage example](#_embeddeditems-usage-example)
+    - [How to automatically fetch links](#how-to-automatically-fetch-links)
+        - [Fetch multiple or all links](#fetch-multiple-or-all-links)
     - [Configuration of the `SpringDataRestAdapter`](#configuration-of-the-springdatarestadapter)
 - [The `SpringDataRestInterceptor`](#the-springdatarestinterceptor)
 - [Dependencies](#dependencies)
@@ -117,6 +119,8 @@ Spring Data REST also generates an index response when you make a `GET` response
 ```
 
 This response shows all configured Spring Data REST repositories and the links to these resources. The `SpringDataRestAdapter` is also able to handle this response and to provide an easy method to retrieve all the available resources with the `_resources` method. Please read more about this [here](#the-_resources-method-parameters-and-return-type).
+
+Another feature is that the `SpringDataRestAdapter` is able to automatically fetch the links of a resource and adds the response of the link as a property to the main response. Please read more about this [here](#how-to-automatically-fetch-links).
 
 ### Usage of `SpringDataRestAdapter`
 
@@ -224,7 +228,7 @@ The above call will result in the following return value:
             "size": undefined,
             "sort": undefined
         }
-    }
+    },
     {
         "name":"parentCategory"
     }
@@ -286,6 +290,56 @@ angular.forEach(processedResponse._embeddedItems, function (category, key) {
 ```
 
 **Be aware** that the original `_embedded` property gets deleted after the `SpringDataRestAdapter` processed the response.
+
+### How to automatically fetch links
+
+The `SpringDataRestAdapter` is able to fetch specified links automatically. This means that if you have the following response:
+
+```json
+{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/categories{?page,size,sort}",
+            "templated": true
+        },
+        "anotherLink": {
+            "href": "http://localhost:8080/anotherLink"
+        }
+    },
+    ...
+}
+```
+and you want to fetch the data from the `anotherLink` link then you just need to pass the link name to the `SpringDataRestAdapter` constructor:
+
+```javascript
+var processedResponse = new SpringDataRestAdapter(response, 'anotherLink');
+```
+
+Now you are able to get the data from the processed resource by just getting the property named `anotherLink`:
+
+```javascript
+processedResponse.anotherLink
+```
+
+Because the `SpringDataRestAdapter` adds the response of the link to a property in the original response with the same name as the link.
+
+It will not fetch the `self` link as this would make no sense because the data is already in the response. The `self` key is also configurable. Read more [here](#configuration-of-the-springdatarestadapter).
+
+#### Fetch multiple or all links
+
+If you want to fetch multiple links then you are able to add an array of strings with the given link names:
+
+```javascript
+var processedResponse = new SpringDataRestAdapter(response, ['anotherLink', 'testLink']);
+```
+
+and if you want to fetch all links, then you can use the predefined and also configurable `fetchAllLinkNamesKey`:
+
+```javascript
+var processedResponse = new SpringDataRestAdapter(response, '_allLinks');
+```
+
+Please read more [here](#configuration-of-the-springdatarestadapter) on how to configure the `fetchAllLinkNamesKey`.
 
 
 ### Configuration of the `SpringDataRestAdapter`
