@@ -63,6 +63,9 @@ var mockData = function () {
                 "self": {
                     "href": "http://localhost:8080/categories{?page,size,sort}",
                     "templated": true
+                },
+                "testLink": {
+                    "href": "http://localhost:8080/categories/testLink"
                 }
             },
             "_embedded": {
@@ -92,6 +95,9 @@ var mockData = function () {
                             },
                             "parentCategory": {
                                 "href": "http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/parentCategory"
+                            },
+                            "testCategory": {
+                                "href": "http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory"
                             }
                         }
                     }

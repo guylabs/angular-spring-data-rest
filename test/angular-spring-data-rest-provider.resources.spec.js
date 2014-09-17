@@ -187,6 +187,9 @@ describe("the resources property", function () {
                         size: undefined,
                         sort: undefined
                     }
+                },
+                {
+                    name: 'testLink'
                 }
             ]
         );
@@ -269,7 +272,7 @@ describe("the resources property", function () {
         }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
     });
 
-    it("must throw an exception if the href property is empty", function () {
+    it("must throw an exception if the href property is not present", function () {
         this.rawResponse = mockWithoutHrefPropertyData();
         this.response = new SpringDataRestAdapter(this.rawResponse);
 

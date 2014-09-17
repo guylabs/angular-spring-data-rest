@@ -5,7 +5,8 @@ describe("the configuration", function () {
     it("must return the default configuration object when no parameter is given", function () {
         var defaultConfiguration = {
             'links': {
-                'key': '_links'
+                'key': '_links',
+                'selfKey': 'self'
             },
             'embedded': {
                 'key': '_embedded',
@@ -13,7 +14,9 @@ describe("the configuration", function () {
             },
             'hrefKey': 'href',
             'resourcesKey': '_resources',
-            'resourcesFunction': undefined
+            'resourcesFunction': undefined,
+            'fetchFunction': undefined,
+            'fetchAllLinkNamesKey': '_allLinks'
         };
         expect(this.config).toEqual(defaultConfiguration);
     });
@@ -33,7 +36,8 @@ describe("the configuration", function () {
     it("must return the updated configuration object when a valid configuration object is given", function () {
         var newConfiguration = {
             'links': {
-                'key': '_linksNew'
+                'key': '_linksNew',
+                'selfKey': 'newSelf'
             },
             'embedded': {
                 'key': '_embeddedNew',
@@ -41,7 +45,9 @@ describe("the configuration", function () {
             },
             'hrefKey': 'hrefNew',
             'resourcesKey': 'resourcesNew',
-            'resourcesFunction': undefined
+            'resourcesFunction': undefined,
+            'fetchFunction': undefined,
+            'fetchAllLinkNamesKey': '_allLinksNew'
         };
 
         expect(springDataRestAdapterProvider.config(newConfiguration)).toEqual(newConfiguration);
@@ -61,7 +67,8 @@ describe("the configuration", function () {
 
         var newConfiguration = {
             'links': {
-                'key': '_linksNew'
+                'key': '_linksNew',
+                'selfKey': 'self'
             },
             'embedded': {
                 'key': '_embedded',
@@ -69,8 +76,11 @@ describe("the configuration", function () {
             },
             'hrefKey': 'hrefNew',
             'resourcesKey': '_resources',
-            'resourcesFunction': undefined
+            'resourcesFunction': undefined,
+            'fetchFunction': undefined,
+            'fetchAllLinkNamesKey': '_allLinks'
         };
+
 
         expect(springDataRestAdapterProvider.config(partialConfiguration)).toEqual(newConfiguration);
         expect(springDataRestAdapterProvider.config()).toEqual(newConfiguration);

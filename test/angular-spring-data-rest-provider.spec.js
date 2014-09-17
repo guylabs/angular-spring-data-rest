@@ -25,6 +25,18 @@ describe("the spring data rest adapter", function () {
         }).toThrow("Given data '" + null + "' is not of type object.");
     });
 
+    it("must throw an exception if the fetch links parameter is not an array or a string", function () {
+        var fetchLinkNames = 123;
+        expect(function () {
+            new SpringDataRestAdapter({}, fetchLinkNames)
+        }).toThrow("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
+
+        fetchLinkNames = {'object': 'object'};
+        expect(function () {
+            new SpringDataRestAdapter({}, fetchLinkNames)
+        }).toThrow("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
+    });
+
     it("must only add the resource method if there is a links key in the data object", function () {
         this.rawResponse = mockDataWithoutLinksKey();
         this.response = new SpringDataRestAdapter(this.rawResponse);
