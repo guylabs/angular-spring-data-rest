@@ -129,13 +129,13 @@ describe("the fetch function", function () {
                 if (i == 0) {
                     expect(inUrl).toEqual("http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54/parentCategory");
                     expect(inKey).toEqual(fetchLinkName);
-                    expect(inData[localConfig.linksKey][localConfig.linksSelfKey][localConfig.linksHrefKey]).
+                    expect(inData[localConfig.linksKey][localConfig.linksSelfLinkName][localConfig.linksHrefKey]).
                         toEqual("http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54");
                     i++;
                 } else if (i == 1) {
                     expect(inUrl).toEqual("http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/parentCategory");
                     expect(inKey).toEqual(fetchLinkName);
-                    expect(inData[localConfig.linksKey][localConfig.linksSelfKey][localConfig.linksHrefKey]).
+                    expect(inData[localConfig.linksKey][localConfig.linksSelfLinkName][localConfig.linksHrefKey]).
                         toEqual("http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697");
                     i++;
                 } else if (i > 1) {

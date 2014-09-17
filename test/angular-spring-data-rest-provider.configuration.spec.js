@@ -6,7 +6,7 @@ describe("the configuration", function () {
         var defaultConfiguration = {
             'linksKey': '_links',
             'linksHrefKey': 'href',
-            'linksSelfKey': 'self',
+            'linksSelfLinkName': 'self',
             'embeddedKey': '_embedded',
             'embeddedNewKey': '_embeddedItems',
             'resourcesKey': '_resources',
@@ -33,7 +33,7 @@ describe("the configuration", function () {
         var newConfiguration = {
             'linksKey': '_linksNew',
             'linksHrefKey': 'hrefNew',
-            'linksSelfKey': 'selfNew',
+            'linksSelfLinkName': 'selfNew',
             'embeddedKey': '_embeddedNew',
             'embeddedNewKey': '_embeddedItemsNew',
             'resourcesKey': '_resourcesNew',
@@ -56,7 +56,7 @@ describe("the configuration", function () {
         var newConfiguration = {
             'linksKey': '_linksNew',
             'linksHrefKey': 'href',
-            'linksSelfKey': 'self',
+            'linksSelfLinkName': 'self',
             'embeddedKey': '_embedded',
             'embeddedNewKey': '_embeddedItemsNew',
             'resourcesKey': '_resources',

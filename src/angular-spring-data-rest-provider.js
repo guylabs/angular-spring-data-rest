@@ -12,7 +12,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
     var config = {
         'linksKey': '_links',
         'linksHrefKey': 'href',
-        'linksSelfKey': 'self',
+        'linksSelfLinkName': 'self',
         'embeddedKey': '_embedded',
         'embeddedNewKey': '_embeddedItems',
         'resourcesKey': '_resources',
@@ -199,7 +199,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         angular.forEach(data[config.linksKey], function (linkValue, linkName) {
 
                             // if the link name is not 'self' then process the link name
-                            if (linkName != config.linksSelfKey) {
+                            if (linkName != config.linksSelfLinkName) {
 
                                 // check if:
                                 // 1. the all link names key is given then fetch the link
