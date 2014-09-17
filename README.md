@@ -16,6 +16,8 @@
         - [`_embeddedItems` usage example](#_embeddeditems-usage-example)
     - [How to automatically fetch links](#how-to-automatically-fetch-links)
         - [Fetch multiple or all links](#fetch-multiple-or-all-links)
+        - [Exchange the underlying fetch function](#exchange-the-underlying-fetch-function)
+        - [The fetch method parameters](#the-fetch-method-parameters)
     - [Configuration of the `SpringDataRestAdapter`](#configuration-of-the-springdatarestadapter)
 - [The `SpringDataRestInterceptor`](#the-springdatarestinterceptor)
 - [Dependencies](#dependencies)
@@ -341,17 +343,48 @@ var processedResponse = new SpringDataRestAdapter(response, '_allLinks');
 
 Please read more [here](#configuration-of-the-springdatarestadapter) on how to configure the `fetchAllLinkNamesKey`.
 
+#### Exchange the underlying fetch function
+
+If you want to exchange the underlying function to fetch the links then you are able to do this within the configuration of the `SpringDataRestAdapter`. By default it will use the *Angular* `$http` function.
+
+The following example shows how to set a custom function:
+
+```javascript
+myApp.config(function (SpringDataRestAdapterProvider) {
+
+    // set the new resource function
+    SpringDataRestAdapterProvider.config({
+        'fetchFunction': function (url, key, data) {
+            // fetch the url and add the key to the data object
+        }
+    });
+});
+```
+
+The description of the parameters you will find [here](#the-fetch-method-parameters). You can also read more about the configuration of the `SpringDataRestAdapter` [here](#configuration-of-the-springdatarestadapter)
+
+#### The fetch method parameters
+
+The parameters for the fetch method are the following:
+
+* `url`: The url of the link from which to fetch the data.
+* `key`: The name of the link which is used to name the property in the data object.
+* `data`: The data object in which the new property is created with the response of the called `url`.
 
 ### Configuration of the `SpringDataRestAdapter`
 
 The `SpringDataRestAdapter` is designed to be configurable and you are able to configure the following properties:
 
-* `links.key` (default: `_links`): the property name where the resources are stored.
-* `embedded.key` (default: `_embedded`): the property name where the embedded items are stored.
-* `embedded.value` (default: `_embeddedItems`): the property name where the array of embedded items are stored.
+* `linksKey` (default: `_links`): the property name where the resources are stored.
+* `linksHrefKey` (default: `href`): the property name where the URL is stored in a link object.
+* `linksSelfLinkName` (default: `self`): the name of the self link in the links object.
+* `embeddedKey` (default: `_embedded`): the property name where the embedded items are stored.
+* `embeddedNewKey` (default: `_embeddedItems`): the property name where the array of embedded items are stored.
 * `hrefKey` (default: `href`): the property name where the url is stored under each specific link.
 * `resourcesKey` (default: `_resources`): the property name where the resource method is stored.
 * `resourcesFunction` (default: `undefined`): the function to use to call the backend. Read more how to do this [here](#exchange-the-underlying-angular-resource-function)
+* `fetchFunction` (default: `undefined`): the function to use to fetch data from the backend. Read more how to do this [here](#exchange-the-underlying-fetch-function)
+* `fetchAllKey` (default: `_allLinks`): the key to pass to the `SpringDataRestAdapter` to fetch all available links
 
 You are able to configure the `SpringDataRestAdapter` provider in a *Angular* configuration block in the following way:
 
@@ -360,9 +393,7 @@ myApp.config(function (SpringDataRestAdapterProvider) {
 
     // set the links key to _myLinks
     SpringDataRestAdapterProvider.config({
-        'links': {
-            'key': '_myLinks'
-        }
+        'linksKey': '_myLinks'
     });
 });
 ```
@@ -371,17 +402,16 @@ The config method of the `SpringDataRestAdapterProvider` takes a configuration o
 
 ```json
 {
-    "links": {
-        "key": "_links"
-    },
-    "embedded": {
-        "key": "_embedded",
-        "value': "_embeddedItems"
-    },
-    "hrefKey": "href",
-    "resourcesKey": "_resources",
-    "resourcesFunction": undefined
-}
+    'linksKey': '_links',
+    'linksHrefKey': 'href',
+    'linksSelfLinkName': 'self',
+    'embeddedKey': '_embedded',
+    'embeddedNewKey': '_embeddedItems',
+    'resourcesKey': '_resources',
+    'resourcesFunction': undefined,
+    'fetchFunction': undefined,
+    'fetchAllKey': '_allLinks'
+};
 ```
 
 ## The `SpringDataRestInterceptor`
