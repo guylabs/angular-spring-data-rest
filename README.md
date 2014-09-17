@@ -402,16 +402,16 @@ The config method of the `SpringDataRestAdapterProvider` takes a configuration o
 
 ```json
 {
-    'linksKey': '_links',
-    'linksHrefKey': 'href',
-    'linksSelfLinkName': 'self',
-    'embeddedKey': '_embedded',
-    'embeddedNewKey': '_embeddedItems',
-    'resourcesKey': '_resources',
-    'resourcesFunction': undefined,
-    'fetchFunction': undefined,
-    'fetchAllKey': '_allLinks'
-};
+    "linksKey": "_links",
+    "linksHrefKey": "href",
+    "linksSelfLinkName": "self",
+    "embeddedKey": "_embedded",
+    "embeddedNewKey": "_embeddedItems",
+    "resourcesKey": "_resources",
+    "resourcesFunction": undefined,
+    "fetchFunction": undefined,
+    "fetchAllKey": "_allLinks"
+}
 ```
 
 ## The `SpringDataRestInterceptor`
