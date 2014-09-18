@@ -79,18 +79,23 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              * @param {string} url the url at which the resource is available
              * @param {string} key the key inside the data object where to store the returned response
              * @param {object} data the data object reference in which the response is stored
+             * @param {array|string} fetchLinkNames the fetch link names to allow to process the fetched response
+             * @param {boolean} recursive true if the fetched response should be processed recursively with the
+             * adapter, false otherwise
              */
-            function fetchFunction(url, key, data) {
+            function fetchFunction(url, key, data, fetchLinkNames, recursive) {
                 if (config.fetchFunction == undefined) {
                     $injector.get("$http").get(url)
                         .success(function (responseData) {
-                            data[key] = responseData;
+
+                            // wrap the response again with the adapter if the recursive flag is set
+                            data[key] = recursive ? new SpringDataRestAdapter(responseData, fetchLinkNames, true) : responseData;
                         })
                         .error(function (data, status) {
                             throw new Error("There was an error (" + status + ") retrieving the data from '" + url + "'");
                         });
                 } else {
-                    config.fetchFunction(url, key, data);
+                    config.fetchFunction(url, key, data, fetchLinkNames, recursive);
                 }
             }
 
@@ -101,9 +106,11 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              * @param {object} data the given JSON data
              * @param {object|string} fetchLinkNames the link names to be fetched automatically or the
              * 'fetchAllLinkNamesKey' key from the config object to fetch all links except the 'self' key.
+             * @param {boolean} recursive true if the automatically fetched response should be processed recursively with the
+             * adapter, false otherwise
              * @returns {object} the processed JSON data
              */
-            var SpringDataRestAdapter = function (data, fetchLinkNames) {
+            var SpringDataRestAdapter = function (data, fetchLinkNames, recursive) {
 
                 /**
                  * Wraps the Angular $resource method and adds the ability to retrieve the available resources. If no
@@ -208,7 +215,8 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                 if (fetchLinkNames == config.fetchAllKey ||
                                     (typeof fetchLinkNames === "string" && linkName == fetchLinkNames) ||
                                     (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0)) {
-                                    fetchFunction(getProcessedUrl(data, linkName), linkName, processedData);
+                                    fetchFunction(getProcessedUrl(data, linkName), linkName,
+                                        processedData, fetchLinkNames, recursive);
                                 }
                             }
                         });
@@ -228,7 +236,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                     // recursively process all contained objects in the embedded value array
                     angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
-                        processedData[config.embeddedNewKey][key] = new SpringDataRestAdapter(value, fetchLinkNames);
+                        processedData[config.embeddedNewKey][key] = new SpringDataRestAdapter(value, fetchLinkNames, recursive);
                     });
                 }
 

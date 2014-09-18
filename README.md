@@ -317,13 +317,22 @@ and you want to fetch the data from the `anotherLink` link then you just need to
 var processedResponse = new SpringDataRestAdapter(response, 'anotherLink');
 ```
 
-Now you are able to get the data from the processed resource by just getting the property named `anotherLink`:
+Now you are able to get the data from the processed resource by just accessing the property named `anotherLink`:
 
 ```javascript
 processedResponse.anotherLink
 ```
 
-Because the `SpringDataRestAdapter` adds the response of the link to a property in the original response with the same name as the link.
+The `SpringDataRestAdapter` by default adds the response of the link to a property in the original response with the same name as the link.
+
+If you want to process the returned response again with the `SpringDataRestAdapter` then you are able to set the `recursive` flag when creating it:
+
+```javascript
+var processedResponse = new SpringDataRestAdapter(response, 'anotherLink', true);
+```
+
+Now the response of the `anotherLink` will be processed the same way as the main response was processed. But *be aware* when setting the recursive flag to true, because when your reponses of the links contain the same link name again, then it will end up in a infinite loop. 
+
 
 It will not fetch the `self` link as this would make no sense because the data is already in the response. The `self` key is also configurable. Read more [here](#configuration-of-the-springdatarestadapter).
 
@@ -354,7 +363,7 @@ myApp.config(function (SpringDataRestAdapterProvider) {
 
     // set the new resource function
     SpringDataRestAdapterProvider.config({
-        'fetchFunction': function (url, key, data) {
+        'fetchFunction': function (url, key, data, fetchLinkNames, recursive) {
             // fetch the url and add the key to the data object
         }
     });
@@ -370,6 +379,8 @@ The parameters for the fetch method are the following:
 * `url`: The url of the link from which to fetch the data.
 * `key`: The name of the link which is used to name the property in the data object.
 * `data`: The data object in which the new property is created with the response of the called `url`.
+* `fetchLinkNames`: The fetch link names to allow to process the fetched response recursiveley
+* `recursive`: True if the fetched response should be processed recursively, false otherwise.
 
 ### Configuration of the `SpringDataRestAdapter`
 

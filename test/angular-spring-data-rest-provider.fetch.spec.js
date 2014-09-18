@@ -116,32 +116,66 @@ describe("the fetch function", function () {
         expect(this.response[this.config.embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
     });
 
+    it("must process the fetched response recursively if the flag is set", function () {
+
+        var fetchLinkName = 'parentCategory';
+
+        // the correct link href url
+        var firstParentCategoryHref = 'http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54/parentCategory';
+        var secondParentCategoryHref = 'http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/parentCategory';
+
+        // check if the underlying fetch function is called with the correct href url
+        var firstExpectedResult = mockDataWithoutEmbeddedKey();
+        var secondExpectedResult = mockDataWithoutEmbeddedKey();
+
+        this.httpBackend.whenGET(firstParentCategoryHref).
+            respond(200, firstExpectedResult);
+        this.httpBackend.expectGET(firstParentCategoryHref);
+
+        this.httpBackend.whenGET(secondParentCategoryHref).
+            respond(200, secondExpectedResult);
+        this.httpBackend.expectGET(secondParentCategoryHref);
+
+        this.response = new SpringDataRestAdapter(this.rawResponse, fetchLinkName, true);
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
+
+        // expect the recursively fetched objects
+        expect(typeof this.response[this.config.embeddedNewKey][0][fetchLinkName][this.config.resourcesKey] == 'function').
+            toEqual(true);
+        expect(typeof this.response[this.config.embeddedNewKey][1][fetchLinkName][this.config.resourcesKey] == 'function').
+            toEqual(true);
+    });
+
     it("it must call the overridden fetch function with the given resource name", function () {
 
         // define the fetch link name
         var fetchLinkName = 'parentCategory';
 
         // define the new fetch function
-        var url = undefined, key = undefined, data = undefined, i = 0;
-        var localConfig = this.config;
+        var i = 0, localConfig = this.config;
         var fetchFunctionConfiguration = {
-            'fetchFunction': function (inUrl, inKey, inData) {
+            'fetchFunction': function (inUrl, inKey, inData, inFetchLinkNames, inRecursive) {
                 if (i == 0) {
                     expect(inUrl).toEqual("http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54/parentCategory");
                     expect(inKey).toEqual(fetchLinkName);
                     expect(inData[localConfig.linksKey][localConfig.linksSelfLinkName][localConfig.linksHrefKey]).
                         toEqual("http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54");
+                    expect(inFetchLinkNames).toEqual(fetchLinkName);
+                    expect(inRecursive).toEqual(undefined);
                     i++;
                 } else if (i == 1) {
                     expect(inUrl).toEqual("http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/parentCategory");
                     expect(inKey).toEqual(fetchLinkName);
                     expect(inData[localConfig.linksKey][localConfig.linksSelfLinkName][localConfig.linksHrefKey]).
                         toEqual("http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697");
+                    expect(inFetchLinkNames).toEqual(fetchLinkName);
+                    expect(inRecursive).toEqual(undefined);
                     i++;
                 } else if (i > 1) {
                     throw new Error("The method must not be called three times");
                 }
-
             }
         };
 
