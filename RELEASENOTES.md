@@ -1,5 +1,18 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.4.0
+
+* Tag: [0.4.0](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.0)
+* Release: [angular-spring-data-rest-0.4.0.zip](https://github.com/guylabs/angular-spring-data-rest/releases/download/0.4.0/angular-spring-data-rest-0.4.0.zip)
+
+### Changes
+
+* Return value of the `SpringDataRestAdapter`is an object with a `process` property which holds the core function.
+
+### Migration notes
+
+* You will need to change all calls to `new SpringDataRestAdapter(responseData)` to `SpringDataRestAdapter.process(responseData)`.
+
 ## Version 0.3.0
 
 * Tag: [0.3.0](https://github.com/guylabs/angular-spring-data-rest/tree/0.3.0)
@@ -13,7 +26,7 @@
 
 ### Migration notes
 
-* You will need to change your overriden configuration objects, as the keys of the configuration objects have been changed.
+* You will need to change your overridden configuration objects, as the keys of the configuration objects have been changed.
 
 ## Version 0.2.0
 
@@ -22,7 +35,7 @@
 
 ### Changes
 
-* Add ability to exchange the *Angular* ``$resource`` method with an own implementation 
+* Add ability to exchange the *Angular* ``$resource`` method with an own implementation
 * Updated source and test files structure
 * Add package to bower repository
 
