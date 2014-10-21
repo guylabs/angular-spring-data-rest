@@ -88,7 +88,7 @@ The `_embedded` property holds an array of the requested items, and each of the 
 
 This *Angular* module provides two ways of processing a response from the *Spring Data REST* backend and ease the usage with the resources and embedded items:
 
-1. Using a new instance of the `SpringDataRestAdapter`.
+1. Using an instance of the `SpringDataRestAdapter`.
 2. Add the `SpringDataRestInterceptor` to the Angular `$httpProvider.interceptors` such that all responses are processed.
 
 ## The `SpringDataRestAdapter`
@@ -132,10 +132,10 @@ To use the `SpringDataRestAdapter` object you need to include the `angular-sprin
 var myApp = angular.module("myApplication", ["ngResource", "spring-data-rest"]);
 ```
 
-Now you are able to instantiate the `SpringDataRestAdapter` object and process a given response:
+Now you are able use the `SpringDataRestAdapter` object and process a given response:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response);
+var processedResponse = SpringDataRestAdapter.process(response);
 ```
 
 Please read on on how to use the `_resources` method and the `_embeddedItems` property to ease the handling of resources and embedded items.
@@ -157,7 +157,7 @@ var response = {
     }
     ...
 }
-var processedResponse = new SpringDataRestAdapter(response);
+var processedResponse = SpringDataRestAdapter.process(response);
 ```
 
 Then the `SpringDataRestAdapter` will add the `_resources` method to the same level such that you can call it the following way:
@@ -211,7 +211,7 @@ var response = {
     }
     ...
 }
-var processedResponse = new SpringDataRestAdapter(response);
+var processedResponse = SpringDataRestAdapter.process(response);
 ```
 Then the following call to the `_resources` method without any parameter will return an array of all available resource objects.
 
@@ -219,7 +219,7 @@ Then the following call to the `_resources` method without any parameter will re
 var availableResources = processedResponse._resources();
 ```
 
-The above call will result in the following return value: 
+The above call will result in the following return value:
 
 ```json
 [
@@ -234,8 +234,8 @@ The above call will result in the following return value:
     {
         "name":"parentCategory"
     }
-]   
-``` 
+]
+```
 
 This functionality is useful if you want to first check all available resources before using the `_resources` method to retrieve the specific resource.
 
@@ -244,7 +244,7 @@ This functionality is useful if you want to first check all available resources 
 This example refers to the JSON response in the [Overview](#overview). If you want to get the parent category of a category you would call the `_resources` method the following way:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response);
+var processedResponse = SpringDataRestAdapter.process(response);
 var parentCategoryResource = processedResponse._embeddedItems[0]._resources("parentCategory");
 
 // create a GET request, with the help of the Angular resource class, to the parent category
@@ -283,7 +283,7 @@ The `_embeddedItems` property is just a convention property created by the `Spri
 This example refers to the JSON response in the [Overview](#overview). If you want to iterate over all categories in the response you would do it in the following way:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response);
+var processedResponse = SpringDataRestAdapter.process(response);
 
 // log the name of all categories contained in the response to the console
 angular.forEach(processedResponse._embeddedItems, function (category, key) {
@@ -311,10 +311,10 @@ The `SpringDataRestAdapter` is able to fetch specified links automatically. This
     ...
 }
 ```
-and you want to fetch the data from the `anotherLink` link then you just need to pass the link name to the `SpringDataRestAdapter` constructor:
+and you want to fetch the data from the `anotherLink` link then you just need to pass the link name to the `SpringDataRestAdapter` process function:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response, 'anotherLink');
+var processedResponse = SpringDataRestAdapter.process(response, 'anotherLink');
 ```
 
 Now you are able to get the data from the processed resource by just accessing the property named `anotherLink`:
@@ -328,10 +328,10 @@ The `SpringDataRestAdapter` by default adds the response of the link to a proper
 If you want to process the returned response again with the `SpringDataRestAdapter` then you are able to set the `recursive` flag when creating it:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response, 'anotherLink', true);
+var processedResponse = SpringDataRestAdapter.process(response, 'anotherLink', true);
 ```
 
-Now the response of the `anotherLink` will be processed the same way as the main response was processed. But *be aware* when setting the recursive flag to true, because when your reponses of the links contain the same link name again, then it will end up in a infinite loop. 
+Now the response of the `anotherLink` will be processed the same way as the main response was processed. But *be aware* when setting the recursive flag to true, because when your reponses of the links contain the same link name again, then it will end up in a infinite loop.
 
 
 It will not fetch the `self` link as this would make no sense because the data is already in the response. The `self` key is also configurable. Read more [here](#configuration-of-the-springdatarestadapter).
@@ -341,13 +341,13 @@ It will not fetch the `self` link as this would make no sense because the data i
 If you want to fetch multiple links then you are able to add an array of strings with the given link names:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response, ['anotherLink', 'testLink']);
+var processedResponse = SpringDataRestAdapter.process(response, ['anotherLink', 'testLink']);
 ```
 
 and if you want to fetch all links, then you can use the predefined and also configurable `fetchAllLinkNamesKey`:
 
 ```javascript
-var processedResponse = new SpringDataRestAdapter(response, '_allLinks');
+var processedResponse = SpringDataRestAdapter.process(response, '_allLinks');
 ```
 
 Please read more [here](#configuration-of-the-springdatarestadapter) on how to configure the `fetchAllLinkNamesKey`.
