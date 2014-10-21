@@ -79,7 +79,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              * @param {string} url the url at which the resource is available
              * @param {string} key the key inside the data object where to store the returned response
              * @param {object} data the data object reference in which the response is stored
-             * @param {array|string} fetchLinkNames the fetch link names to allow to process the fetched response
+             * @param {[string]|string} fetchLinkNames the fetch link names to allow to process the fetched response
              * @param {boolean} recursive true if the fetched response should be processed recursively with the
              * adapter, false otherwise
              */
