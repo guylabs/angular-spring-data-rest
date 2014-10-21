@@ -31,7 +31,7 @@ describe("if the spring data rest interceptor is not added", function () {
         // initialize the configuration, the raw and the processed response
         this.config = springDataRestAdapterProvider.config();
         this.rawResponse = mockData();
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
     });
 
     it("it must not be added by default", function () {
@@ -96,7 +96,7 @@ describe("if the spring data rest interceptor is added", function () {
         // initialize the configuration, the raw and the processed response
         this.config = springDataRestAdapterProvider.config();
         this.rawResponse = mockData();
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
     });
 
     it("it must be added by default", function () {

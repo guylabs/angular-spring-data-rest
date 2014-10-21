@@ -11,7 +11,7 @@ describe("the fetch function", function () {
 
         // set the new fetch function which throws an error if it is called
         springDataRestAdapterProvider.config(fetchFunctionConfiguration);
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
     });
 
     it("must call the correct href url if an existing fetch link name is given", function () {
@@ -34,7 +34,7 @@ describe("the fetch function", function () {
             respond(200, secondExpectedResult);
         this.httpBackend.expectGET(secondParentCategoryHref);
 
-        this.response = new SpringDataRestAdapter(this.rawResponse, fetchLinkName);
+        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkName);
         this.httpBackend.flush();
         this.httpBackend.verifyNoOutstandingRequest();
         this.httpBackend.verifyNoOutstandingExpectation();
@@ -74,7 +74,7 @@ describe("the fetch function", function () {
             respond(200, testParentCategoryExpectedResult);
         this.httpBackend.expectGET(testParentCategoryHref);
 
-        this.response = new SpringDataRestAdapter(this.rawResponse, this.config.fetchAllKey);
+        this.response = SpringDataRestAdapter.process(this.rawResponse, this.config.fetchAllKey);
         this.httpBackend.flush();
         this.httpBackend.verifyNoOutstandingRequest();
         this.httpBackend.verifyNoOutstandingExpectation();
@@ -106,7 +106,7 @@ describe("the fetch function", function () {
             respond(200, testParentCategoryExpectedResult);
         this.httpBackend.expectGET(testParentCategoryHref);
 
-        this.response = new SpringDataRestAdapter(this.rawResponse, fetchLinkNames);
+        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkNames);
         this.httpBackend.flush();
         this.httpBackend.verifyNoOutstandingRequest();
         this.httpBackend.verifyNoOutstandingExpectation();
@@ -136,7 +136,7 @@ describe("the fetch function", function () {
             respond(200, secondExpectedResult);
         this.httpBackend.expectGET(secondParentCategoryHref);
 
-        this.response = new SpringDataRestAdapter(this.rawResponse, fetchLinkName, true);
+        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkName, true);
         this.httpBackend.flush();
         this.httpBackend.verifyNoOutstandingRequest();
         this.httpBackend.verifyNoOutstandingExpectation();
@@ -181,7 +181,7 @@ describe("the fetch function", function () {
 
         // set the new fetch function and create a new spring data rest adapter
         springDataRestAdapterProvider.config(fetchFunctionConfiguration);
-        this.response = new SpringDataRestAdapter(this.rawResponse, fetchLinkName);
+        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkName);
     });
 
 });

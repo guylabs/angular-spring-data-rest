@@ -27,7 +27,7 @@ var beforeEachFunction = function () {
     // initialize the configuration, the raw and the processed response
     this.config = springDataRestAdapterProvider.config();
     this.rawResponse = mockData();
-    this.response = new SpringDataRestAdapter(this.rawResponse);
+    this.response = SpringDataRestAdapter.process(this.rawResponse);
 };
 
 /**

@@ -89,7 +89,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         .success(function (responseData) {
 
                             // wrap the response again with the adapter if the recursive flag is set
-                            data[key] = recursive ? new SpringDataRestAdapter(responseData, fetchLinkNames, true) : responseData;
+                            data[key] = recursive ? processData(responseData, fetchLinkNames, true) : responseData;
                         })
                         .error(function (data, status) {
                             throw new Error("There was an error (" + status + ") retrieving the data from '" + url + "'");
@@ -110,7 +110,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              * adapter, false otherwise
              * @returns {object} the processed JSON data
              */
-            var SpringDataRestAdapter = function (data, fetchLinkNames, recursive) {
+            var processData = function processDataFunction(data, fetchLinkNames, recursive) {
 
                 /**
                  * Wraps the Angular $resource method and adds the ability to retrieve the available resources. If no
@@ -192,7 +192,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                     // add Angular resources property to object
                     var resourcesObject = {};
                     resourcesObject[config.resourcesKey] = resources;
-                    processedData = angular.extend(this, angular.copy(data), resourcesObject);
+                    processedData = angular.extend(angular.copy(data), resourcesObject);
 
                     // if there are links to fetch, then process and fetch them
                     if (fetchLinkNames != undefined) {
@@ -236,7 +236,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                     // recursively process all contained objects in the embedded value array
                     angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
-                        processedData[config.embeddedNewKey][key] = new SpringDataRestAdapter(value, fetchLinkNames, recursive);
+                        processedData[config.embeddedNewKey][key] = processDataFunction(value, fetchLinkNames, recursive);
                     });
                 }
 
@@ -258,7 +258,9 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                     return extractUrl(rawUrl, data[config.linksKey][resourceName].templated);
                 }
             };
-            return SpringDataRestAdapter;
+
+            // return an object with the processData function
+            return { process: processData };
         }]
     };
 

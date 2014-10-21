@@ -58,7 +58,7 @@ describe("the resources property", function () {
 
         // set the new resource function with the given parameters
         springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
 
         // call the new resource method and expect the response and the call to the method
         var resourceResponse = this.response[this.config.resourcesKey](resourceName, 'paramDefaults', 'actions', 'options');
@@ -89,7 +89,7 @@ describe("the resources property", function () {
 
         // set the new resource function with the given parameters
         springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
 
         // call the new resource method and expect the response and the call to the method
         var resourceResponse = this.response[this.config.resourcesKey](resourceObject, 'paramDefaults', 'actions', 'options');
@@ -175,6 +175,7 @@ describe("the resources property", function () {
     });
 
     it("must return the resources of the object", function () {
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();
 
@@ -197,7 +198,7 @@ describe("the resources property", function () {
 
     it("must return the resources of the object with empty parameters if the templated property is false", function () {
         this.rawResponse = mockWithoutTemplateParametersData();
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
 
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();
@@ -216,7 +217,7 @@ describe("the resources property", function () {
 
     it("must return the resources of the index response", function () {
         this.rawResponse = mockIndexData();
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
 
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();
@@ -253,7 +254,7 @@ describe("the resources property", function () {
 
     it("must throw an exception if the href property is empty", function () {
         this.rawResponse = mockWithEmptyHrefPropertyData();
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
 
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();
@@ -274,7 +275,7 @@ describe("the resources property", function () {
 
     it("must throw an exception if the href property is not present", function () {
         this.rawResponse = mockWithoutHrefPropertyData();
-        this.response = new SpringDataRestAdapter(this.rawResponse);
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
 
         // expect that the resources method is present
         expect(this.response[this.config.resourcesKey]).toBeDefined();
