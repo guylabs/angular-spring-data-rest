@@ -18,11 +18,17 @@ var beforeEachFunction = function () {
     module('testModule');
 
     var httpBackendVar = undefined;
-    inject(function (_SpringDataRestAdapter_, $httpBackend) {
+    var qVar = undefined;
+    var rootScope = undefined;
+    inject(function (_SpringDataRestAdapter_, $httpBackend, $q, $rootScope) {
         SpringDataRestAdapter = _SpringDataRestAdapter_;
         httpBackendVar = $httpBackend;
+        qVar = $q;
+        rootScope = $rootScope;
     });
     this.httpBackend = httpBackendVar;
+    this.q = qVar;
+    this.rootScope = rootScope;
 
     // initialize the configuration, the raw and the processed response
     this.config = springDataRestAdapterProvider.config();

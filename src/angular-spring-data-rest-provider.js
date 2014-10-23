@@ -259,8 +259,41 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 }
             };
 
+            /**
+             * The actual adapter method which processes the given promise object and adds
+             * the wrapped resource property to all embedded elements where resources are available.
+             *
+             * @param {promise} promise the given promise which resolves with a promise data object which holds a data
+             * property with the given response
+             * @param {object|string} fetchLinkNames the link names to be fetched automatically or the
+             * 'fetchAllLinkNamesKey' key from the config object to fetch all links except the 'self' key.
+             * @param {boolean} recursive true if the automatically fetched response should be processed recursively with the
+             * adapter, false otherwise
+             * @returns {object} the processed JSON data
+             */
+            var processDataWithPromise = function processDataFunction(promise, fetchLinkNames, recursive) {
+
+                // convert the given promise to a $q promise
+                var qPromise = $injector.get("$q").when(promise);
+                var deferred = $injector.get("$q").defer();
+
+                qPromise.then(function (promiseData) {
+                    // process the given promiseData and resolve the promise with the processed data
+                    var processedData = processData(promiseData.data, fetchLinkNames, recursive);
+                    deferred.resolve(processedData);
+                }, function (error) {
+                    deferred.reject(error);
+
+                    // reject the error because we do not handle the error here
+                    return $injector.get("$q").reject(error);
+                });
+
+                // return the promise
+                return deferred.promise;
+            };
+
             // return an object with the processData function
-            return { process: processData };
+            return { process: processData, processWithPromise: processDataWithPromise };
         }]
     };
 

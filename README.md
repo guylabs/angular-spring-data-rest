@@ -18,6 +18,7 @@
         - [Fetch multiple or all links](#fetch-multiple-or-all-links)
         - [Exchange the underlying fetch function](#exchange-the-underlying-fetch-function)
         - [The fetch method parameters](#the-fetch-method-parameters)
+    - [How to use `SpringDataRestAdapter` with promises](#how-to-use-springdatarestadapter-with-promises)
     - [Configuration of the `SpringDataRestAdapter`](#configuration-of-the-springdatarestadapter)
 - [The `SpringDataRestInterceptor`](#the-springdatarestinterceptor)
 - [Dependencies](#dependencies)
@@ -381,6 +382,46 @@ The parameters for the fetch method are the following:
 * `data`: The data object in which the new property is created with the response of the called `url`.
 * `fetchLinkNames`: The fetch link names to allow to process the fetched response recursiveley
 * `recursive`: True if the fetched response should be processed recursively, false otherwise.
+
+### How to use `SpringDataRestAdapter` with promises
+
+The `SpringDataRestAdapter` is also able to process promises instead of data objects. The data object which is passed to the specified promise when it is resolved needs to be in the following format:
+
+```javascript
+{
+    data: {
+        "_links": {
+            "self": {
+                "href": "http://localhost:8080/categories{?page,size,sort}",
+                "templated": true
+            },
+            "anotherLink": {
+                "href": "http://localhost:8080/anotherLink"
+            }
+        },
+        // the rest of the JSON response
+        ...
+    }
+}
+```
+
+The `data` property of the promise object is the JSON response of the back end. To process such a promise you need to call the `SpringDataRestAdapter` like in the following example:
+
+```javascript
+SpringDataRestAdapter.processWithPromise(promise).then(function(processedResponse) {
+    // you can now use the processedResponse as any other processed response from the SpringDataRestAdapter
+};
+```
+
+The only change between the `SpringDataRestAdapter.processWithPromise` and the `SpringDataRestAdapter.process` methods is the changed type of the data object. All other parameters are the same.
+
+You can also right away use the promise support with the `Angular` `$http.get()` method like in the following example:
+
+```javascript
+SpringDataRestAdapter.processWithPromise($http.get('categories')).then(function(processedResponse) {
+    $scope.categories = processedResponse._embeddedItems;
+};
+```
 
 ### Configuration of the `SpringDataRestAdapter`
 

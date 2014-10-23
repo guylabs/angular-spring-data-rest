@@ -7,11 +7,12 @@
 
 ### Changes
 
-* Return value of the `SpringDataRestAdapter`is an object with a `process` property which holds the core function.
+* Return value of the `SpringDataRestAdapter` is an object with a `process` property which holds the core function.
+* Ability to pass a promise as data object to the `SpringDataRestAdapter` to support asynchronous response handling.
 
 ### Migration notes
 
-* You will need to change all calls to `new SpringDataRestAdapter(responseData)` to `SpringDataRestAdapter.process(responseData)`.
+* You will need to change all calls from `new SpringDataRestAdapter(responseData)` to `SpringDataRestAdapter.process(responseData)`.
 
 ## Version 0.3.0
 
