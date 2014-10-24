@@ -1,4 +1,12 @@
+'use strict';
+
 module.exports = function (grunt) {
+
+    // load grunt tasks automatically
+    require('load-grunt-tasks')(grunt);
+
+    // add time used for tasks statistics
+    require('time-grunt')(grunt);
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -31,23 +39,26 @@ module.exports = function (grunt) {
         },
         karma: {
             unit: {
-                configFile: "karma.conf.js"
+                configFile: 'karma.conf.js'
             },
             continuous: {
-                configFile: "karma.conf.js",
+                configFile: 'karma.conf.js',
                 singleRun: true
+            }
+        },
+        "bower-install-simple": {
+            options: {
+                color: true,
+                directory: 'lib',
+                production: false
             }
         }
     });
 
-    grunt.loadNpmTasks("grunt-contrib-concat");
-    grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks("grunt-karma");
+    grunt.registerTask('default', ['bower-install-simple', 'karma:continuous', 'concat', 'uglify']);
 
-    grunt.registerTask("default", ["karma:continuous", "concat", "uglify"]);
-
-    grunt.registerTask("startTestServer", ["karma:unit:start"]);
-    grunt.registerTask("runTests", ["karma:unit:run"]);
-    grunt.registerTask("test", ["karma:continuous"]);
+    grunt.registerTask('startTestServer', ['karma:unit:start']);
+    grunt.registerTask('runTests', ['karma:unit:run']);
+    grunt.registerTask('test', ['karma:continuous']);
 
 };
