@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/guylabs/angular-spring-data-rest.svg?branch=master)](https://travis-ci.org/guylabs/angular-spring-data-rest)
 # angular-spring-data-rest
 
 > An AngularJS module with an additional interceptor which eases the work with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
