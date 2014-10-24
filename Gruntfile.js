@@ -10,6 +10,16 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
+        "bower-install-simple": {
+            options: {
+                color: true
+            },
+            dev: {
+                options: {
+                    production: false
+                }
+            }
+        },
         concat: {
             options: {
                 banner: "(function() {\n\n'use strict';\n\n",
@@ -45,20 +55,11 @@ module.exports = function (grunt) {
                 configFile: 'karma.conf.js',
                 singleRun: true
             }
-        },
-        "bower-install-simple": {
-            options: {
-                color: true,
-                directory: 'lib',
-                production: false
-            }
         }
     });
 
-    grunt.registerTask('default', ['bower-install-simple', 'karma:continuous', 'concat', 'uglify']);
-
-    grunt.registerTask('startTestServer', ['karma:unit:start']);
-    grunt.registerTask('runTests', ['karma:unit:run']);
+    grunt.registerTask('build', ['bower-install-simple:dev', 'karma:continuous', 'concat', 'uglify']);
     grunt.registerTask('test', ['karma:continuous']);
+    grunt.registerTask('default', [ 'build' ]);
 
 };
