@@ -32,5 +32,8 @@
     "license": {
         "type": "MIT",
         "url": "https://github.com/guylabs/angular-spring-data-rest/blob/master/LICENSE"
+    },
+    "scripts": {
+        "test": "bower install; grunt"
     }
 }
