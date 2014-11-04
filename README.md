@@ -494,4 +494,4 @@ When I first searched for an *Angular* module for Spring Data REST I just found 
 
 This *Angular* module is available under the MIT license.
 
-(c) All rights reserved Guy Brûlé
+(c) All rights reserved Guy Brand
