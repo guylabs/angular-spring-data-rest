@@ -25,7 +25,7 @@
         "api"
     ],
     "authors": [
-        "Guy Brûlé <admin@guylabs.org>"
+        "Guy Brand <admin@guylabs.org>"
     ],
     "homepage": "http://guylabs.ch/project/angular-spring-data-rest",
     "repository": {
