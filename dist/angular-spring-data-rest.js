@@ -2,9 +2,9 @@
 
     'use strict';
 
-    /**
+/**
  * @module spring-data-rest
-     * @version 0.3.0
+ * @version 0.3.0
  *
  * An AngularJS module to ease the work with a Spring Data REST backend.
  */
@@ -418,7 +418,7 @@ function checkUrl(url, resourceName, hrefKey) {
     return url
 }
 
-    /**
+/**
  * Removes the template parameters of the given url. e.g. from this url
  * 'http://localhost:8080/categories{?page,size,sort}' it will remove the curly braces
  * and everything within.
@@ -426,9 +426,9 @@ function checkUrl(url, resourceName, hrefKey) {
  * @param {string} url the url with the template parameters
  * @returns {string} the url without the template parameters
  */
-    function removeTemplateParameters(url) {
+function removeTemplateParameters(url) {
     return url.replace(/{.*}/g, '');
-    }
+}
 
 /**
  * Returns the template parameters of the given url as array. e.g. from this url
