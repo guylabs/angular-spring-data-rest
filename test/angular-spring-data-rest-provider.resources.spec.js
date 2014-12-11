@@ -40,6 +40,50 @@ describe("the resources property", function () {
         this.httpBackend.flush();
     });
 
+    it("must call the correct href url with parameters if a resource object with parameters is passed to the $resource method", function () {
+
+        // define the resource object and the correct link href url
+        var resourceObject = {
+            'name': 'self',
+            'parameters': {
+                'parameter1': '1',
+                'parameter2': '2'
+            }
+        };
+        var resourceHref = "http://localhost:8080/categories?parameter1=1&parameter2=2";
+
+        // check if the underlying $resource method is called with the correct href url
+        var expectedResult = {categoryId: '123'};
+        this.httpBackend.whenGET(resourceHref).respond(200, expectedResult);
+        this.httpBackend.expectGET(resourceHref);
+        var result = this.response[this.config.resourcesKey](resourceObject).get(function () {
+            expect(result.categoryId).toEqual(expectedResult.categoryId);
+        });
+        this.httpBackend.flush();
+    });
+
+    it("must call the correct href url without parameters if a resource object with empty parameters is passed to the $resource method", function () {
+
+        // define the resource object and the correct link href url
+        var resourceObject = {
+            'name': 'self',
+            'parameters': {
+                'parameter1': "",
+                'parameter2': ""
+            }
+        };
+        var resourceHref = "http://localhost:8080/categories";
+
+        // check if the underlying $resource method is called with the correct href url
+        var expectedResult = {categoryId: '123'};
+        this.httpBackend.whenGET(resourceHref).respond(200, expectedResult);
+        this.httpBackend.expectGET(resourceHref);
+        var result = this.response[this.config.resourcesKey](resourceObject).get(function () {
+            expect(result.categoryId).toEqual(expectedResult.categoryId);
+        });
+        this.httpBackend.flush();
+    });
+
     it("it must call the overridden resource function with the given resource name", function () {
         var url = undefined, paramDefaults = undefined, actions = undefined, options = undefined;
         var resourcesFunctionConfiguration = {
@@ -184,9 +228,9 @@ describe("the resources property", function () {
                 {
                     name: 'self',
                     parameters: {
-                        page: undefined,
-                        size: undefined,
-                        sort: undefined
+                        page: "",
+                        size: "",
+                        sort: ""
                     }
                 },
                 {
@@ -227,25 +271,25 @@ describe("the resources property", function () {
                 {
                     name: 'users',
                     parameters: {
-                        page: undefined,
-                        size: undefined,
-                        sort: undefined
+                        page: "",
+                        size: "",
+                        sort: ""
                     }
                 },
                 {
                     name: 'categories',
                     parameters: {
-                        page: undefined,
-                        size: undefined,
-                        sort: undefined
+                        page: "",
+                        size: "",
+                        sort: ""
                     }
                 },
                 {
                     name: 'accounts',
                     parameters: {
-                        page: undefined,
-                        size: undefined,
-                        sort: undefined
+                        page: "",
+                        size: "",
+                        sort: ""
                     }
                 }
             ]

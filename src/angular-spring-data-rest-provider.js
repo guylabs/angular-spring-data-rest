@@ -151,6 +151,13 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                             }
                         }
 
+                        // remove parameters which have an empty string as value
+                        angular.forEach(parameters, function (value, key) {
+                            if (value === "") {
+                                delete parameters[key];
+                            }
+                        });
+
                         // process the url and call the resources function with the given parameters
                         return resourcesFunction(getProcessedUrl(data, resourceObject.name), parameters, actions, options);
                     } else if (resourceObject in resources) {

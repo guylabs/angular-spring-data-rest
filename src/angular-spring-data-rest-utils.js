@@ -86,12 +86,12 @@ function removeTemplateParameters(url) {
 }
 
 /**
- * Returns the template parameters of the given url as array. e.g. from this url
- * 'http://localhost:8080/categories{?page,size,sort}' it will return the following array:
- * ['page', 'size', 'sort']
+ * Returns the template parameters of the given url as object. e.g. from this url
+ * 'http://localhost:8080/categories{?page,size,sort}' it will return the following object:
+ * {'page': "", 'size': "", 'sort': ""}
  *
  * @param {string} url the url with the template parameters
- * @returns {object} the array containing the template parameters
+ * @returns {object} the object containing the template parameters
  */
 function extractTemplateParameters(url) {
     var templateParametersObject = {};
@@ -100,7 +100,7 @@ function extractTemplateParameters(url) {
     var templateParametersArray = regexp.exec(url)[1].split(',');
 
     angular.forEach(templateParametersArray, function (value) {
-        templateParametersObject[value] = undefined;
+        templateParametersObject[value] = "";
     });
 
     return templateParametersObject;
