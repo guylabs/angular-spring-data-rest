@@ -1,6 +1,6 @@
 {
     "name": "angular-spring-data-rest",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "An AngularJS module to ease the work with a Spring Data REST backend.",
     "keywords": ["AngularJS", "angular", "Spring", "Spring Data", "REST", "Spring Data REST"],
     "homepage": "http://guylabs.ch/project/angular-spring-data-rest",

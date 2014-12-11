@@ -1,5 +1,18 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.3.1
+
+* Tag: [0.3.1](https://github.com/guylabs/angular-spring-data-rest/tree/0.3.1)
+* Release: [angular-spring-data-rest-0.3.1.zip](https://github.com/guylabs/angular-spring-data-rest/releases/download/0.3.1/angular-spring-data-rest-0.3.1.zip)
+
+### Changes
+
+* Add empty string as default parameter value when returning the available resources instead of undefined.
+
+### Migration notes
+
+* You will need to change the logic on your side if you use the object which is returned if the `_resources` method is called without any parameter. The parameters have now an empty string set as default value instead of `undefined`.
+
 ## Version 0.3.0
 
 * Tag: [0.3.0](https://github.com/guylabs/angular-spring-data-rest/tree/0.3.0)

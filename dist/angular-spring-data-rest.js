@@ -4,7 +4,7 @@
 
 /**
  * @module spring-data-rest
- * @version 0.3.0
+ * @version 0.3.1
  *
  * An AngularJS module to ease the work with a Spring Data REST backend.
  */
@@ -12,7 +12,7 @@ angular.module("spring-data-rest", ["ngResource"]);
 
 /**
  * @module spring-data-rest
- * @version 0.3.0
+ * @version 0.3.1
  *
  * Provider for the SpringDataRestAdapter which is the core of this module.
  */
@@ -162,6 +162,13 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                 parameters = angular.copy(resourceObjectParameters);
                             }
                         }
+
+                        // remove parameters which have an empty string as value
+                        angular.forEach(parameters, function (value, key) {
+                            if (value === "") {
+                                delete parameters[key];
+                            }
+                        });
 
                         // process the url and call the resources function with the given parameters
                         return resourcesFunction(getProcessedUrl(data, resourceObject.name), parameters, actions, options);
@@ -313,7 +320,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
 /**
  * @module spring-data-rest
- * @version 0.3.0
+ * @version 0.3.1
  *
  * Provider for the interceptor which wraps the SpringDataRestAdapter around the response object.
  */
@@ -431,12 +438,12 @@ function removeTemplateParameters(url) {
 }
 
 /**
- * Returns the template parameters of the given url as array. e.g. from this url
- * 'http://localhost:8080/categories{?page,size,sort}' it will return the following array:
- * ['page', 'size', 'sort']
+ * Returns the template parameters of the given url as object. e.g. from this url
+ * 'http://localhost:8080/categories{?page,size,sort}' it will return the following object:
+ * {'page': "", 'size': "", 'sort': ""}
  *
  * @param {string} url the url with the template parameters
- * @returns {object} the array containing the template parameters
+ * @returns {object} the object containing the template parameters
  */
 function extractTemplateParameters(url) {
     var templateParametersObject = {};
@@ -445,7 +452,7 @@ function extractTemplateParameters(url) {
     var templateParametersArray = regexp.exec(url)[1].split(',');
 
     angular.forEach(templateParametersArray, function (value) {
-        templateParametersObject[value] = undefined;
+        templateParametersObject[value] = "";
     });
 
     return templateParametersObject;
