@@ -4,6 +4,10 @@
 
 > An AngularJS module with an additional interceptor which eases the work with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
 
+## See how it works
+
+If you want to see the module in action, then check out the sample application which runs with Spring Boot and is super easy to setup: [angular-spring-data-rest-sample](https://github.com/guylabs/angular-spring-data-rest-sample)
+
 #Table of contents
 
 - [Quick start](#quick-start)
