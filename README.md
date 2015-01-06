@@ -102,7 +102,7 @@ This *Angular* module provides two ways of processing a response from the *Sprin
 
 The `spring-data-rest` *Angular* module provides a provider for the `SpringDataRestAdapter` object. This object is the core of the module and it processes a given response and adds the following additional properties/methods to it:
 
-1. `_resources`: this method wraps the *Angular* `$resource` function by default (this is [exchangeable](#exchange-the-underlying-angular-resource-function)) and adds an easy way to retrieve the resources defined in the `_links` property. It is also used to retrieve all available resources of the given object. Read more about this property [here](#usage-of-_resources-property).
+1. `_resources`: this method wraps the *Angular* `$resource` function by default (this is [exchangeable](#exchange-the-underlying-angular-resource-function)) and adds an easy way to retrieve the resources defined in the `_links` property. It is also used to retrieve all available resources of the given object. Read more about this method [here](#usage-of-_resources-method).
 2. `_embeddedItems`: this property replaces the `_embedded` property and sets the named array (`categories` in the upper example response) with the embedded items as its value. Read more about this property [here](#usage-of-_embeddedItems-property).
 
 Spring Data REST also generates an index response when you make a `GET` response to the configured base url of the dispatcher servlet. This response looks like the following example:
