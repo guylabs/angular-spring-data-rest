@@ -21,11 +21,11 @@ module.exports = function (config) {
         ],
 
         // list of files to exclude
-        exclude: [ ],
+        exclude: [],
 
         // test results reporter to use
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ['progress'],
+        reporters: ['progress', 'coverage'],
 
         // web server port
         port: 9876,
@@ -55,6 +55,16 @@ module.exports = function (config) {
 
         // Continuous Integration mode
         // if true, it capture browsers, run tests and exit
-        singleRun: false
+        singleRun: false,
+
+        // Test coverage configuration
+        preprocessors: {
+            'build/tests/**/*.js': ['coverage']
+        },
+        coverageReporter: {
+            type: 'lcov',
+            dir: 'build/coverage/'
+        }
+
     });
 };
