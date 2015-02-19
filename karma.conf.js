@@ -59,7 +59,7 @@ module.exports = function (config) {
 
         // Test coverage configuration
         preprocessors: {
-            'build/tests/**/*.js': ['coverage']
+            'test/*.js': ['coverage']
         },
         coverageReporter: {
             type: 'lcov',
