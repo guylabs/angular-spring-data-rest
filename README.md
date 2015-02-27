@@ -40,6 +40,10 @@ To use the `SpringDataRestAdapter` *Angular* module with [bower](http://bower.io
 ```bash
 bower install angular-spring-data-rest
 ```
+or
+```bash
+npm install angular-spring-data-rest
+```
 
 ## Overview
 
