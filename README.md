@@ -454,13 +454,13 @@ The `SpringDataRestAdapter` is designed to be configurable and you are able to c
     }
     ```
     * Example if set to false:
-        ```json
-        {
-            ...
-            "_embeddedItems": [...]
-            ...
-        }
-        ```
+    ```json
+    {
+        ...
+        "_embeddedItems": [...]
+        ...
+    }
+    ```
 * `hrefKey` (default: `href`): the property name where the url is stored under each specific link.
 * `resourcesKey` (default: `_resources`): the property name where the resource method is stored.
 * `resourcesFunction` (default: `undefined`): the function to use to call the backend. Read more how to do this [here](#exchange-the-underlying-angular-resource-function)
