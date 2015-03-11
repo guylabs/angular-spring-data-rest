@@ -15,6 +15,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
         'linksSelfLinkName': 'self',
         'embeddedKey': '_embedded',
         'embeddedNewKey': '_embeddedItems',
+        'embeddedNamedResources': false,
         'resourcesKey': '_resources',
         'resourcesFunction': undefined,
         'fetchFunction': undefined,
@@ -239,11 +240,23 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                     }
 
                     // process the embedded key and move it to an embedded value key
-                    processedData = moveArray(processedData, config.embeddedKey, config.embeddedNewKey);
+                    processedData = moveArray(processedData, config.embeddedKey, config.embeddedNewKey, config.embeddedNamedResources);
 
                     // recursively process all contained objects in the embedded value array
                     angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
-                        processedData[config.embeddedNewKey][key] = processDataFunction(value, fetchLinkNames, recursive);
+
+                        // if the embeddedResourceName config variable is set to true, process each resource name array
+                        if (value instanceof Array) {
+                            var processedDataArray = [];
+                            angular.forEach(value, function (arrayValue, arrayKey) {
+                                processedDataArray[arrayKey] = processDataFunction(arrayValue, fetchLinkNames, recursive);
+                            });
+                            processedData[config.embeddedNewKey][key] = processedDataArray;
+                        }
+                        else {
+                            // single objects are processed directly
+                            processedData[config.embeddedNewKey][key] = processDataFunction(value, fetchLinkNames, recursive);
+                        }
                     });
                 }
 

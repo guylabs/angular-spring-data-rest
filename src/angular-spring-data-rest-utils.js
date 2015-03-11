@@ -20,19 +20,27 @@ function deepExtend(destination) {
 }
 
 /**
- * Moves a key with an array value to the destination key.
+ * Moves a key with an array value to the destination key. It is also possible to specify to use the value of the
+ * first key of the object[sourceKey] object instead of the same object.
  *
  * @param {object} object the object in which the source key exists and destination key is created
  * @param {string} sourceKey the source key from which the array is moved
  * @param {string} destinationKey the destination key to which the array is moved
+ * @param {boolean} useSameObject true if the same object is used for the destinationKey, false if the value of the
+ * first key is used
  * @returns {object} the processed object
  */
-function moveArray(object, sourceKey, destinationKey) {
+function moveArray(object, sourceKey, destinationKey, useSameObject) {
     var embeddedObject = object[sourceKey];
     if (embeddedObject) {
         var key = Object.keys(embeddedObject)[0];
         var processedData = {};
-        processedData[destinationKey] = embeddedObject[key];
+
+        if (useSameObject === true) {
+            processedData[destinationKey] = embeddedObject;
+        } else {
+            processedData[destinationKey] = embeddedObject[key];
+        }
 
         object = angular.extend(object, processedData);
         delete object[sourceKey];
@@ -68,7 +76,7 @@ function extractUrl(url, templated) {
 function checkUrl(url, resourceName, hrefKey) {
     if (url == undefined || !url) {
         throw new Error("The provided resource name '" + resourceName + "' has no valid URL in the '" +
-            hrefKey + "' property.");
+        hrefKey + "' property.");
     }
     return url
 }

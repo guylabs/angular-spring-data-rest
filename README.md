@@ -442,6 +442,25 @@ The `SpringDataRestAdapter` is designed to be configurable and you are able to c
 * `linksSelfLinkName` (default: `self`): the name of the self link in the links object.
 * `embeddedKey` (default: `_embedded`): the property name where the embedded items are stored.
 * `embeddedNewKey` (default: `_embeddedItems`): the property name where the array of embedded items are stored.
+* `embeddedNamedResources` (default: `false`): true if the embedded resources names should be left as is, false if they should be removed
+    * Example if set to true:
+    ```json
+    {
+        ...
+        "_embeddedItems": {
+            "categories": [...]
+        }
+        ...
+    }
+    ```
+    * Example if set to false:
+        ```json
+        {
+            ...
+            "_embeddedItems": [...]
+            ...
+        }
+        ```
 * `hrefKey` (default: `href`): the property name where the url is stored under each specific link.
 * `resourcesKey` (default: `_resources`): the property name where the resource method is stored.
 * `resourcesFunction` (default: `undefined`): the function to use to call the backend. Read more how to do this [here](#exchange-the-underlying-angular-resource-function)
@@ -469,6 +488,7 @@ The config method of the `SpringDataRestAdapterProvider` takes a configuration o
     "linksSelfLinkName": "self",
     "embeddedKey": "_embedded",
     "embeddedNewKey": "_embeddedItems",
+    "embeddedNamedResources": false,
     "resourcesKey": "_resources",
     "resourcesFunction": undefined,
     "fetchFunction": undefined,
