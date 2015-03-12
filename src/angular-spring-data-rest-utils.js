@@ -33,12 +33,17 @@ function deepExtend(destination) {
 function moveArray(object, sourceKey, destinationKey, useSameObject) {
     var embeddedObject = object[sourceKey];
     if (embeddedObject) {
-        var key = Object.keys(embeddedObject)[0];
         var processedData = {};
+        processedData[destinationKey] = {};
 
         if (useSameObject === true) {
-            processedData[destinationKey] = embeddedObject;
+            // loop over all items in the embedded object and add them to the processed data
+            angular.forEach(Object.keys(embeddedObject), function (key) {
+                processedData[destinationKey][key] = embeddedObject[key];
+            });
         } else {
+            // remove the key and replace it with the value of it
+            var key = Object.keys(embeddedObject)[0];
             processedData[destinationKey] = embeddedObject[key];
         }
 

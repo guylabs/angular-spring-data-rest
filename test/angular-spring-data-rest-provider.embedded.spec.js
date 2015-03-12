@@ -60,4 +60,44 @@ describe("the response with the embedded values", function () {
         }
     });
 
+    it("must have the named resources if the embeddedNamedResources is set to true", function () {
+        // set the new fetch function which throws an error if it is called
+        springDataRestAdapterProvider.config({
+            'embeddedNamedResources': true
+        });
+        this.response = SpringDataRestAdapter.process(this.rawResponse);
+
+        // expect that the first key of the embedded items is categories
+        var key = Object.keys(this.response[this.config.embeddedNewKey])[0];
+        expect(key).toBe("categories");
+
+        // expect that the embedded key value is an array of the size 2
+        expect(this.response[this.config.embeddedNewKey]['categories'] instanceof Array).toBe(true);
+        expect(this.response[this.config.embeddedNewKey]['categories'].length).toBe(2);
+    });
+
+    it("must have multiple named resources if the embeddedNamedResources is set to true", function () {
+        // set the new fetch function which throws an error if it is called
+        springDataRestAdapterProvider.config({
+            'embeddedNamedResources': true
+        });
+        this.response = SpringDataRestAdapter.process(mockDataWithoutLinksKeyAndMultipleEmbeddedKeys());
+
+        // expect that the first key of the embedded items is categories
+        var key = Object.keys(this.response[this.config.embeddedNewKey])[0];
+        expect(key).toBe("categories");
+
+        // expect that the second key of the embedded items is item
+        var secondKey = Object.keys(this.response[this.config.embeddedNewKey])[1];
+        expect(secondKey).toBe("item");
+
+        // expect that the first embedded key value is an array of the size 2
+        expect(this.response[this.config.embeddedNewKey]['categories'] instanceof Array).toBe(true);
+        expect(this.response[this.config.embeddedNewKey]['categories'].length).toBe(2);
+
+        // expect that the second embedded key value is an object
+        expect(this.response[this.config.embeddedNewKey]['item'] instanceof Object).toBe(true);
+        expect(this.response[this.config.embeddedNewKey]['item'].name).toBe('Test item 1');
+    });
+
 });
