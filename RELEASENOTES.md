@@ -7,7 +7,7 @@
 
 ### Changes
 
-* Add ability to have multiple embedded items. See documentation about `embeddedNamedResources` configurtion option.
+* Add ability to have multiple embedded items. See documentation about `embeddedNamedResources` configurtion option. Thanks to Alexander and Mihai for having the idea and helping out with https://github.com/guylabs/angular-spring-data-rest/pull/4.
 
 ### Migration notes
 
