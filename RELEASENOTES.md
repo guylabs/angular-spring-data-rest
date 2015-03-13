@@ -1,5 +1,18 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.3.2
+
+* Tag: [0.3.2](https://github.com/guylabs/angular-spring-data-rest/tree/0.3.2)
+* Release: [angular-spring-data-rest-0.3.2.zip](https://github.com/guylabs/angular-spring-data-rest/releases/download/0.3.2/angular-spring-data-rest-0.3.2.zip)
+
+### Changes
+
+* Add ability to have multiple embedded items. See documentation about `embeddedNamedResources` configurtion option.
+
+### Migration notes
+
+* No migration needed.
+
 ## Version 0.3.1
 
 * Tag: [0.3.1](https://github.com/guylabs/angular-spring-data-rest/tree/0.3.1)
