@@ -4,7 +4,7 @@
 
 /**
  * @module spring-data-rest
- * @version 0.3.1
+ * @version 0.3.2
  *
  * An AngularJS module to ease the work with a Spring Data REST backend.
  */
@@ -12,7 +12,7 @@ angular.module("spring-data-rest", ["ngResource"]);
 
 /**
  * @module spring-data-rest
- * @version 0.3.1
+ * @version 0.3.2
  *
  * Provider for the SpringDataRestAdapter which is the core of this module.
  */
@@ -333,7 +333,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
 /**
  * @module spring-data-rest
- * @version 0.3.1
+ * @version 0.3.2
  *
  * Provider for the interceptor which wraps the SpringDataRestAdapter around the response object.
  */

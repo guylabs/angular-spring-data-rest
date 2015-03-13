@@ -39,7 +39,7 @@ module.exports = function (grunt) {
         },
         uglify: {
             options: {
-                banner: "/*!\n * <%= pkg.name %> <%= pkg.version %>\n * Copyright <%= grunt.template.today('yyyy') %> Guy Brûlé (@guy_labs)\n * https://github.com/guylabs/angular-spring-data-rest\n */\n"
+                banner: "/*!\n * <%= pkg.name %> <%= pkg.version %>\n * Copyright <%= grunt.template.today('yyyy') %> Guy Brand (@guy_labs)\n * https://github.com/guylabs/angular-spring-data-rest\n */\n"
             },
             dist: {
                 files: {
