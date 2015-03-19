@@ -30,10 +30,10 @@ var beforeEachFunction = function () {
     this.q = qVar;
     this.rootScope = rootScope;
 
-    // initialize the configuration, the raw and the processed response
+    // initialize the configuration, the raw and the processed data promise
     this.config = springDataRestAdapterProvider.config();
     this.rawResponse = mockData();
-    this.response = SpringDataRestAdapter.process(this.rawResponse);
+    this.processedDataPromise = SpringDataRestAdapter.process(this.rawResponse);
 };
 
 /**

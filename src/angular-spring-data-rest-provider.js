@@ -86,17 +86,30 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              */
             function fetchFunction(url, key, data, fetchLinkNames, recursive) {
                 if (config.fetchFunction == undefined) {
-                    $injector.get("$http").get(url)
-                        .success(function (responseData) {
+                    var promisesArray = [];
+
+                    promisesArray.push($injector.get("$http").get(url)
+                        .then(function (responseData) {
 
                             // wrap the response again with the adapter if the recursive flag is set
-                            data[key] = recursive ? processData(responseData, fetchLinkNames, true) : responseData;
-                        })
-                        .error(function (data, status) {
-                            throw new Error("There was an error (" + status + ") retrieving the data from '" + url + "'");
-                        });
+                            if (recursive) {
+                                promisesArray.push(processData(responseData.data, fetchLinkNames, true).then(function (processedData) {
+                                    data[key] = processedData;
+                                }));
+                            } else {
+                                data[key] = responseData.data;
+                            }
+                        }, function (error) {
+                            if (error.status != 404) {
+                                // just reject the error if its not a 404 as there are links which return a 404 which are not set
+                                return $injector.get("$q").reject(error);
+                            }
+                        }));
+
+                    // wait for all promises to be resolved and return a new promise
+                    return $injector.get("$q").all(promisesArray);
                 } else {
-                    config.fetchFunction(url, key, data, fetchLinkNames, recursive);
+                    return config.fetchFunction(url, key, data, fetchLinkNames, recursive);
                 }
             }
 
@@ -104,14 +117,14 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              * The actual adapter method which processes the given JSON data object and adds
              * the wrapped resource property to all embedded elements where resources are available.
              *
-             * @param {object} data the given JSON data
+             * @param {object} promiseOrData a promise with the given JSON data or just the JSON data
              * @param {object|string} fetchLinkNames the link names to be fetched automatically or the
              * 'fetchAllLinkNamesKey' key from the config object to fetch all links except the 'self' key.
              * @param {boolean} recursive true if the automatically fetched response should be processed recursively with the
              * adapter, false otherwise
              * @returns {object} the processed JSON data
              */
-            var processData = function processDataFunction(data, fetchLinkNames, recursive) {
+            var processData = function processDataFunction(promiseOrData, fetchLinkNames, recursive) {
 
                 /**
                  * Wraps the Angular $resource method and adds the ability to retrieve the available resources. If no
@@ -182,86 +195,131 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                     return availableResources;
                 };
 
-                // throw an exception if given data parameter is not of type object
-                if (!angular.isObject(data) || data instanceof Array) {
-                    throw new Error("Given data '" + data + "' is not of type object.");
-                }
+                // convert the given promise or data to a $q promise
+                var promise = $injector.get("$q").when(promiseOrData);
+                var deferred = $injector.get("$q").defer();
 
-                // throw an exception if given fetch links parameter is not of type array or string
-                if (fetchLinkNames != undefined && !(fetchLinkNames instanceof Array || typeof fetchLinkNames === "string")) {
-                    throw new Error("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
-                }
+                promise.then(function (data) {
 
-                var processedData = undefined;
+                    // if the given data object has a data property use this for the further processing as the
+                    // standard httpPromises from the $http functions store the response data in a data property
+                    if (data.data) {
+                        data = data.data;
+                    }
 
-                // only add the resource method to the object if the links key is present
-                if (config.linksKey in data) {
+                    // throw an exception if given data parameter is not of type object
+                    if (!angular.isObject(data) || data instanceof Array) {
+                        deferred.reject("Given data '" + data + "' is not of type object.");
+                    }
 
-                    // add Angular resources property to object
-                    var resourcesObject = {};
-                    resourcesObject[config.resourcesKey] = resources;
-                    processedData = angular.extend(angular.copy(data), resourcesObject);
+                    // throw an exception if given fetch links parameter is not of type array or string
+                    if (fetchLinkNames != undefined && !(fetchLinkNames instanceof Array || typeof fetchLinkNames === "string")) {
+                        deferred.reject("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
+                    }
 
-                    // if there are links to fetch, then process and fetch them
-                    if (fetchLinkNames != undefined) {
+                    var processedData = undefined;
+                    var promisesArray = [];
+
+                    // only add the resource method to the object if the links key is present
+                    if (config.linksKey in data) {
+
+                        // add Angular resources property to object
+                        var resourcesObject = {};
+                        resourcesObject[config.resourcesKey] = resources;
+                        processedData = angular.extend(angular.copy(data), resourcesObject);
+
+                        // if there are links to fetch, then process and fetch them
+                        if (fetchLinkNames != undefined) {
+
+                            // make a defensive copy if the processedData variable is undefined
+                            if (!processedData) {
+                                processedData = angular.copy(data);
+                            }
+
+                            // process all links
+                            angular.forEach(data[config.linksKey], function (linkValue, linkName) {
+
+                                // if the link name is not 'self' then process the link name
+                                if (linkName != config.linksSelfLinkName) {
+
+                                    // check if:
+                                    // 1. the all link names key is given then fetch the link
+                                    // 2. the given key is equal
+                                    // 3. the given key is inside the array
+                                    if (fetchLinkNames == config.fetchAllKey ||
+                                        (typeof fetchLinkNames === "string" && linkName == fetchLinkNames) ||
+                                        (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0)) {
+                                        promisesArray.push(fetchFunction(getProcessedUrl(data, linkName), linkName,
+                                            processedData, fetchLinkNames, recursive));
+
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    // only move the embedded values to a top level property if the embedded key is present
+                    if (config.embeddedKey in data) {
 
                         // make a defensive copy if the processedData variable is undefined
                         if (!processedData) {
                             processedData = angular.copy(data);
                         }
 
-                        // process all links
-                        angular.forEach(data[config.linksKey], function (linkValue, linkName) {
+                        // process the embedded key and move it to an embedded value key
+                        processedData = moveArray(processedData, config.embeddedKey, config.embeddedNewKey, config.embeddedNamedResources);
 
-                            // if the link name is not 'self' then process the link name
-                            if (linkName != config.linksSelfLinkName) {
+                        // recursively process all contained objects in the embedded value array
+                        angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
 
-                                // check if:
-                                // 1. the all link names key is given then fetch the link
-                                // 2. the given key is equal
-                                // 3. the given key is inside the array
-                                if (fetchLinkNames == config.fetchAllKey ||
-                                    (typeof fetchLinkNames === "string" && linkName == fetchLinkNames) ||
-                                    (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0)) {
-                                    fetchFunction(getProcessedUrl(data, linkName), linkName,
-                                        processedData, fetchLinkNames, recursive);
+                            // if the embeddedResourceName config variable is set to true, process each resource name array
+                            if (value instanceof Array && value.length > 0) {
+                                var processedDataArray = [];
+                                var processedDataArrayPromise;
+                                angular.forEach(value, function (arrayValue, arrayKey) {
+                                    processedDataArrayPromise = processDataFunction({data: arrayValue}, fetchLinkNames, recursive).then(function (processedResponseData) {
+                                        processedDataArray[arrayKey] = processedResponseData;
+                                    });
+                                    promisesArray.push(processedDataArrayPromise);
+                                });
+
+                                // after the last data array promise has been resolved add the result to the processed data
+                                if (processedDataArrayPromise) {
+                                    processedDataArrayPromise.then(function () {
+                                        processedData[config.embeddedNewKey][key] = processedDataArray;
+                                    })
+                                } else {
+                                    // set the processed data array right away as there is no promise to resolve
+                                    processedData[config.embeddedNewKey][key] = processedDataArray;
                                 }
+                            } else {
+                                // single objects are processed directly
+                                promisesArray.push(processDataFunction({data: value}, fetchLinkNames, recursive).then(function (processedResponseData) {
+                                    processedData[config.embeddedNewKey][key] = processedResponseData;
+                                }));
                             }
                         });
                     }
-                }
 
-                // only move the embedded values to a top level property if the embedded key is present
-                if (config.embeddedKey in data) {
+                    $injector.get("$q").all(promisesArray).then(function () {
 
-                    // make a defensive copy if the processedData variable is undefined
-                    if (!processedData) {
-                        processedData = angular.copy(data);
-                    }
+                        // return the original data object if no processing is done
+                        deferred.resolve(processedData ? processedData : data);
+                    }, function (error) {
+                        deferred.reject(error);
 
-                    // process the embedded key and move it to an embedded value key
-                    processedData = moveArray(processedData, config.embeddedKey, config.embeddedNewKey, config.embeddedNamedResources);
-
-                    // recursively process all contained objects in the embedded value array
-                    angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
-
-                        // if the embeddedResourceName config variable is set to true, process each resource name array
-                        if (value instanceof Array) {
-                            var processedDataArray = [];
-                            angular.forEach(value, function (arrayValue, arrayKey) {
-                                processedDataArray[arrayKey] = processDataFunction(arrayValue, fetchLinkNames, recursive);
-                            });
-                            processedData[config.embeddedNewKey][key] = processedDataArray;
-                        }
-                        else {
-                            // single objects are processed directly
-                            processedData[config.embeddedNewKey][key] = processDataFunction(value, fetchLinkNames, recursive);
-                        }
+                        // reject the error because we do not handle the error here
+                        return $injector.get("$q").reject(error);
                     });
-                }
+                }, function (error) {
+                    deferred.reject(error);
 
-                // return the original data object if no processing is done
-                return processedData ? processedData : data;
+                    // reject the error because we do not handle the error here
+                    return $injector.get("$q").reject(error);
+                });
+
+                // return the promise
+                return deferred.promise;
 
                 /**
                  * Gets the processed URL of the given resource name form the given data object.
@@ -279,41 +337,8 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 }
             };
 
-            /**
-             * The actual adapter method which processes the given promise object and adds
-             * the wrapped resource property to all embedded elements where resources are available.
-             *
-             * @param {promise} promise the given promise which resolves with a promise data object which holds a data
-             * property with the given response
-             * @param {object|string} fetchLinkNames the link names to be fetched automatically or the
-             * 'fetchAllLinkNamesKey' key from the config object to fetch all links except the 'self' key.
-             * @param {boolean} recursive true if the automatically fetched response should be processed recursively with the
-             * adapter, false otherwise
-             * @returns {object} the processed JSON data
-             */
-            var processDataWithPromise = function processDataFunction(promise, fetchLinkNames, recursive) {
-
-                // convert the given promise to a $q promise
-                var qPromise = $injector.get("$q").when(promise);
-                var deferred = $injector.get("$q").defer();
-
-                qPromise.then(function (promiseData) {
-                    // process the given promiseData and resolve the promise with the processed data
-                    var processedData = processData(promiseData.data, fetchLinkNames, recursive);
-                    deferred.resolve(processedData);
-                }, function (error) {
-                    deferred.reject(error);
-
-                    // reject the error because we do not handle the error here
-                    return $injector.get("$q").reject(error);
-                });
-
-                // return the promise
-                return deferred.promise;
-            };
-
             // return an object with the processData function
-            return { process: processData, processWithPromise: processDataWithPromise };
+            return {process: processData};
         }]
     };
 

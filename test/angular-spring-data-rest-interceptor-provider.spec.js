@@ -31,7 +31,7 @@ describe("if the spring data rest interceptor is not added", function () {
         // initialize the configuration, the raw and the processed response
         this.config = springDataRestAdapterProvider.config();
         this.rawResponse = mockData();
-        this.response = SpringDataRestAdapter.process(this.rawResponse);
+        this.processedDataPromise = SpringDataRestAdapter.process(this.rawResponse);
     });
 
     it("it must not be added by default", function () {
@@ -50,16 +50,18 @@ describe("if the spring data rest interceptor is not added", function () {
         var response = mockData();
         this.httpBackend.whenGET(linkHref).respond(200, response);
         this.httpBackend.expectGET(linkHref);
-        var result = this.response[this.config.resourcesKey](linkName).get(function () {
 
-            // if the interceptor is not added the resource method must not be added
-            expect(result[resourcesKey]).not.toBeDefined();
+        this.processedDataPromise.then(function (processedData) {
+            var result = processedData[this.config.resourcesKey](linkName).get(function () {
 
-            // if the interceptor is not added the _embeddedItems property must not be added
-            expect(result[embeddedItemsKey]).not.toBeDefined();
+                // if the interceptor is not added the resource method must not be added
+                expect(result[resourcesKey]).not.toBeDefined();
+
+                // if the interceptor is not added the _embeddedItems property must not be added
+                expect(result[embeddedItemsKey]).not.toBeDefined();
+            });
+            this.httpBackend.flush();
         });
-        this.httpBackend.flush();
-
     });
 
 });
@@ -96,7 +98,7 @@ describe("if the spring data rest interceptor is added", function () {
         // initialize the configuration, the raw and the processed response
         this.config = springDataRestAdapterProvider.config();
         this.rawResponse = mockData();
-        this.response = SpringDataRestAdapter.process(this.rawResponse);
+        this.processedDataPromise = SpringDataRestAdapter.process(this.rawResponse);
     });
 
     it("it must be added by default", function () {
@@ -115,16 +117,18 @@ describe("if the spring data rest interceptor is added", function () {
         var response = mockData();
         this.httpBackend.whenGET(linkHref).respond(200, response);
         this.httpBackend.expectGET(linkHref);
-        var result = this.response[this.config.resourcesKey](linkName).get(function () {
 
-            // if the interceptor is added the resource method must not be added
-            expect(result[resourcesKey]).toBeDefined();
+        this.processedDataPromise.then(function (processedData) {
+            var result = processedData[this.config.resourcesKey](linkName).get(function () {
 
-            // if the interceptor is added the _embeddedItems property must not be added
-            expect(result[embeddedItemsKey]).toBeDefined();
+                // if the interceptor is added the resource method must not be added
+                expect(result[resourcesKey]).toBeDefined();
+
+                // if the interceptor is added the _embeddedItems property must not be added
+                expect(result[embeddedItemsKey]).toBeDefined();
+            });
+            this.httpBackend.flush();
         });
-        this.httpBackend.flush();
-
     });
 
 });

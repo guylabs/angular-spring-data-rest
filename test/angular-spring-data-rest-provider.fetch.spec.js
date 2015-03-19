@@ -11,7 +11,7 @@ describe("the fetch function", function () {
 
         // set the new fetch function which throws an error if it is called
         springDataRestAdapterProvider.config(fetchFunctionConfiguration);
-        this.response = SpringDataRestAdapter.process(this.rawResponse);
+        this.processedDataPromise = SpringDataRestAdapter.process(this.rawResponse);
     });
 
     it("must call the correct href url if an existing fetch link name is given", function () {
@@ -34,14 +34,15 @@ describe("the fetch function", function () {
             respond(200, secondExpectedResult);
         this.httpBackend.expectGET(secondParentCategoryHref);
 
-        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkName);
-        this.httpBackend.flush();
-        this.httpBackend.verifyNoOutstandingRequest();
-        this.httpBackend.verifyNoOutstandingExpectation();
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function (processedData) {
+            this.httpBackend.flush();
+            this.httpBackend.verifyNoOutstandingRequest();
+            this.httpBackend.verifyNoOutstandingExpectation();
 
-        // expect the fetched objects
-        expect(this.response[this.config.embeddedNewKey][0][fetchLinkName]).toEqual(firstExpectedResult);
-        expect(this.response[this.config.embeddedNewKey][1][fetchLinkName]).toEqual(secondExpectedResult);
+            // expect the fetched objects
+            expect(processedData[this.config.embeddedNewKey][0][fetchLinkName]).toEqual(firstExpectedResult);
+            expect(processedData[this.config.embeddedNewKey][1][fetchLinkName]).toEqual(secondExpectedResult);
+        });
     });
 
     it("must call all links if the fetch all link names key", function () {
@@ -74,16 +75,17 @@ describe("the fetch function", function () {
             respond(200, testParentCategoryExpectedResult);
         this.httpBackend.expectGET(testParentCategoryHref);
 
-        this.response = SpringDataRestAdapter.process(this.rawResponse, this.config.fetchAllKey);
-        this.httpBackend.flush();
-        this.httpBackend.verifyNoOutstandingRequest();
-        this.httpBackend.verifyNoOutstandingExpectation();
+        SpringDataRestAdapter.process(this.rawResponse, this.config.fetchAllKey).then(function (processedData) {
+            this.httpBackend.flush();
+            this.httpBackend.verifyNoOutstandingRequest();
+            this.httpBackend.verifyNoOutstandingExpectation();
 
-        // expect the fetched objects
-        expect(this.response['testLink']).toEqual(testLinkExpectedResult);
-        expect(this.response[this.config.embeddedNewKey][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
-        expect(this.response[this.config.embeddedNewKey][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
-        expect(this.response[this.config.embeddedNewKey][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
+            // expect the fetched objects
+            expect(processedData['testLink']).toEqual(testLinkExpectedResult);
+            expect(processedData[this.config.embeddedNewKey][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
+            expect(processedData[this.config.embeddedNewKey][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
+            expect(processedData[this.config.embeddedNewKey][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
+        });
     });
 
     it("must call all links of the given fetch link names array", function () {
@@ -106,14 +108,15 @@ describe("the fetch function", function () {
             respond(200, testParentCategoryExpectedResult);
         this.httpBackend.expectGET(testParentCategoryHref);
 
-        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkNames);
-        this.httpBackend.flush();
-        this.httpBackend.verifyNoOutstandingRequest();
-        this.httpBackend.verifyNoOutstandingExpectation();
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkNames).then(function (processedData) {
+            this.httpBackend.flush();
+            this.httpBackend.verifyNoOutstandingRequest();
+            this.httpBackend.verifyNoOutstandingExpectation();
 
-        // expect the fetched objects
-        expect(this.response[fetchLinkNames[0]]).toEqual(testLinkExpectedResult);
-        expect(this.response[this.config.embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
+            // expect the fetched objects
+            expect(processedData[fetchLinkNames[0]]).toEqual(testLinkExpectedResult);
+            expect(processedData[this.config.embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
+        });
     });
 
     it("must process the fetched response recursively if the flag is set", function () {
@@ -136,16 +139,17 @@ describe("the fetch function", function () {
             respond(200, secondExpectedResult);
         this.httpBackend.expectGET(secondParentCategoryHref);
 
-        this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkName, true);
-        this.httpBackend.flush();
-        this.httpBackend.verifyNoOutstandingRequest();
-        this.httpBackend.verifyNoOutstandingExpectation();
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName, true).then(function (processedData) {
+            this.httpBackend.flush();
+            this.httpBackend.verifyNoOutstandingRequest();
+            this.httpBackend.verifyNoOutstandingExpectation();
 
-        // expect the recursively fetched objects
-        expect(typeof this.response[this.config.embeddedNewKey][0][fetchLinkName][this.config.resourcesKey] == 'function').
-            toEqual(true);
-        expect(typeof this.response[this.config.embeddedNewKey][1][fetchLinkName][this.config.resourcesKey] == 'function').
-            toEqual(true);
+            // expect the recursively fetched objects
+            expect(typeof this.response[this.config.embeddedNewKey][0][fetchLinkName][this.config.resourcesKey] == 'function').
+                toEqual(true);
+            expect(typeof this.response[this.config.embeddedNewKey][1][fetchLinkName][this.config.resourcesKey] == 'function').
+                toEqual(true);
+        });
     });
 
     it("it must call the overridden fetch function with the given resource name", function () {

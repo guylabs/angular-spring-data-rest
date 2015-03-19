@@ -6,15 +6,31 @@ describe("the spring data rest adapter", function () {
         var testDeferred = this.q.defer();
         var testPromise = testDeferred.promise;
 
-        var responseDataPromise = SpringDataRestAdapter.processWithPromise(testPromise);
+        var resourcesKey = this.config.resourcesKey;
+        var embeddedNewKey = this.config.embeddedNewKey;
 
-        var config = this.config;
-
-        responseDataPromise.then(function (processedResponseData) {
-
+        SpringDataRestAdapter.process(testPromise).then(function (processedResponseData) {
             // expect a resource and embeddedKeys key
-            expect(processedResponseData[config.resourcesKey]).toBeDefined();
-            expect(processedResponseData[config.embeddedNewKey]).toBeDefined();
+            expect(processedResponseData[resourcesKey]).toBeDefined();
+            expect(processedResponseData[embeddedNewKey]).toBeDefined();
+        });
+
+        testDeferred.resolve(mockData());
+
+        this.rootScope.$apply();
+    });
+
+    it("must process the response if a http promise is given", function () {
+        var testDeferred = this.q.defer();
+        var testPromise = testDeferred.promise;
+
+        var resourcesKey = this.config.resourcesKey;
+        var embeddedNewKey = this.config.embeddedNewKey;
+
+        SpringDataRestAdapter.process(testPromise).then(function (processedResponseData) {
+            // expect a resource and embeddedKeys key
+            expect(processedResponseData[resourcesKey]).toBeDefined();
+            expect(processedResponseData[embeddedNewKey]).toBeDefined();
         });
 
         testDeferred.resolve({data: mockData()});
@@ -27,11 +43,9 @@ describe("the spring data rest adapter", function () {
         var testPromise = testDeferred.promise;
         var errorMessage = "error";
 
-        var responseDataPromise = SpringDataRestAdapter.processWithPromise(testPromise);
-
-        responseDataPromise.then(
+        SpringDataRestAdapter.process(testPromise).then(
             function (processedResponseData) {
-                throw new Exception("Should not be called when the promise is rejected")
+                throw new Error("Should not be called when the promise is rejected")
             },
             function (error) {
                 expect(error).toBe(errorMessage);

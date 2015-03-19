@@ -3,32 +3,38 @@ describe("the response with the embedded values", function () {
     beforeEach(beforeEachFunction);
 
     it("must not contain the 'embedded key' key anymore", function () {
-        expect(this.response[this.config.embeddedKey]).not.toBeDefined();
+        this.processedDataPromise.then(function (processedData) {
+            expect(processedData[this.config.embeddedKey]).not.toBeDefined();
+        });
     });
 
     it("must contain the 'embedded value key' as key", function () {
-        expect(this.response[this.config.embeddedNewKey]).toBeDefined();
+        this.processedDataPromise.then(function (processedData) {
+            expect(processedData[this.config.embeddedNewKey]).toBeDefined();
+        });
     });
 
     it("must be an array with the size of two", function () {
-
-        // expect that the embedded key value is an array of the size 2
-        expect(this.response[this.config.embeddedNewKey] instanceof Array).toBe(true);
-        expect(this.response[this.config.embeddedNewKey].length).toBe(2);
+        this.processedDataPromise.then(function (processedData) {
+            // expect that the embedded key value is an array of the size 2
+            expect(processedData[this.config.embeddedNewKey] instanceof Array).toBe(true);
+            expect(processedData[this.config.embeddedNewKey].length).toBe(2);
+        });
     });
 
     it("must contain a resource key in all embedded values", function () {
+        this.processedDataPromise.then(function (processedData) {
+            // iterate over all entries of the embedded values and test the resource method
+            for (var key in processedData[this.config.embeddedNewKey]) {
 
-        // iterate over all entries of the embedded values and test the resource method
-        for (var key in this.response[this.config.embeddedNewKey]) {
+                // the resource key must be defined
+                expect(processedData[this.config.embeddedNewKey][key][this.config.resourcesKey]).toBeDefined();
 
-            // the resource key must be defined
-            expect(this.response[this.config.embeddedNewKey][key][this.config.resourcesKey]).toBeDefined();
-
-            // the resource value must be a valid function with the given parameters
-            expectResourceExecution(this.response[this.config.embeddedNewKey][key], this.config.resourcesKey,
-                this.response[this.config.embeddedNewKey][key][this.config.linksKey]["self"].href, this.httpBackend, "self");
-        }
+                // the resource value must be a valid function with the given parameters
+                expectResourceExecution(processedData[this.config.embeddedNewKey][key], this.config.resourcesKey,
+                    this.response[this.config.embeddedNewKey][key][this.config.linksKey]["self"].href, this.httpBackend, "self");
+            }
+        });
     });
 
     it("must call the correct href url if a link name is passed to the $resource method", function () {
@@ -42,22 +48,24 @@ describe("the response with the embedded values", function () {
 
         var i = 0;
 
-        // iterate over all entries of the embedded values and test the resource method
-        for (var key in this.response[this.config.embeddedNewKey]) {
+        this.processedDataPromise.then(function (processedData) {
+            // iterate over all entries of the embedded values and test the resource method
+            for (var key in processedData[this.config.embeddedNewKey]) {
 
-            for (var j = 0; j < 2; j++) {
-                // check if the underlying $resource method is called with the correct href url
-                var expectedResult = {categoryId: '123' + i};
-                this.httpBackend.whenGET(linkHrefs[i]).respond(200, expectedResult);
-                this.httpBackend.expectGET(linkHrefs[i]);
+                for (var j = 0; j < 2; j++) {
+                    // check if the underlying $resource method is called with the correct href url
+                    var expectedResult = {categoryId: '123' + i};
+                    this.httpBackend.whenGET(linkHrefs[i]).respond(200, expectedResult);
+                    this.httpBackend.expectGET(linkHrefs[i]);
 
-                var result = this.response[this.config.embeddedNewKey][key][this.config.resourcesKey](linkNames[i]).get(function () {
-                    expect(result.categoryId).toEqual(expectedResult.categoryId);
-                });
-                this.httpBackend.flush();
-                i++;
+                    var result = processedData[this.config.embeddedNewKey][key][this.config.resourcesKey](linkNames[i]).get(function () {
+                        expect(result.categoryId).toEqual(expectedResult.categoryId);
+                    });
+                    this.httpBackend.flush();
+                    i++;
+                }
             }
-        }
+        });
     });
 
     it("must have the named resources if the embeddedNamedResources is set to true", function () {
@@ -65,15 +73,17 @@ describe("the response with the embedded values", function () {
         springDataRestAdapterProvider.config({
             'embeddedNamedResources': true
         });
-        this.response = SpringDataRestAdapter.process(this.rawResponse);
+        this.processedDataPromise = SpringDataRestAdapter.process(this.rawResponse);
 
-        // expect that the first key of the embedded items is categories
-        var key = Object.keys(this.response[this.config.embeddedNewKey])[0];
-        expect(key).toBe("categories");
+        this.processedDataPromise.then(function (processedData) {
+            // expect that the first key of the embedded items is categories
+            var key = Object.keys(processedData[this.config.embeddedNewKey])[0];
+            expect(key).toBe("categories");
 
-        // expect that the embedded key value is an array of the size 2
-        expect(this.response[this.config.embeddedNewKey]['categories'] instanceof Array).toBe(true);
-        expect(this.response[this.config.embeddedNewKey]['categories'].length).toBe(2);
+            // expect that the embedded key value is an array of the size 2
+            expect(processedData[this.config.embeddedNewKey]['categories'] instanceof Array).toBe(true);
+            expect(processedData[this.config.embeddedNewKey]['categories'].length).toBe(2);
+        });
     });
 
     it("must have multiple named resources if the embeddedNamedResources is set to true", function () {
@@ -81,23 +91,25 @@ describe("the response with the embedded values", function () {
         springDataRestAdapterProvider.config({
             'embeddedNamedResources': true
         });
-        this.response = SpringDataRestAdapter.process(mockDataWithoutLinksKeyAndMultipleEmbeddedKeys());
+        this.processedDataPromise = SpringDataRestAdapter.process(mockDataWithoutLinksKeyAndMultipleEmbeddedKeys());
 
-        // expect that the first key of the embedded items is categories
-        var key = Object.keys(this.response[this.config.embeddedNewKey])[0];
-        expect(key).toBe("categories");
+        this.processedDataPromise.then(function (processedData) {
+            // expect that the first key of the embedded items is categories
+            var key = Object.keys(processedData[this.config.embeddedNewKey])[0];
+            expect(key).toBe("categories");
 
-        // expect that the second key of the embedded items is item
-        var secondKey = Object.keys(this.response[this.config.embeddedNewKey])[1];
-        expect(secondKey).toBe("item");
+            // expect that the second key of the embedded items is item
+            var secondKey = Object.keys(processedData[this.config.embeddedNewKey])[1];
+            expect(secondKey).toBe("item");
 
-        // expect that the first embedded key value is an array of the size 2
-        expect(this.response[this.config.embeddedNewKey]['categories'] instanceof Array).toBe(true);
-        expect(this.response[this.config.embeddedNewKey]['categories'].length).toBe(2);
+            // expect that the first embedded key value is an array of the size 2
+            expect(processedData[this.config.embeddedNewKey]['categories'] instanceof Array).toBe(true);
+            expect(processedData[this.config.embeddedNewKey]['categories'].length).toBe(2);
 
-        // expect that the second embedded key value is an object
-        expect(this.response[this.config.embeddedNewKey]['item'] instanceof Object).toBe(true);
-        expect(this.response[this.config.embeddedNewKey]['item'].name).toBe('Test item 1');
+            // expect that the second embedded key value is an object
+            expect(processedData[this.config.embeddedNewKey]['item'] instanceof Object).toBe(true);
+            expect(processedData[this.config.embeddedNewKey]['item'].name).toBe('Test item 1');
+        });
     });
 
 });
