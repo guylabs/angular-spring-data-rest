@@ -126,80 +126,80 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
              */
             var processData = function processDataFunction(promiseOrData, fetchLinkNames, recursive) {
 
-                /**
-                 * Wraps the Angular $resource method and adds the ability to retrieve the available resources. If no
-                 * parameter is given it will return an array with the available resources in this object.
-                 *
-                 * @param {string|object} resourceObject the resource name to be retrieved or an object which holds the
-                 * resource name and the parameters
-                 * @param {object} paramDefaults optional $resource method parameter defaults
-                 * @param {object} actions optional $resource method actions
-                 * @param {object} options additional $resource method options
-                 * @returns {object} the result of the $resource method or the available resources as a resource object array
-                 *
-                 * @see https://docs.angularjs.org/api/ngResource/service/$resource
-                 */
-                var resources = function (resourceObject, paramDefaults, actions, options) {
-                    var resources = this[config.linksKey];
-                    var parameters = paramDefaults;
-
-                    // if a resource object is given process it
-                    if (angular.isObject(resourceObject)) {
-                        if (!resourceObject.name) {
-                            throw new Error("The provided resource object must contain a name property.");
-                        }
-
-                        var resourceObjectParameters = resourceObject.parameters;
-
-                        // if the default parameters and the resource object parameters are objects, then merge these two objects
-                        // if not use the objects themselves as parameters
-                        if (paramDefaults && angular.isObject(paramDefaults)) {
-                            if (resourceObjectParameters && angular.isObject(resourceObjectParameters)) {
-                                parameters = angular.extend(angular.copy(paramDefaults), angular.copy(resourceObjectParameters));
-                            } else {
-                                parameters = angular.copy(paramDefaults);
-                            }
-                        } else {
-                            if (resourceObjectParameters && angular.isObject(resourceObjectParameters)) {
-                                parameters = angular.copy(resourceObjectParameters);
-                            }
-                        }
-
-                        // remove parameters which have an empty string as value
-                        angular.forEach(parameters, function (value, key) {
-                            if (value === "") {
-                                delete parameters[key];
-                            }
-                        });
-
-                        // process the url and call the resources function with the given parameters
-                        return resourcesFunction(getProcessedUrl(data, resourceObject.name), parameters, actions, options);
-                    } else if (resourceObject in resources) {
-
-                        // process the url and call the resources function with the given parameters
-                        return resourcesFunction(getProcessedUrl(data, resourceObject), parameters, actions, options);
-                    }
-
-                    // return the available resources as resource object array if the resource object parameter is not set
-                    var availableResources = [];
-                    angular.forEach(resources, function (value, key) {
-
-                        // if the URL is templated add the available template parameters to the returned object
-                        if (value.templated) {
-                            var templateParameters = extractTemplateParameters(value[config.linksHrefKey]);
-                            availableResources.push({"name": key, "parameters": templateParameters});
-                        } else {
-                            availableResources.push({"name": key});
-                        }
-                    });
-                    return availableResources;
-                };
-
                 // convert the given promise or data to a $q promise
                 var promise = $injector.get("$q").when(promiseOrData);
                 var deferred = $injector.get("$q").defer();
 
                 promise.then(function (data) {
+
+                    /**
+                     * Wraps the Angular $resource method and adds the ability to retrieve the available resources. If no
+                     * parameter is given it will return an array with the available resources in this object.
+                     *
+                     * @param {string|object} resourceObject the resource name to be retrieved or an object which holds the
+                     * resource name and the parameters
+                     * @param {object} paramDefaults optional $resource method parameter defaults
+                     * @param {object} actions optional $resource method actions
+                     * @param {object} options additional $resource method options
+                     * @returns {object} the result of the $resource method or the available resources as a resource object array
+                     *
+                     * @see https://docs.angularjs.org/api/ngResource/service/$resource
+                     */
+                    var resources = function (resourceObject, paramDefaults, actions, options) {
+                        var resources = this[config.linksKey];
+                        var parameters = paramDefaults;
+
+                        // if a resource object is given process it
+                        if (angular.isObject(resourceObject)) {
+                            if (!resourceObject.name) {
+                                throw new Error("The provided resource object must contain a name property.");
+                            }
+
+                            var resourceObjectParameters = resourceObject.parameters;
+
+                            // if the default parameters and the resource object parameters are objects, then merge these two objects
+                            // if not use the objects themselves as parameters
+                            if (paramDefaults && angular.isObject(paramDefaults)) {
+                                if (resourceObjectParameters && angular.isObject(resourceObjectParameters)) {
+                                    parameters = angular.extend(angular.copy(paramDefaults), angular.copy(resourceObjectParameters));
+                                } else {
+                                    parameters = angular.copy(paramDefaults);
+                                }
+                            } else {
+                                if (resourceObjectParameters && angular.isObject(resourceObjectParameters)) {
+                                    parameters = angular.copy(resourceObjectParameters);
+                                }
+                            }
+
+                            // remove parameters which have an empty string as value
+                            angular.forEach(parameters, function (value, key) {
+                                if (value === "") {
+                                    delete parameters[key];
+                                }
+                            });
+
+                            // process the url and call the resources function with the given parameters
+                            return resourcesFunction(getProcessedUrl(data, resourceObject.name), parameters, actions, options);
+                        } else if (resourceObject in resources) {
+
+                            // process the url and call the resources function with the given parameters
+                            return resourcesFunction(getProcessedUrl(data, resourceObject), parameters, actions, options);
+                        }
+
+                        // return the available resources as resource object array if the resource object parameter is not set
+                        var availableResources = [];
+                        angular.forEach(resources, function (value, key) {
+
+                            // if the URL is templated add the available template parameters to the returned object
+                            if (value.templated) {
+                                var templateParameters = extractTemplateParameters(value[config.linksHrefKey]);
+                                availableResources.push({"name": key, "parameters": templateParameters});
+                            } else {
+                                availableResources.push({"name": key});
+                            }
+                        });
+                        return availableResources;
+                    };
 
                     // if the given data object has a data property use this for the further processing as the
                     // standard httpPromises from the $http functions store the response data in a data property
