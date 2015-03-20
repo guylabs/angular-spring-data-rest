@@ -127,10 +127,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
             var processData = function processDataFunction(promiseOrData, fetchLinkNames, recursive) {
 
                 // convert the given promise or data to a $q promise
-                var promise = $injector.get("$q").when(promiseOrData);
-                var deferred = $injector.get("$q").defer();
-
-                promise.then(function (data) {
+                return $injector.get("$q").when(promiseOrData).then(function (data) {
 
                     /**
                      * Wraps the Angular $resource method and adds the ability to retrieve the available resources. If no
@@ -209,14 +206,12 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                     // throw an exception if given data parameter is not of type object
                     if (!angular.isObject(data) || data instanceof Array) {
-                        deferred.reject("Given data '" + data + "' is not of type object.");
-                        return;
+                        return $injector.get("$q").reject("Given data '" + data + "' is not of type object.");
                     }
 
                     // throw an exception if given fetch links parameter is not of type array or string
                     if (fetchLinkNames && !(fetchLinkNames instanceof Array || typeof fetchLinkNames === "string")) {
-                        deferred.reject("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
-                        return;
+                        return $injector.get("$q").reject("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
                     }
 
                     var processedData = undefined;
@@ -295,25 +290,12 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         });
                     }
 
-                    $injector.get("$q").all(promisesArray).then(function () {
+                    return $injector.get("$q").all(promisesArray).then(function () {
 
                         // return the original data object if no processing is done
-                        deferred.resolve(processedData ? processedData : data);
-                    }, function (error) {
-                        deferred.reject(error);
-
-                        // reject the error because we do not handle the error here
-                        return $injector.get("$q").reject(error);
+                        return processedData ? processedData : data;
                     });
-                }, function (error) {
-                    deferred.reject(error);
-
-                    // reject the error because we do not handle the error here
-                    return $injector.get("$q").reject(error);
                 });
-
-                // return the promise
-                return deferred.promise;
 
                 /**
                  * Gets the processed URL of the given resource name form the given data object.
