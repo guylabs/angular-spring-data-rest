@@ -191,8 +191,10 @@ describe("the resources property", function () {
             expect(function () {
                 expectResourceExecution(processedData, resourcesKey,
                     "expectedUrl", httpBackend, {'wrongPropertyName': 'value'});
-            }).toThrow("The provided resource object must contain a name property.");
+            }).toThrowError("The provided resource object must contain a name property.");
         });
+
+        this.rootScope.$apply();
     });
 
     it("must not use any parameters if the resource object is a string and no parameters are given", function () {
@@ -207,6 +209,10 @@ describe("the resources property", function () {
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href, httpBackend, "self")
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must use the given parameters if the resource object is a string", function () {
@@ -222,6 +228,10 @@ describe("the resources property", function () {
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue", httpBackend, "self",
                 {'parameterName': 'parameterValue'});
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must use the resource name if the correct resource object is given", function () {
@@ -236,6 +246,10 @@ describe("the resources property", function () {
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href, httpBackend, {'name': 'self'})
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must use the correct resource object name and the given parameters", function () {
@@ -251,6 +265,10 @@ describe("the resources property", function () {
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue",
                 httpBackend, {'name': 'self'}, {'parameterName': 'parameterValue'})
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must use the correct resource object name and parameters", function () {
@@ -266,6 +284,10 @@ describe("the resources property", function () {
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue",
                 httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must use the correct resource object name and merge the resource object parameters with the given parameters", function () {
@@ -282,6 +304,10 @@ describe("the resources property", function () {
                 httpBackend, {'name': 'self', 'parameters': {'objectParameterName': 'objectParameterValue'}},
                 {'parameterName': 'parameterValue'})
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must return the resources of the object", function () {

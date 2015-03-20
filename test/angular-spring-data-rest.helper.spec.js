@@ -59,7 +59,6 @@ var expectResourceExecution = function (data, resourcesKey, expectedUrl, httpBac
 
     // call the resource method
     data[resourcesKey](resourceName, parameters).get();
-    httpBackend.flush();
 };
 
 var mockData = function () {
