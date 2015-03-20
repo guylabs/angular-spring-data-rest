@@ -16,7 +16,6 @@ describe("the spring data rest adapter", function () {
         });
 
         testDeferred.resolve(mockData());
-
         this.rootScope.$apply();
     });
 
@@ -34,7 +33,6 @@ describe("the spring data rest adapter", function () {
         });
 
         testDeferred.resolve({data: mockData()});
-
         this.rootScope.$apply();
     });
 
@@ -52,7 +50,6 @@ describe("the spring data rest adapter", function () {
             });
 
         testDeferred.reject(errorMessage);
-
         this.rootScope.$apply();
     });
 

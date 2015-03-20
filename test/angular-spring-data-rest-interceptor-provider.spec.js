@@ -47,21 +47,21 @@ describe("if the spring data rest interceptor is not added", function () {
         var embeddedItemsKey = this.config.embeddedNewKey;
 
         // check if the underlying $resource method is called with the correct href url
-        var response = mockData();
-        this.httpBackend.whenGET(linkHref).respond(200, response);
+        this.httpBackend.whenGET(linkHref).respond(200, mockData());
         this.httpBackend.expectGET(linkHref);
 
         this.processedDataPromise.then(function (processedData) {
-            var result = processedData[this.config.resourcesKey](linkName).get(function () {
-
+            var result = processedData[resourcesKey](linkName).get(function () {
                 // if the interceptor is not added the resource method must not be added
                 expect(result[resourcesKey]).not.toBeDefined();
 
                 // if the interceptor is not added the _embeddedItems property must not be added
                 expect(result[embeddedItemsKey]).not.toBeDefined();
             });
-            this.httpBackend.flush();
+
         });
+
+        this.httpBackend.flush();
     });
 
 });
@@ -119,16 +119,18 @@ describe("if the spring data rest interceptor is added", function () {
         this.httpBackend.expectGET(linkHref);
 
         this.processedDataPromise.then(function (processedData) {
-            var result = processedData[this.config.resourcesKey](linkName).get(function () {
-
-                // if the interceptor is added the resource method must not be added
+            var result = processedData[resourcesKey](linkName).get(function () {
+                // if the interceptor is added the resource method must be added
                 expect(result[resourcesKey]).toBeDefined();
 
-                // if the interceptor is added the _embeddedItems property must not be added
+                // if the interceptor is added the _embeddedItems property must be added
                 expect(result[embeddedItemsKey]).toBeDefined();
             });
-            this.httpBackend.flush();
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
 });

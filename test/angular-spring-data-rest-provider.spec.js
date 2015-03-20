@@ -23,6 +23,8 @@ describe("the spring data rest adapter", function () {
         }, function (error) {
             expect(error).toEqual("Given data '" + string + "' is not of type object.")
         });
+
+        this.rootScope.$apply();
     });
 
     it("must throw an exception if the data object is null", function () {
@@ -31,6 +33,8 @@ describe("the spring data rest adapter", function () {
         }, function (error) {
             expect(error).toEqual("Given data '" + null + "' is not of type object.")
         });
+
+        this.rootScope.$apply();
     });
 
     it("must throw an exception if the fetch links parameter is not an array or a string", function () {
@@ -41,47 +45,66 @@ describe("the spring data rest adapter", function () {
             expect(error).toEqual("Given fetch links '" + fetchLinkNames + "' is not of type array or string.")
         });
 
-        fetchLinkNames = {'object': 'object'};
-        SpringDataRestAdapter.process({}, fetchLinkNames).then(function () {
+        var fetchLinkNames2 = {'object': 'object'};
+        SpringDataRestAdapter.process({}, fetchLinkNames2).then(function () {
             throw new Error("Should not be called when the promise is rejected")
         }, function (error) {
-            expect(error).toEqual("Given fetch links '" + fetchLinkNames + "' is not of type array or string.")
+            expect(error).toEqual("Given fetch links '" + fetchLinkNames2 + "' is not of type array or string.")
         });
+
+        this.rootScope.$apply();
     });
 
     it("must only add the resource method if there is a links key in the data object", function () {
+        var linksKey = this.config.linksKey;
+        var resourcesKey = this.config.resourcesKey;
+
         this.rawResponse = mockDataWithoutLinksKey();
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the links key and the resource method is not present
-            expect(processedData[this.config.linksKey]).not.toBeDefined();
-            expect(processedData[this.config.resourcesKey]).not.toBeDefined();
+            expect(processedData[linksKey]).not.toBeDefined();
+            expect(processedData[resourcesKey]).not.toBeDefined();
         });
+
+        this.rootScope.$apply();
     });
 
     it("must only add the embedded value key if there is a embedded key in the data object", function () {
+        var embeddedKey = this.config.embeddedKey;
+        var embeddedNewKey = this.config.embeddedNewKey;
+
         this.rawResponse = mockDataWithoutEmbeddedKey();
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the embedded key and value is not present
-            expect(processedData[this.config.embeddedKey]).not.toBeDefined();
-            expect(processedData[this.config.embeddedNewKey]).not.toBeDefined();
+            expect(processedData[embeddedKey]).not.toBeDefined();
+            expect(processedData[embeddedNewKey]).not.toBeDefined();
         });
+
+        this.rootScope.$apply();
     });
 
     it("must return the original data object if no links key or embedded key is present", function () {
-        this.rawResponse = mockDataWithoutAnyKey();
-        SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
+        var linksKey = this.config.linksKey;
+        var resourcesKey = this.config.resourcesKey;
+        var embeddedKey = this.config.embeddedKey;
+        var embeddedNewKey = this.config.embeddedNewKey;
+        var rawResponse = mockDataWithoutAnyKey();
+
+        SpringDataRestAdapter.process(rawResponse).then(function (processedData) {
 
             // expect that the links key and the resource method is not present
-            expect(processedData[this.config.linksKey]).not.toBeDefined();
-            expect(processedData[this.config.resourcesKey]).not.toBeDefined();
+            expect(processedData[linksKey]).not.toBeDefined();
+            expect(processedData[resourcesKey]).not.toBeDefined();
 
             // expect that the embedded key and value is not present
-            expect(processedData[this.config.embeddedKey]).not.toBeDefined();
-            expect(processedData[this.config.embeddedNewKey]).not.toBeDefined();
+            expect(processedData[embeddedKey]).not.toBeDefined();
+            expect(processedData[embeddedNewKey]).not.toBeDefined();
 
             // check that the original response is the one which is returned
-            expect(this.rawResponse === processedData).toBe(true);
+            expect(rawResponse === processedData).toBe(true);
         });
+
+        this.rootScope.$apply();
     });
 
 });

@@ -22,12 +22,12 @@ describe("the configuration", function () {
         var invalidIntegerConfig = 42;
         expect(function () {
             springDataRestAdapterProvider.config(invalidIntegerConfig)
-        }).toThrow("The given configuration '" + invalidIntegerConfig + "' is not an object.");
+        }).toThrowError("The given configuration '" + invalidIntegerConfig + "' is not an object.");
 
         var invalidStringConfig = "invalid";
         expect(function () {
             springDataRestAdapterProvider.config(invalidStringConfig)
-        }).toThrow("The given configuration '" + invalidStringConfig + "' is not an object.");
+        }).toThrowError("The given configuration '" + invalidStringConfig + "' is not an object.");
     });
 
     it("must return the updated configuration object when a valid configuration object is given", function () {
@@ -117,7 +117,7 @@ describe("the configuration", function () {
         // set the new configuration and check that the resourcesFunction is type of function
         expect(function () {
             springDataRestAdapterProvider.config(invalidResourceFunctionConfiguration)
-        }).toThrow("The given resource function 'function' is not of type function.");
+        }).toThrowError("The given resource function 'function' is not of type function.");
     });
 
     it("must throw an error if the given fetchFunction is not a function", function () {
@@ -128,7 +128,7 @@ describe("the configuration", function () {
         // set the new configuration and check that the fetchFunction is type of function
         expect(function () {
             springDataRestAdapterProvider.config(invalidFetchFunctionConfiguration)
-        }).toThrow("The given fetch function 'function' is not of type function.");
+        }).toThrowError("The given fetch function 'function' is not of type function.");
     });
 
 });

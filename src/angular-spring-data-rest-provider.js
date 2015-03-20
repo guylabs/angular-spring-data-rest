@@ -203,18 +203,20 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                     // if the given data object has a data property use this for the further processing as the
                     // standard httpPromises from the $http functions store the response data in a data property
-                    if (data.data) {
+                    if (data && data.data) {
                         data = data.data;
                     }
 
                     // throw an exception if given data parameter is not of type object
                     if (!angular.isObject(data) || data instanceof Array) {
                         deferred.reject("Given data '" + data + "' is not of type object.");
+                        return;
                     }
 
                     // throw an exception if given fetch links parameter is not of type array or string
-                    if (fetchLinkNames != undefined && !(fetchLinkNames instanceof Array || typeof fetchLinkNames === "string")) {
+                    if (fetchLinkNames && !(fetchLinkNames instanceof Array || typeof fetchLinkNames === "string")) {
                         deferred.reject("Given fetch links '" + fetchLinkNames + "' is not of type array or string.");
+                        return;
                     }
 
                     var processedData = undefined;

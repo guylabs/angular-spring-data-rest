@@ -3,12 +3,18 @@ describe("the resources property", function () {
     beforeEach(beforeEachFunction);
 
     it("must contain the 'links key' key", function () {
+        var linksKey = this.config.linksKey;
+
         this.processedDataPromise.then(function (processedData) {
-            expect(processedData[this.config.linksKey]).toBeDefined();
+            expect(processedData[linksKey]).toBeDefined();
         });
+
+        this.rootScope.$apply();
     });
 
     it("must call the correct href url if a resource name is passed to the $resource method", function () {
+
+        var resourcesKey = this.config.resourcesKey;
 
         // define the resource name and the correct resource href url
         var resourceName = "self";
@@ -20,14 +26,17 @@ describe("the resources property", function () {
         this.httpBackend.expectGET(resourceHref);
 
         this.processedDataPromise.then(function (processedData) {
-            var result = processedData[this.config.resourcesKey](resourceName).get(function () {
+            var result = processedData[resourcesKey](resourceName).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
-            this.httpBackend.flush();
         });
+
+        this.httpBackend.flush();
     });
 
     it("must call the correct href url if a resource object is passed to the $resource method", function () {
+
+        var resourcesKey = this.config.resourcesKey;
 
         // define the resource object and the correct link href url
         var resourceObject = {
@@ -41,14 +50,17 @@ describe("the resources property", function () {
         this.httpBackend.expectGET(resourceHref);
 
         this.processedDataPromise.then(function (processedData) {
-            var result = processedData[this.config.resourcesKey](resourceObject).get(function () {
+            var result = processedData[resourcesKey](resourceObject).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
-            this.httpBackend.flush();
         });
+
+        this.httpBackend.flush();
     });
 
     it("must call the correct href url with parameters if a resource object with parameters is passed to the $resource method", function () {
+
+        var resourcesKey = this.config.resourcesKey;
 
         // define the resource object and the correct link href url
         var resourceObject = {
@@ -66,14 +78,17 @@ describe("the resources property", function () {
         this.httpBackend.expectGET(resourceHref);
 
         this.processedDataPromise.then(function (processedData) {
-            var result = processedData[this.config.resourcesKey](resourceObject).get(function () {
+            var result = processedData[resourcesKey](resourceObject).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
-            this.httpBackend.flush();
         });
+
+        this.httpBackend.flush();
     });
 
     it("must call the correct href url without parameters if a resource object with empty parameters is passed to the $resource method", function () {
+
+        var resourcesKey = this.config.resourcesKey;
 
         // define the resource object and the correct link href url
         var resourceObject = {
@@ -91,14 +106,16 @@ describe("the resources property", function () {
         this.httpBackend.expectGET(resourceHref);
 
         this.processedDataPromise.then(function (processedData) {
-            var result = processedData[this.config.resourcesKey](resourceObject).get(function () {
+            var result = processedData[resourcesKey](resourceObject).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
-            this.httpBackend.flush();
         });
+
+        this.httpBackend.flush();
     });
 
     it("it must call the overridden resource function with the given resource name", function () {
+        var resourcesKey = this.config.resourcesKey;
         var url = undefined, paramDefaults = undefined, actions = undefined, options = undefined;
         var resourcesFunctionConfiguration = {
             'resourcesFunction': function (inUrl, inParamDefaults, inActions, inOptions) {
@@ -118,16 +135,19 @@ describe("the resources property", function () {
         springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // call the new resource method and expect the response and the call to the method
-            var resourceResponse = processedData[this.config.resourcesKey](resourceName, 'paramDefaults', 'actions', 'options');
+            var resourceResponse = processedData[resourcesKey](resourceName, 'paramDefaults', 'actions', 'options');
             expect(resourceResponse).toEqual('foo');
             expect(url).toEqual(resourceHref);
             expect(paramDefaults).toEqual('paramDefaults');
             expect(actions).toEqual('actions');
             expect(options).toEqual('options');
         });
+
+        this.rootScope.$apply();
     });
 
     it("it must call the overridden resource function with the given resource object", function () {
+        var resourcesKey = this.config.resourcesKey;
         var url = undefined, paramDefaults = undefined, actions = undefined, options = undefined;
         var resourcesFunctionConfiguration = {
             'resourcesFunction': function (inUrl, inParamDefaults, inActions, inOptions) {
@@ -149,106 +169,122 @@ describe("the resources property", function () {
         springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // call the new resource method and expect the response and the call to the method
-            var resourceResponse = processedData[this.config.resourcesKey](resourceObject, 'paramDefaults', 'actions', 'options');
+            var resourceResponse = processedData[resourcesKey](resourceObject, 'paramDefaults', 'actions', 'options');
             expect(resourceResponse).toEqual('foo');
             expect(url).toEqual(resourceHref);
             expect(paramDefaults).toEqual('paramDefaults');
             expect(actions).toEqual('actions');
             expect(options).toEqual('options');
         });
+
+        this.rootScope.$apply();
     });
 
     it("must throw an exception if a wrong resource object is given", function () {
+        var resourcesKey = this.config.resourcesKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // it must throw an exception if a wrong resource object is given
             expect(function () {
-                expectResourceExecution(processedData, this.config.resourcesKey,
+                expectResourceExecution(processedData, resourcesKey,
                     "expectedUrl", this.httpBackend, {'wrongPropertyName': 'value'});
             }).toThrow("The provided resource object must contain a name property.");
         });
     });
 
     it("must not use any parameters if the resource object is a string and no parameters are given", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var linksKey = this.config.linksKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // the parameters must not be used in the resources method
-            expectResourceExecution(processedData, this.config.resourcesKey,
-                processedData[this.config.linksKey]["self"].href, this.httpBackend, "self")
+            expectResourceExecution(processedData, resourcesKey,
+                processedData[linksKey]["self"].href, this.httpBackend, "self")
         });
     });
 
     it("must use the given parameters if the resource object is a string", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var linksKey = this.config.linksKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // the given parameters must be used in the resources method
-            expectResourceExecution(processedData, this.config.resourcesKey,
-                processedData[this.config.linksKey]["self"].href + "?parameterName=parameterValue", this.httpBackend, "self",
+            expectResourceExecution(processedData, resourcesKey,
+                processedData[linksKey]["self"].href + "?parameterName=parameterValue", this.httpBackend, "self",
                 {'parameterName': 'parameterValue'});
         });
     });
 
     it("must use the resource name if the correct resource object is given", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var linksKey = this.config.linksKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // the given resource name must be used
-            expectResourceExecution(processedData, this.config.resourcesKey,
-                processedData[this.config.linksKey]["self"].href, this.httpBackend, {'name': 'self'})
+            expectResourceExecution(processedData, resourcesKey,
+                processedData[linksKey]["self"].href, this.httpBackend, {'name': 'self'})
         });
     });
 
     it("must use the correct resource object name and the given parameters", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var linksKey = this.config.linksKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // the given parameters must be used in the resources method
-            expectResourceExecution(processedData, this.config.resourcesKey,
-                processedData[this.config.linksKey]["self"].href + "?parameterName=parameterValue",
+            expectResourceExecution(processedData, resourcesKey,
+                processedData[linksKey]["self"].href + "?parameterName=parameterValue",
                 this.httpBackend, {'name': 'self'}, {'parameterName': 'parameterValue'})
         });
     });
 
     it("must use the correct resource object name and parameters", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var linksKey = this.config.linksKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // the given parameters must be used in the resources method
-            expectResourceExecution(processedData, this.config.resourcesKey,
-                processedData[this.config.linksKey]["self"].href + "?parameterName=parameterValue",
+            expectResourceExecution(processedData, resourcesKey,
+                processedData[linksKey]["self"].href + "?parameterName=parameterValue",
                 this.httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
         });
     });
 
     it("must use the correct resource object name and merge the resource object parameters with the given parameters", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var linksKey = this.config.linksKey;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // the given parameters must be used in the resources method
-            expectResourceExecution(processedData, this.config.resourcesKey,
-                processedData[this.config.linksKey]["self"].href + "?objectParameterName=objectParameterValue&parameterName=parameterValue",
+            expectResourceExecution(processedData, resourcesKey,
+                processedData[linksKey]["self"].href + "?objectParameterName=objectParameterValue&parameterName=parameterValue",
                 this.httpBackend, {'name': 'self', 'parameters': {'objectParameterName': 'objectParameterValue'}},
                 {'parameterName': 'parameterValue'})
         });
     });
 
     it("must return the resources of the object", function () {
+        var resourcesKey = this.config.resourcesKey;
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // expect that the resource method returns the available resources on the object
-            expect(processedData[this.config.resourcesKey]()).toEqual([
+            expect(processedData[resourcesKey]()).toEqual([
                     {
                         name: 'self',
                         parameters: {
@@ -263,16 +299,19 @@ describe("the resources property", function () {
                 ]
             );
         });
+
+        this.rootScope.$apply();
     });
 
     it("must return the resources of the object with empty parameters if the templated property is false", function () {
+        var resourcesKey = this.config.resourcesKey;
         this.rawResponse = mockWithoutTemplateParametersData();
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // expect that the resource method returns the available resources on the object
-            expect(processedData[this.config.resourcesKey]()).toEqual([
+            expect(processedData[resourcesKey]()).toEqual([
                     {
                         name: 'users'
                     },
@@ -282,16 +321,19 @@ describe("the resources property", function () {
                 ]
             );
         });
+
+        this.rootScope.$apply();
     });
 
     it("must return the resources of the index response", function () {
+        var resourcesKey = this.config.resourcesKey;
         this.rawResponse = mockIndexData();
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // expect that the resource method returns the available resources on the index response
-            expect(processedData[this.config.resourcesKey]()).toEqual([
+            expect(processedData[resourcesKey]()).toEqual([
                     {
                         name: 'users',
                         parameters: {
@@ -319,42 +361,50 @@ describe("the resources property", function () {
                 ]
             );
         });
+
+        this.rootScope.$apply();
     });
 
     it("must throw an exception if the href property is empty", function () {
+        var resourcesKey = this.config.resourcesKey;
         this.rawResponse = mockWithEmptyHrefPropertyData();
         SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // expect that the resource method with the specified resource name throws an exception
             expect(function () {
-                processedData[this.config.resourcesKey]("self")
-            }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+                processedData[resourcesKey]("self")
+            }).toThrowError("The provided resource name 'self' has no valid URL in the 'href' property.");
 
             // expect that the resource method with the specified resource object throws an exception
             expect(function () {
-                processedData[this.config.resourcesKey]({'name': 'self'})
-            }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+                processedData[resourcesKey]({'name': 'self'})
+            }).toThrowError("The provided resource name 'self' has no valid URL in the 'href' property.");
         });
+
+        this.rootScope.$apply();
     });
 
     it("must throw an exception if the href property is not present", function () {
+        var resourcesKey = this.config.resourcesKey;
         this.rawResponse = mockWithoutHrefPropertyData();
         this.response = SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
             // expect that the resources method is present
-            expect(processedData[this.config.resourcesKey]).toBeDefined();
+            expect(processedData[resourcesKey]).toBeDefined();
 
             // expect that the resource method with the specified resource name throws an exception
             expect(function () {
-                processedData[this.config.resourcesKey]("self")
-            }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+                processedData[resourcesKey]("self")
+            }).toThrowError("The provided resource name 'self' has no valid URL in the 'href' property.");
 
             // expect that the resource method with the specified resource object throws an exception
             expect(function () {
-                processedData[this.config.resourcesKey]({'name': 'self'})
-            }).toThrow("The provided resource name 'self' has no valid URL in the 'href' property.");
+                processedData[resourcesKey]({'name': 'self'})
+            }).toThrowError("The provided resource name 'self' has no valid URL in the 'href' property.");
         });
+
+        this.rootScope.$apply();
     });
 
 });

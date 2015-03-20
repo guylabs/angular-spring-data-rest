@@ -16,6 +16,7 @@ describe("the fetch function", function () {
 
     it("must call the correct href url if an existing fetch link name is given", function () {
 
+        var embeddedNewKey = this.config.embeddedNewKey;
         var fetchLinkName = 'parentCategory';
 
         // the correct link href url
@@ -35,17 +36,19 @@ describe("the fetch function", function () {
         this.httpBackend.expectGET(secondParentCategoryHref);
 
         SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function (processedData) {
-            this.httpBackend.flush();
-            this.httpBackend.verifyNoOutstandingRequest();
-            this.httpBackend.verifyNoOutstandingExpectation();
-
             // expect the fetched objects
-            expect(processedData[this.config.embeddedNewKey][0][fetchLinkName]).toEqual(firstExpectedResult);
-            expect(processedData[this.config.embeddedNewKey][1][fetchLinkName]).toEqual(secondExpectedResult);
+            expect(processedData[embeddedNewKey][0][fetchLinkName]).toEqual(firstExpectedResult);
+            expect(processedData[embeddedNewKey][1][fetchLinkName]).toEqual(secondExpectedResult);
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must call all links if the fetch all link names key", function () {
+
+        var embeddedNewKey = this.config.embeddedNewKey;
 
         // the correct link href url
         var testLinkHref = 'http://localhost:8080/categories/testLink';
@@ -76,20 +79,21 @@ describe("the fetch function", function () {
         this.httpBackend.expectGET(testParentCategoryHref);
 
         SpringDataRestAdapter.process(this.rawResponse, this.config.fetchAllKey).then(function (processedData) {
-            this.httpBackend.flush();
-            this.httpBackend.verifyNoOutstandingRequest();
-            this.httpBackend.verifyNoOutstandingExpectation();
-
             // expect the fetched objects
             expect(processedData['testLink']).toEqual(testLinkExpectedResult);
-            expect(processedData[this.config.embeddedNewKey][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
-            expect(processedData[this.config.embeddedNewKey][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
-            expect(processedData[this.config.embeddedNewKey][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
+            expect(processedData[embeddedNewKey][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
+            expect(processedData[embeddedNewKey][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
+            expect(processedData[embeddedNewKey][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must call all links of the given fetch link names array", function () {
 
+        var embeddedNewKey = this.config.embeddedNewKey;
         var fetchLinkNames = ['testLink', 'testCategory'];
 
         // the correct link href url
@@ -109,18 +113,20 @@ describe("the fetch function", function () {
         this.httpBackend.expectGET(testParentCategoryHref);
 
         SpringDataRestAdapter.process(this.rawResponse, fetchLinkNames).then(function (processedData) {
-            this.httpBackend.flush();
-            this.httpBackend.verifyNoOutstandingRequest();
-            this.httpBackend.verifyNoOutstandingExpectation();
-
             // expect the fetched objects
             expect(processedData[fetchLinkNames[0]]).toEqual(testLinkExpectedResult);
-            expect(processedData[this.config.embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
+            expect(processedData[embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("must process the fetched response recursively if the flag is set", function () {
 
+        var embeddedNewKey = this.config.embeddedNewKey;
+        var resourcesKey = this.config.resourcesKey;
         var fetchLinkName = 'parentCategory';
 
         // the correct link href url
@@ -140,16 +146,16 @@ describe("the fetch function", function () {
         this.httpBackend.expectGET(secondParentCategoryHref);
 
         SpringDataRestAdapter.process(this.rawResponse, fetchLinkName, true).then(function (processedData) {
-            this.httpBackend.flush();
-            this.httpBackend.verifyNoOutstandingRequest();
-            this.httpBackend.verifyNoOutstandingExpectation();
-
             // expect the recursively fetched objects
-            expect(typeof this.response[this.config.embeddedNewKey][0][fetchLinkName][this.config.resourcesKey] == 'function').
+            expect(typeof processedData[embeddedNewKey][0][fetchLinkName][resourcesKey] == 'function').
                 toEqual(true);
-            expect(typeof this.response[this.config.embeddedNewKey][1][fetchLinkName][this.config.resourcesKey] == 'function').
+            expect(typeof processedData[embeddedNewKey][1][fetchLinkName][resourcesKey] == 'function').
                 toEqual(true);
         });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
     });
 
     it("it must call the overridden fetch function with the given resource name", function () {
@@ -186,6 +192,8 @@ describe("the fetch function", function () {
         // set the new fetch function and create a new spring data rest adapter
         springDataRestAdapterProvider.config(fetchFunctionConfiguration);
         this.response = SpringDataRestAdapter.process(this.rawResponse, fetchLinkName);
+
+        this.rootScope.$apply();
     });
 
 });
