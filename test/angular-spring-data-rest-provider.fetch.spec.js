@@ -196,5 +196,52 @@ describe("the fetch function", function () {
         this.rootScope.$apply();
     });
 
+    it("must reject the promise if the status code is not between 200 - 299 and not a 404", function () {
+
+        var fetchLinkName = 'testCategory';
+
+        // the correct link href url
+        var testCategoryHref = 'http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory';
+
+        this.httpBackend.whenGET(testCategoryHref).
+            respond(300, "error");
+        this.httpBackend.expectGET(testCategoryHref);
+
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function (responseData) {
+            throw new Error("Should not be called when the promise is rejected")
+        }, function (error) {
+            expect(error.status).toBe(300);
+        });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
+    });
+
+    it("must not reject the promise if the status code is a 404", function () {
+
+        var embeddedNewKey = this.config.embeddedNewKey;
+        var fetchLinkName = 'testCategory';
+
+        // the correct link href url
+        var testCategoryHref = 'http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory';
+        var firstExpectedResult = {parentCategory: '1'};
+
+        this.httpBackend.whenGET(testCategoryHref).
+            respond(200, firstExpectedResult);
+        this.httpBackend.expectGET(testCategoryHref);
+
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function (processedData) {
+            expect(processedData[embeddedNewKey][1][fetchLinkName]).toEqual(firstExpectedResult);
+
+        }, function () {
+            throw new Error("Should not be called when the promise is rejected")
+        });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
+    });
+
 });
 

@@ -82,7 +82,6 @@ describe("the response with the embedded values", function () {
                     httpBackend.expectGET(linkHrefs[i]);
 
                     processedData[embeddedNewKey][key][resourcesKey](linkNames[i]).get().$promise.then(function (result) {
-                        console.log("categoryId: " + result.categoryId);
                         expect(expectedCategoryIds.indexOf(result.categoryId) > -1).toBe(true);
                     });
 

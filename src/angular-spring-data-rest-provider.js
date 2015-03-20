@@ -233,11 +233,6 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         // if there are links to fetch, then process and fetch them
                         if (fetchLinkNames != undefined) {
 
-                            // make a defensive copy if the processedData variable is undefined
-                            if (!processedData) {
-                                processedData = angular.copy(data);
-                            }
-
                             // process all links
                             angular.forEach(data[config.linksKey], function (linkValue, linkName) {
 
@@ -290,9 +285,6 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                     processedDataArrayPromise.then(function () {
                                         processedData[config.embeddedNewKey][key] = processedDataArray;
                                     })
-                                } else {
-                                    // set the processed data array right away as there is no promise to resolve
-                                    processedData[config.embeddedNewKey][key] = processedDataArray;
                                 }
                             } else {
                                 // single objects are processed directly

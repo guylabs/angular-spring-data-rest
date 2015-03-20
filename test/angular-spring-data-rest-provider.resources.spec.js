@@ -182,6 +182,7 @@ describe("the resources property", function () {
 
     it("must throw an exception if a wrong resource object is given", function () {
         var resourcesKey = this.config.resourcesKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
@@ -189,7 +190,7 @@ describe("the resources property", function () {
             // it must throw an exception if a wrong resource object is given
             expect(function () {
                 expectResourceExecution(processedData, resourcesKey,
-                    "expectedUrl", this.httpBackend, {'wrongPropertyName': 'value'});
+                    "expectedUrl", httpBackend, {'wrongPropertyName': 'value'});
             }).toThrow("The provided resource object must contain a name property.");
         });
     });
@@ -197,26 +198,28 @@ describe("the resources property", function () {
     it("must not use any parameters if the resource object is a string and no parameters are given", function () {
         var resourcesKey = this.config.resourcesKey;
         var linksKey = this.config.linksKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
 
             // the parameters must not be used in the resources method
             expectResourceExecution(processedData, resourcesKey,
-                processedData[linksKey]["self"].href, this.httpBackend, "self")
+                processedData[linksKey]["self"].href, httpBackend, "self")
         });
     });
 
     it("must use the given parameters if the resource object is a string", function () {
         var resourcesKey = this.config.resourcesKey;
         var linksKey = this.config.linksKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
 
             // the given parameters must be used in the resources method
             expectResourceExecution(processedData, resourcesKey,
-                processedData[linksKey]["self"].href + "?parameterName=parameterValue", this.httpBackend, "self",
+                processedData[linksKey]["self"].href + "?parameterName=parameterValue", httpBackend, "self",
                 {'parameterName': 'parameterValue'});
         });
     });
@@ -224,19 +227,21 @@ describe("the resources property", function () {
     it("must use the resource name if the correct resource object is given", function () {
         var resourcesKey = this.config.resourcesKey;
         var linksKey = this.config.linksKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
 
             // the given resource name must be used
             expectResourceExecution(processedData, resourcesKey,
-                processedData[linksKey]["self"].href, this.httpBackend, {'name': 'self'})
+                processedData[linksKey]["self"].href, httpBackend, {'name': 'self'})
         });
     });
 
     it("must use the correct resource object name and the given parameters", function () {
         var resourcesKey = this.config.resourcesKey;
         var linksKey = this.config.linksKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
@@ -244,13 +249,14 @@ describe("the resources property", function () {
             // the given parameters must be used in the resources method
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue",
-                this.httpBackend, {'name': 'self'}, {'parameterName': 'parameterValue'})
+                httpBackend, {'name': 'self'}, {'parameterName': 'parameterValue'})
         });
     });
 
     it("must use the correct resource object name and parameters", function () {
         var resourcesKey = this.config.resourcesKey;
         var linksKey = this.config.linksKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
@@ -258,13 +264,14 @@ describe("the resources property", function () {
             // the given parameters must be used in the resources method
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue",
-                this.httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
+                httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
         });
     });
 
     it("must use the correct resource object name and merge the resource object parameters with the given parameters", function () {
         var resourcesKey = this.config.resourcesKey;
         var linksKey = this.config.linksKey;
+        var httpBackend = this.httpBackend;
         this.processedDataPromise.then(function (processedData) {
             // expect that the resources method is present
             expect(processedData[resourcesKey]).toBeDefined();
@@ -272,7 +279,7 @@ describe("the resources property", function () {
             // the given parameters must be used in the resources method
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href + "?objectParameterName=objectParameterValue&parameterName=parameterValue",
-                this.httpBackend, {'name': 'self', 'parameters': {'objectParameterName': 'objectParameterValue'}},
+                httpBackend, {'name': 'self', 'parameters': {'objectParameterName': 'objectParameterValue'}},
                 {'parameterName': 'parameterValue'})
         });
     });
