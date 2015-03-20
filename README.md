@@ -143,10 +143,12 @@ To use the `SpringDataRestAdapter` object you need to include the `angular-sprin
 var myApp = angular.module("myApplication", ["ngResource", "spring-data-rest"]);
 ```
 
-Now you are able use the `SpringDataRestAdapter` object and process a given response:
+Now you are able use the `SpringDataRestAdapter` object and process a given response and you will get a promise back which resolves with the processes response:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response);
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
+  ...
+});
 ```
 
 Please read on on how to use the `_resources` method and the `_embeddedItems` property to ease the handling of resources and embedded items.
@@ -168,13 +170,14 @@ var response = {
     }
     ...
 }
-var processedResponse = SpringDataRestAdapter.process(response);
 ```
 
-Then the `SpringDataRestAdapter` will add the `_resources` method to the same level such that you can call it the following way:
+Then the `SpringDataRestAdapter` will add the `_resources` method to the same level such that you can call it the following way (inside the `then` function of the promise):
 
 ```javascript
-processedResponse._resources(linkName, paramDefaults, actions, options);
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
+  processedResponse._resources(linkName, paramDefaults, actions, options);
+});
 ```
 
 This `_resources` method is added recursively to all the properties of the JSON response object where a `_links` property exists.
@@ -186,14 +189,16 @@ The `_resources` method takes the following four parameters:
 * `linkName`: the name of the link's `href` you want to call with the underlying *Angular* `$resource` function. You can also pass in a resource object with parameters in the following way:
 
 ```javascript
-var resourceObject = {
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
+  var resourceObject = {
     "name": "self",
     "parameters": {
         "size": 20,
         "sort": "asc"
     }
-}
-processedResponse._resources(resourceObject, paramDefaults, actions, options);
+  }
+  processedResponse._resources(resourceObject, paramDefaults, actions, options);
+});
 ```
 
 This will call *Angular* `$resource` method by default (this is [exchangeable](#exchange-the-underlying-angular-resource-function)) with the `href` of the `self` resource and will add the parameters `size` and `sort` as query string to the URL. If the resource object parameters and the `paramDefaults` parameters are set, then these two objects are merged such that the resource object parameters appear first in the new object and the `paramDefaults` parameters last.
@@ -222,12 +227,13 @@ var response = {
     }
     ...
 }
-var processedResponse = SpringDataRestAdapter.process(response);
 ```
 Then the following call to the `_resources` method without any parameter will return an array of all available resource objects.
 
 ```javascript
-var availableResources = processedResponse._resources();
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
+  var availableResources = processedResponse._resources();
+});
 ```
 
 The above call will result in the following return value:
@@ -255,13 +261,14 @@ This functionality is useful if you want to first check all available resources 
 This example refers to the JSON response in the [Overview](#overview). If you want to get the parent category of a category you would call the `_resources` method the following way:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response);
-var parentCategoryResource = processedResponse._embeddedItems[0]._resources("parentCategory");
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
+  var parentCategoryResource = processedResponse._embeddedItems[0]._resources("parentCategory");
 
-// create a GET request, with the help of the Angular resource class, to the parent category
-// url and log the response to the console
-var parentCategory = parentCategoryResource.get(function() {
+  // create a GET request, with the help of the Angular resource class, to the parent category
+  // url and log the response to the console
+  var parentCategory = parentCategoryResource.get(function() {
     console.log("Parent category name: " + parentCategory.name);
+  });
 });
 ```
 
@@ -294,11 +301,12 @@ The `_embeddedItems` property is just a convention property created by the `Spri
 This example refers to the JSON response in the [Overview](#overview). If you want to iterate over all categories in the response you would do it in the following way:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response);
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
 
-// log the name of all categories contained in the response to the console
-angular.forEach(processedResponse._embeddedItems, function (category, key) {
+  // log the name of all categories contained in the response to the console
+  angular.forEach(processedResponse._embeddedItems, function (category, key) {
     console.log("Category name: " + category.name);
+  });
 });
 ```
 
@@ -325,25 +333,23 @@ The `SpringDataRestAdapter` is able to fetch specified links automatically. This
 and you want to fetch the data from the `anotherLink` link then you just need to pass the link name to the `SpringDataRestAdapter` process function:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response, 'anotherLink');
+SpringDataRestAdapter.process(response, 'anotherLink').then(function(processedResponse) {
+  var fetchedObject = processedResponse.anotherLink;
+});
 ```
-
-Now you are able to get the data from the processed resource by just accessing the property named `anotherLink`:
-
-```javascript
-processedResponse.anotherLink
-```
+Now you are able to get the data from the processed resource by just accessing the property named `anotherLink`.
 
 The `SpringDataRestAdapter` by default adds the response of the link to a property in the original response with the same name as the link.
 
 If you want to process the returned response again with the `SpringDataRestAdapter` then you are able to set the `recursive` flag when creating it:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response, 'anotherLink', true);
+SpringDataRestAdapter.process(response, 'anotherLink', true).then(function(processedResponse) {
+  ...
+});
 ```
 
 Now the response of the `anotherLink` will be processed the same way as the main response was processed. But *be aware* when setting the recursive flag to true, because when your reponses of the links contain the same link name again, then it will end up in a infinite loop.
-
 
 It will not fetch the `self` link as this would make no sense because the data is already in the response. The `self` key is also configurable. Read more [here](#configuration-of-the-springdatarestadapter).
 
@@ -352,13 +358,16 @@ It will not fetch the `self` link as this would make no sense because the data i
 If you want to fetch multiple links then you are able to add an array of strings with the given link names:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response, ['anotherLink', 'testLink']);
+SpringDataRestAdapter.process(response, ['anotherLink', 'testLink']).then(function(processedResponse) {
+  ...
+});
 ```
-
 and if you want to fetch all links, then you can use the predefined and also configurable `fetchAllLinkNamesKey`:
 
 ```javascript
-var processedResponse = SpringDataRestAdapter.process(response, '_allLinks');
+SpringDataRestAdapter.process(response, '_allLinks').then(function(processedResponse) {
+  ...
+});
 ```
 
 Please read more [here](#configuration-of-the-springdatarestadapter) on how to configure the `fetchAllLinkNamesKey`.
@@ -395,7 +404,7 @@ The parameters for the fetch method are the following:
 
 ### How to use `SpringDataRestAdapter` with promises
 
-The `SpringDataRestAdapter` is also able to process promises instead of data objects. The data object which is passed to the specified promise when it is resolved needs to be in the following format:
+The `SpringDataRestAdapter` is also able to process promises instead of data objects. The data object which is passed to the specified promise when it is resolved needs to be in the following formats:
 
 ```javascript
 {
@@ -414,16 +423,30 @@ The `SpringDataRestAdapter` is also able to process promises instead of data obj
     }
 }
 ```
+or
+```javascript
+{
+    "_links": {
+        "self": {
+            "href": "http://localhost:8080/categories{?page,size,sort}",
+            "templated": true
+        },
+        "anotherLink": {
+            "href": "http://localhost:8080/anotherLink"
+        }
+    },
+    // the rest of the JSON response
+    ...
+}
+```
 
-The `data` property of the promise object is the JSON response of the back end. To process such a promise you need to call the `SpringDataRestAdapter` like in the following example:
+The `data` property of the second format of the promise object is the JSON response of the back end. To process such a promise you need to call the `SpringDataRestAdapter` like in the following example:
 
 ```javascript
-SpringDataRestAdapter.processWithPromise(promise).then(function(processedResponse) {
+SpringDataRestAdapter.process(promise).then(function(processedResponse) {
     // you can now use the processedResponse as any other processed response from the SpringDataRestAdapter
 };
 ```
-
-The only change between the `SpringDataRestAdapter.processWithPromise` and the `SpringDataRestAdapter.process` methods is the changed type of the data object. All other parameters are the same.
 
 You can also right away use the promise support with the `Angular` `$http.get()` method like in the following example:
 
