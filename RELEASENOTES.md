@@ -1,5 +1,18 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.4.0
+
+* Tag: [0.4.0](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.0)
+* Release: [angular-spring-data-rest-0.4.0.zip](https://github.com/guylabs/angular-spring-data-rest/releases/download/0.4.0/angular-spring-data-rest-0.4.0.zip)
+
+### Changes
+
+* Fixed issues with incorrect promise handling and simplified the code. Now the `process` function accepts promises and also returns promises. So there is no possibility to process data without using promises.
+
+### Migration notes
+
+* You will need to change all invocations of the `processWithPromise` function to the `process` function. Further you need to ensure that when you used the old `process` function that you now get a promise returned instead of the processed data directly.
+
 ## Version 0.3.2
 
 * Tag: [0.3.2](https://github.com/guylabs/angular-spring-data-rest/tree/0.3.2)
