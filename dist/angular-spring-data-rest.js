@@ -103,13 +103,15 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                     promisesArray.push($injector.get("$http").get(url)
                         .then(function (responseData) {
 
-                            // wrap the response again with the adapter if the recursive flag is set
+                            // wrap the response again with the adapter and return the promise
                             if (recursive) {
-                                promisesArray.push(processData(responseData.data, fetchLinkNames, true).then(function (processedData) {
+                                return processData(responseData.data, fetchLinkNames, true).then(function (processedData) {
                                     data[key] = processedData;
-                                }));
+                                });
                             } else {
-                                data[key] = responseData.data;
+                                return processData(responseData.data).then(function (processedData) {
+                                    data[key] = processedData;
+                                });
                             }
                         }, function (error) {
                             if (error.status != 404) {

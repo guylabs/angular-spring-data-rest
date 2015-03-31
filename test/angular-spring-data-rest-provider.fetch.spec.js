@@ -207,7 +207,7 @@ describe("the fetch function", function () {
             respond(300, "error");
         this.httpBackend.expectGET(testCategoryHref);
 
-        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function (responseData) {
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function () {
             throw new Error("Should not be called when the promise is rejected")
         }, function (error) {
             expect(error.status).toBe(300);
@@ -236,6 +236,39 @@ describe("the fetch function", function () {
 
         }, function () {
             throw new Error("Should not be called when the promise is rejected")
+        });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
+    });
+
+
+    it("must process the fetched responses as all the other responses", function () {
+
+        var embeddedNewKey = this.config.embeddedNewKey;
+        var fetchLinkName = 'parentCategory';
+
+        // the correct link href url
+        var firstParentCategoryHref = 'http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54/parentCategory';
+        var secondParentCategoryHref = 'http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/parentCategory';
+
+        // check if the underlying fetch function is called with the correct href url
+        var firstExpectedResult = mockData();
+        var secondExpectedResult = mockData();
+
+        this.httpBackend.whenGET(firstParentCategoryHref).
+            respond(200, firstExpectedResult);
+        this.httpBackend.expectGET(firstParentCategoryHref);
+
+        this.httpBackend.whenGET(secondParentCategoryHref).
+            respond(200, secondExpectedResult);
+        this.httpBackend.expectGET(secondParentCategoryHref);
+
+        SpringDataRestAdapter.process(this.rawResponse, fetchLinkName).then(function (processedData) {
+            // expect the fetched objects
+            expect(processedData[embeddedNewKey][0][fetchLinkName][embeddedNewKey][0]['name']).toEqual('Test category 1');
+            expect(processedData[embeddedNewKey][1][fetchLinkName][embeddedNewKey][1]['name']).toEqual('Test category 2');
         });
 
         this.httpBackend.flush();
