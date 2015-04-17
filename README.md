@@ -519,6 +519,23 @@ The config method of the `SpringDataRestAdapterProvider` takes a configuration o
     "fetchAllKey": "_allLinks"
 }
 ```
+If you want to use the `$http` service inside the fetch function in the configuration phase then you need to use the Angular injector to get the `$http` service:
+
+```javascript
+myApp.config(function (SpringDataRestAdapterProvider) {
+
+    // set the new fetch function
+    SpringDataRestAdapterProvider.config({
+        fetchFunction: function (url, key, data, fetchLinkNames, recursive) {
+            var $http = angular.injector(['ng']).get('$http');
+    
+            $http.get('/rest/endpoint').then(function (responseData) {
+                console.log(responseData);
+            })
+        }
+    });
+});
+```
 
 ## The `SpringDataRestInterceptor`
 
