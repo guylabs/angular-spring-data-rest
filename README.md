@@ -290,7 +290,7 @@ myApp.config(function (SpringDataRestAdapterProvider) {
 });
 ```
 
-The description of the parameters you will find [here](#the-_resources-method-parameters-and-return-type). You can also read more about the configuration of the `SpringDataRestAdapter` [here](#configuration-of-the-springdatarestadapter)
+The description of the parameters you will find [here](#the-_resources-method-parameters-and-return-type). You can also read more about the configuration of the `SpringDataRestAdapter` [here](#configuration-of-the-springdatarestadapter) (and how to use the `$http` service in the configuration phase)
 
 ### Usage of `_embeddedItems` property
 
@@ -390,7 +390,7 @@ myApp.config(function (SpringDataRestAdapterProvider) {
 });
 ```
 
-The description of the parameters you will find [here](#the-fetch-method-parameters). You can also read more about the configuration of the `SpringDataRestAdapter` [here](#configuration-of-the-springdatarestadapter)
+The description of the parameters you will find [here](#the-fetch-method-parameters). You can also read more about the configuration of the `SpringDataRestAdapter` [here](#configuration-of-the-springdatarestadapter) (and how to use the `$http` service in the configuration phase)
 
 #### The fetch method parameters
 
