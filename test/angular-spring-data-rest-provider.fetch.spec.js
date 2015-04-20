@@ -243,7 +243,6 @@ describe("the fetch function", function () {
         this.httpBackend.verifyNoOutstandingExpectation();
     });
 
-
     it("must process the fetched responses as all the other responses", function () {
 
         var embeddedNewKey = this.config.embeddedNewKey;
