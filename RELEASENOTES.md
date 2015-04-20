@@ -1,5 +1,18 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.4.1
+
+* Tag: [0.4.1](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.1)
+* Release: [angular-spring-data-rest-0.4.1.zip](https://github.com/guylabs/angular-spring-data-rest/releases/download/0.4.1/angular-spring-data-rest-0.4.1.zip)
+
+### Changes
+
+* Fixed issue [#8](https://github.com/guylabs/angular-spring-data-rest/issues/8).
+
+### Migration notes
+
+* No migration needed.
+
 ## Version 0.4.0
 
 * Tag: [0.4.0](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.0)
