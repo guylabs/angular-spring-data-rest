@@ -148,6 +148,15 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         var resources = this[config.linksKey];
                         var parameters = paramDefaults;
 
+                        var urlTemplates = "";
+
+                        // split the resourceObject to extract the URL templates for the $resource method
+                        if(hasUrlTemplate(resourceObject)) {
+                            var extractedUrlTemplates = extractUrlTemplates(resourceObject);
+                            resourceObject = extractedUrlTemplates[0];
+                            urlTemplates = extractedUrlTemplates[1];
+                        }
+
                         // if a resource object is given process it
                         if (angular.isObject(resourceObject)) {
                             if (!resourceObject.name) {
@@ -181,8 +190,8 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                             return resourcesFunction(getProcessedUrl(data, resourceObject.name), parameters, actions, options);
                         } else if (resourceObject in resources) {
 
-                            // process the url and call the resources function with the given parameters
-                            return resourcesFunction(getProcessedUrl(data, resourceObject), parameters, actions, options);
+                            // process the url, add the url templates and call the resources function with the given parameters
+                            return resourcesFunction(getProcessedUrl(data, resourceObject) + urlTemplates, parameters, actions, options);
                         }
 
                         // return the available resources as resource object array if the resource object parameter is not set
@@ -312,6 +321,27 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                     // extract the template parameters of the raw URL
                     return extractUrl(rawUrl, data[config.linksKey][resourceName].templated);
+                }
+
+                /**
+                 * Returns true if the resource name has URL templates
+                 * @param resourceName the resource name to parse
+                 * @returns {boolean} true if the resource name has URL templates, false otherwise
+                 */
+                function hasUrlTemplate(resourceName) {
+                    return typeof resourceName == "string" && resourceName.indexOf("/") > 0;
+                }
+
+                /**
+                 * Extracts the URL template and returns the resource name and the URL templates as an array.
+                 * @param resourceName the resource name to parse
+                 * @returns {[]} the first element is the raw resource name and the second is the extracted URL templates
+                 */
+                function extractUrlTemplates(resourceName) {
+                    if(hasUrlTemplate(resourceName)) {
+                        var indexOfSlash = resourceName.indexOf("/");
+                        return [resourceName.substr(0, indexOfSlash), resourceName.substr(indexOfSlash, resourceName.length)];
+                    }
                 }
             };
 

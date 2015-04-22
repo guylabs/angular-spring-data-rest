@@ -207,6 +207,17 @@ This will call *Angular* `$resource` method by default (this is [exchangeable](#
 * `actions`: custom action that should extend the default set of the `$resource` actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 * `options`: custom settings that should extend the default `$resourceProvider` behavior Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 
+You are also able to add URL templates to the passed in `linkName` parameter. (This just works if you pass a string and not a resource object) The following example explains the usage:
+
+```javascript
+SpringDataRestAdapter.process(response).then(function(processedResponse) {
+  var resources = processedResponse._resources("self/:id", {id: "@id"});
+  var item = resources.get({id: 1}).then(function(data) {
+    item = data;
+  };
+});
+```
+
 The `_resources` method returns the *Angular* resource "class" object with methods for the default set of resource actions. Read more [here](https://docs.angularjs.org/api/ngResource/service/$resource).
 
 If no parameter is given the `_resources` method will return all available resources objects of the given object. When for example the following JSON response object is given:

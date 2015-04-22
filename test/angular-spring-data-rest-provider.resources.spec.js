@@ -440,5 +440,31 @@ describe("the resources property", function () {
         this.rootScope.$apply();
     });
 
+    it("it must extract the URL templates and add it as suffix to the proper URL", function () {
+        var resourcesKey = this.config.resourcesKey;
+        var url = undefined;
+        var resourcesFunctionConfiguration = {
+            'resourcesFunction': function (inUrl) {
+                url = inUrl;
+                return 'foo';
+            }
+        };
+
+        // define the resource name and the correct resource href url
+        var resourceObject = "self/:id";
+        var resourceHref = "http://localhost:8080/categories";
+
+        // set the new resource function with the given parameters
+        springDataRestAdapterProvider.config(resourcesFunctionConfiguration);
+        SpringDataRestAdapter.process(this.rawResponse).then(function (processedData) {
+            // call the new resource method and expect the response and the call to the method
+            var resourceResponse = processedData[resourcesKey](resourceObject);
+            expect(resourceResponse).toEqual('foo');
+            expect(url).toEqual(resourceHref + '/:id');
+        });
+
+        this.rootScope.$apply();
+    });
+
 });
 
