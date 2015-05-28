@@ -1,5 +1,8 @@
 [![Build Status](https://travis-ci.org/guylabs/angular-spring-data-rest.svg?branch=master)](https://travis-ci.org/guylabs/angular-spring-data-rest)
 [![Coverage Status](https://img.shields.io/coveralls/guylabs/angular-spring-data-rest.svg)](https://coveralls.io/r/guylabs/angular-spring-data-rest)
+[![Bower version](https://badge.fury.io/bo/angular-spring-data-rest.svg)](http://badge.fury.io/bo/angular-spring-data-rest)
+[![npm version](https://badge.fury.io/js/angular-spring-data-rest.svg)](http://badge.fury.io/js/angular-spring-data-rest)
+
 # angular-spring-data-rest
 
 > An AngularJS module with an additional interceptor which eases the work with a [Spring Data REST](http://projects.spring.io/spring-data-rest) backend.
