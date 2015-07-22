@@ -314,3 +314,55 @@ var mockWithoutHrefPropertyData = function () {
     );
 };
 
+var mockWithRawEmbeddedValueTypes = function () {
+    return angular.copy(
+        {
+            "_embedded": {
+                "timeSeries": [{
+                    "id": 1400,
+                    "lastDate": "1991-01-06T23:00:00.000+0000",
+                    "data": [89.34576078, 90.86743282, 91.5561206, 91.52988487],
+                    "tsDataType": "CLOSE",
+                    "_embedded": {
+                        "asset": {
+                            "id": 15,
+                            "ticker": "BUHY:IND",
+                            "description": "Bloomberg USD High Yield Corporate Bond Index",
+                            "provider": "BLOOMBERG",
+                            "assetClass": "INDEX",
+                            "indexType": "BOND",
+                            "assetClassForType": "INDEX"
+                        }
+                    },
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8080/alphaquant-web/restdata/timeSeries/1400"
+                        }
+                    }
+                }, {
+                    "id": 52,
+                    "lastDate": "2015-05-31T22:00:00.000+0000",
+                    "data": [156.931961, 157.007523, 156.968109, 157.001785, 156.967865, 100.0],
+                    "tsDataType": "OPEN",
+                    "_embedded": {
+                        "asset": {
+                            "id": 15,
+                            "ticker": "BUHY:IND",
+                            "description": "Bloomberg USD High Yield Corporate Bond Index",
+                            "provider": "BLOOMBERG",
+                            "assetClass": "INDEX",
+                            "indexType": "BOND",
+                            "assetClassForType": "INDEX"
+                        }
+                    },
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8080/alphaquant-web/restdata/timeSeries/52"
+                        }
+                    }
+                }]
+            }
+        }
+    );
+};
+

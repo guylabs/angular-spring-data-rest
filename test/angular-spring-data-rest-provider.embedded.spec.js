@@ -145,4 +145,20 @@ describe("the response with the embedded values", function () {
         this.rootScope.$apply();
     });
 
+    it("must not process raw type values", function () {
+        var embeddedNewKey = this.config.embeddedNewKey;
+
+        this.processedDataPromise = SpringDataRestAdapter.process(mockWithRawEmbeddedValueTypes());
+
+        this.processedDataPromise.then(function (processedData) {
+            // expect that the raw id values are not modified
+            expect(processedData[embeddedNewKey][0].id).toBe(1400);
+            expect(processedData[embeddedNewKey][0][embeddedNewKey].id).toBe(15);
+            expect(processedData[embeddedNewKey][1].id).toBe(52);
+            expect(processedData[embeddedNewKey][1][embeddedNewKey].id).toBe(15);
+        });
+
+        this.rootScope.$apply();
+    });
+
 });

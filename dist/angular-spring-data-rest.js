@@ -163,7 +163,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         var urlTemplates = "";
 
                         // split the resourceObject to extract the URL templates for the $resource method
-                        if(hasUrlTemplate(resourceObject)) {
+                        if (hasUrlTemplate(resourceObject)) {
                             var extractedUrlTemplates = extractUrlTemplates(resourceObject);
                             resourceObject = extractedUrlTemplates[0];
                             urlTemplates = extractedUrlTemplates[1];
@@ -292,10 +292,14 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                 var processedDataArray = [];
                                 var processedDataArrayPromise;
                                 angular.forEach(value, function (arrayValue, arrayKey) {
-                                    processedDataArrayPromise = processDataFunction({data: arrayValue}, fetchLinkNames, recursive).then(function (processedResponseData) {
-                                        processedDataArray[arrayKey] = processedResponseData;
-                                    });
-                                    promisesArray.push(processedDataArrayPromise);
+                                    if (angular.isObject(arrayValue)) {
+                                        processedDataArrayPromise = processDataFunction({data: arrayValue}, fetchLinkNames, recursive).then(function (processedResponseData) {
+                                            processedDataArray[arrayKey] = processedResponseData;
+                                        });
+                                        promisesArray.push(processedDataArrayPromise);
+                                    } else {
+                                        processedDataArray[arrayKey] = arrayValue;
+                                    }
                                 });
 
                                 // after the last data array promise has been resolved add the result to the processed data
@@ -304,7 +308,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                         processedData[config.embeddedNewKey][key] = processedDataArray;
                                     })
                                 }
-                            } else {
+                            } else if (angular.isObject(value)) {
                                 // single objects are processed directly
                                 promisesArray.push(processDataFunction({data: value}, fetchLinkNames, recursive).then(function (processedResponseData) {
                                     processedData[config.embeddedNewKey][key] = processedResponseData;
@@ -350,7 +354,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                  * @returns {[]} the first element is the raw resource name and the second is the extracted URL templates
                  */
                 function extractUrlTemplates(resourceName) {
-                    if(hasUrlTemplate(resourceName)) {
+                    if (hasUrlTemplate(resourceName)) {
                         var indexOfSlash = resourceName.indexOf("/");
                         return [resourceName.substr(0, indexOfSlash), resourceName.substr(indexOfSlash, resourceName.length)];
                     }
