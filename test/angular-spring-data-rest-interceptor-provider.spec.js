@@ -89,9 +89,10 @@ describe("if the spring data rest interceptor is added", function () {
         // start the injectors previously registered with calls to angular.mock.module and assign it to the
         // this scope. See above for the description.
         var httpBackendVar = undefined;
-        inject(function (_SpringDataRestAdapter_, $httpBackend) {
+        inject(function (_SpringDataRestAdapter_, $httpBackend, _$http_) {
             SpringDataRestAdapter = _SpringDataRestAdapter_;
             httpBackendVar = $httpBackend;
+            $http = _$http_;
         });
         this.httpBackend = httpBackendVar;
 
@@ -131,6 +132,20 @@ describe("if the spring data rest interceptor is added", function () {
         this.httpBackend.flush();
         this.httpBackend.verifyNoOutstandingRequest();
         this.httpBackend.verifyNoOutstandingExpectation();
+    });
+
+    it(" it must not execute when a response is of type string", function () {
+        var linkHref = "http://localhost:8080/categories";
+        var responseString = "<html>test</html>";
+        this.httpBackend.whenGET(linkHref).respond(200, responseString);
+        this.httpBackend.expectGET(linkHref);
+
+        var data = $http.get(linkHref).then(function(response){
+            data = response.data;
+        });
+
+        this.httpBackend.flush();
+        expect(data).toBe(responseString);
     });
 
 });
