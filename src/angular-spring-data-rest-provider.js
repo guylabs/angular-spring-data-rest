@@ -356,8 +356,14 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 }
             };
 
+            // empty the map and
             // return an object with the processData function
-            return {process: processData};
+            return {
+                process: function(promiseOrData, fetchLinkNames, recursive) {
+                    map = {};
+                    return processData(promiseOrData, fetchLinkNames, recursive);
+                }
+            };
         }]
     };
 
