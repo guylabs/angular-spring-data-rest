@@ -67,6 +67,8 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
         },
 
         $get: ["$injector", function ($injector) {
+            // map contain self link as key and a list of linkNames which were already fetched
+            var map = {};
 
             /**
              * Returns the Angular $resource method which is configured with the given parameters.
@@ -250,6 +252,10 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                         // if there are links to fetch, then process and fetch them
                         if (fetchLinkNames != undefined) {
+                            var self = data._links.self.href;
+                            if (!map[self]) {
+                                map[self] = [];
+                            }
 
                             // process all links
                             angular.forEach(data[config.linksKey], function (linkValue, linkName) {
@@ -261,12 +267,13 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                     // 1. the all link names key is given then fetch the link
                                     // 2. the given key is equal
                                     // 3. the given key is inside the array
-                                    if (fetchLinkNames == config.fetchAllKey ||
+                                    if (map[self].indexOf(linkName) < 0 &&
+                                        (fetchLinkNames == config.fetchAllKey ||
                                         (typeof fetchLinkNames === "string" && linkName == fetchLinkNames) ||
-                                        (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0)) {
+                                        (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0))) {
                                         promisesArray.push(fetchFunction(getProcessedUrl(data, linkName), linkName,
                                             processedData, fetchLinkNames, recursive));
-
+                                        map[self].push(linkName);
                                     }
                                 }
                             });
