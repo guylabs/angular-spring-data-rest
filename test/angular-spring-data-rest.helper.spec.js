@@ -366,3 +366,30 @@ var mockWithRawEmbeddedValueTypes = function () {
     );
 };
 
+var mockDataReport = function() {
+    return angular.copy({
+        "reportNumber": "00001",
+        "_links": {
+            "self": {
+                "href": "http://localhost:8080/api/reports/00001"
+            },
+            "accident": {
+                "href": "http://localhost:8080/api/reports/00001/accident"
+            }
+        }
+    });
+};
+
+var mockDataAccident = function() {
+    return angular.copy({
+        "accidentDate": "2015-07-05",
+        "_links": {
+            "self": {
+                "href": "http://localhost:8080/api/accidents/00001"
+            },
+            "report": {
+                "href": "http://localhost:8080/api/accidents/00001/report"
+            }
+        }
+    });
+};

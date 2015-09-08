@@ -55,6 +55,12 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
         },
 
         $get: ["$injector", function ($injector) {
+            /**
+             * Link map which contains the 'self' link as key and the list of already fetched link names as value.
+             * This is used to check that every link on each entity is only fetched once to avoid an infinite recursive loop.
+             * @type {{Object}}
+             */
+            var linkMap = {};
 
             /**
              * Returns the Angular $resource method which is configured with the given parameters.
@@ -238,6 +244,12 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
 
                         // if there are links to fetch, then process and fetch them
                         if (fetchLinkNames != undefined) {
+                            var self = data[config.linksKey][config.linksSelfLinkName][config.linksHrefKey];
+
+                            // add the self link value as key and add an empty map to store all other links which are fetched for this entity
+                            if (!linkMap[self]) {
+                                linkMap[self] = [];
+                            }
 
                             // process all links
                             angular.forEach(data[config.linksKey], function (linkValue, linkName) {
@@ -246,15 +258,17 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                                 if (linkName != config.linksSelfLinkName) {
 
                                     // check if:
-                                    // 1. the all link names key is given then fetch the link
-                                    // 2. the given key is equal
-                                    // 3. the given key is inside the array
-                                    if (fetchLinkNames == config.fetchAllKey ||
+                                    // 1. the link was not fetched already
+                                    // 2. the all link names key is given then fetch the link
+                                    // 3. the given key is equal
+                                    // 4. the given key is inside the array
+                                    if (linkMap[self].indexOf(linkName) < 0 &&
+                                        (fetchLinkNames == config.fetchAllKey ||
                                         (typeof fetchLinkNames === "string" && linkName == fetchLinkNames) ||
-                                        (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0)) {
+                                        (fetchLinkNames instanceof Array && fetchLinkNames.indexOf(linkName) >= 0))) {
                                         promisesArray.push(fetchFunction(getProcessedUrl(data, linkName), linkName,
                                             processedData, fetchLinkNames, recursive));
-
+                                        linkMap[self].push(linkName);
                                     }
                                 }
                             });
@@ -349,8 +363,14 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                 }
             };
 
+            // empty the map and
             // return an object with the processData function
-            return {process: processData};
+            return {
+                process: function(promiseOrData, fetchLinkNames, recursive) {
+                    linkMap = {};
+                    return processData(promiseOrData, fetchLinkNames, recursive);
+                }
+            };
         }]
     };
 

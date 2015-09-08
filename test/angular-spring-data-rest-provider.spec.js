@@ -107,5 +107,51 @@ describe("the spring data rest adapter", function () {
         this.rootScope.$apply();
     });
 
+    it("must only fetch link once to avoid infinite loop", function () {
+        var allLinks = this.config.fetchAllKey;
+        var accidentHref = 'http://localhost:8080/api/reports/00001/accident';
+        var reportHref = 'http://localhost:8080/api/accidents/00001/report';
+
+        this.httpBackend.whenGET(accidentHref).respond(200, mockDataAccident());
+        this.httpBackend.expectGET(accidentHref);
+
+        this.httpBackend.whenGET(reportHref).respond(200, mockDataReport());
+        this.httpBackend.expectGET(reportHref);
+
+        this.rawResponse = mockDataReport();
+        SpringDataRestAdapter.process(this.rawResponse, allLinks, true).then(function (processedData) {
+            // expect that accident will not fetched twice
+            expect(processedData.accident).toBeDefined();
+            expect(processedData.accident.report).toBeDefined();
+            expect(processedData.accident.report.accident).not.toBeDefined();
+        });
+
+        this.httpBackend.flush();
+        this.rootScope.$apply();
+    });
+
+    it("must only reinitialized the map when process called twice or more", function () {
+        var allLinks = this.config.fetchAllKey;
+        var accidentHref = 'http://localhost:8080/api/reports/00001/accident';
+        var reportHref = 'http://localhost:8080/api/accidents/00001/report';
+
+        this.httpBackend.whenGET(accidentHref).respond(200, mockDataAccident());
+        this.httpBackend.expectGET(accidentHref);
+
+        this.httpBackend.whenGET(reportHref).respond(200, mockDataReport());
+        this.httpBackend.expectGET(reportHref);
+
+        this.rawResponse = mockDataReport();
+        SpringDataRestAdapter.process(this.rawResponse, allLinks, true).then(function (processedData) {
+            SpringDataRestAdapter.process(mockDataReport(), allLinks, true).then(function (processedData2) {
+                // expect linkMap to be reinitialized after process method called twice
+                expect(JSON.stringify(processedData)).toEqual(JSON.stringify(processedData2));
+            });
+        });
+
+        this.httpBackend.flush();
+        this.rootScope.$apply();
+    });
+
 });
 
