@@ -9,8 +9,7 @@ var beforeEachFunction = function () {
     // initialize the provider by injecting it to a config block of a test module
     // and assign it to the this scope such that it is available in each test
     // (see https://jasmine.github.io/2.0/introduction.html#section-The_<code>this</code>_keyword)
-    angular.module('testModule', function () {
-    }).config(function (SpringDataRestAdapterProvider) {
+    angular.module('testModule', []).config(function (SpringDataRestAdapterProvider) {
         springDataRestAdapterProvider = SpringDataRestAdapterProvider;
     });
 

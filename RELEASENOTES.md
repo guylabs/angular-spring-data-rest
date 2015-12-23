@@ -1,5 +1,14 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.4.4
+
+* Tag: [0.4.4](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.4)
+* Release: [angular-spring-data-rest-0.4.4.zip](https://github.com/guylabs/angular-spring-data-rest/releases/download/0.4.4/angular-spring-data-rest-0.4.4.zip)
+
+### Changes
+
+* Upgraded to the latest Angular 1.4.x version. See [#18](https://github.com/guylabs/angular-spring-data-rest/issues/18) for details.
+
 ## Version 0.4.3
 
 * Tag: [0.4.3](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.3)
