@@ -154,7 +154,17 @@ SpringDataRestAdapter.process(response).then(function(processedResponse) {
 });
 ```
 
-Please read on on how to use the `_resources` method and the `_embeddedItems` property to ease the handling of resources and embedded items.
+The response can be a `String` or a promise from an `$http.get()` call (or any other promise which resolves the response) like in the following example:
+
+```javascript
+var httpPromise = $http.get('/rest/categories');
+
+SpringDataRestAdapter.process(httpPromise).then(function (processedResponse) {
+    $scope.categories = processedResponse._embeddedItems;
+});
+```
+
+For simplicity the rest of the examples assume that you already have the response present. Please read on on how to use the `_resources` method and the `_embeddedItems` property to ease the handling of resources and embedded items.
 
 ### Usage of `_resources` method
 
@@ -465,7 +475,7 @@ SpringDataRestAdapter.process(promise).then(function(processedResponse) {
 You can also right away use the promise support with the `Angular` `$http.get()` method like in the following example:
 
 ```javascript
-SpringDataRestAdapter.processWithPromise($http.get('categories')).then(function(processedResponse) {
+SpringDataRestAdapter.process($http.get('categories')).then(function(processedResponse) {
     $scope.categories = processedResponse._embeddedItems;
 };
 ```
