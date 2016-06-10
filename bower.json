@@ -33,10 +33,10 @@
         "url": "https://github.com/guylabs/angular-spring-data-rest.git"
     },
     "dependencies": {
-      "angular": "~1.4.8",
-      "angular-resource": "~1.4.8"
+      "angular": "~1.5.0",
+      "angular-resource": "~1.5.0"
     },
     "devDependencies": {
-      "angular-mocks": "~1.4.8"
+      "angular-mocks": "~1.5.0"
     }
 }
