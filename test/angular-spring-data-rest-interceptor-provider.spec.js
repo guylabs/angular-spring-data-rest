@@ -146,4 +146,18 @@ describe("if the spring data rest interceptor is added", function () {
         expect(data).toBe(responseString);
     });
 
+    it(" it must not execute when a response is of type array", function () {
+        var linkHref = "http://localhost:8080/categories";
+        var responseString = [{"test":"test"}];
+        this.httpBackend.whenGET(linkHref).respond(200, responseString);
+        this.httpBackend.expectGET(linkHref);
+
+        var data = $http.get(linkHref).then(function(response){
+            data = response.data;
+        });
+
+        this.httpBackend.flush();
+        expect(angular.equals(data,responseString)).toBeTruthy();
+    });
+
 });
