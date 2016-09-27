@@ -30,7 +30,7 @@
     "homepage": "http://guylabs.ch/project/angular-spring-data-rest",
     "repository": {
         "type": "git",
-        "url": "https://github.com/myosotys/angular-spring-data-rest.git"
+        "url": "https://github.com/guylabs/angular-spring-data-rest.git"
     },
     "dependencies": {
       "angular": "~1.5.0",
