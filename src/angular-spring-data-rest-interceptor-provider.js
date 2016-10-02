@@ -17,7 +17,7 @@ angular.module("spring-data-rest").provider("SpringDataRestInterceptor",
 
                     return {
                         response: function (response) {
-                            if(!angular.isObject(response.data)){
+                            if (!angular.isObject(response.data) || response.data instanceof Array){
                                 return response;
                             }
                             return SpringDataRestAdapter.process(response.data).then(function (processedResponse) {
