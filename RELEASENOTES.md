@@ -1,5 +1,15 @@
 # Release notes of angular-spring-data-rest
 
+## Version 0.4.5
+
+* Tag: [0.4.5](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.5)
+* Release: [angular-spring-data-rest-0.4.5.zip](https://github.com/guylabs/angular-spring-data-rest/archive/0.4.5.zip)
+
+### Changes
+
+* Upgraded to the latest Angular 1.5.x version. See [#21](https://github.com/guylabs/angular-spring-data-rest/issues/21) for details.
+* Add new flag `fetchMultiple` to support fetching the same link multiple times. See [#23](https://github.com/guylabs/angular-spring-data-rest/issues/23) for details.
+
 ## Version 0.4.4
 
 * Tag: [0.4.4](https://github.com/guylabs/angular-spring-data-rest/tree/0.4.4)

@@ -1,6 +1,6 @@
 {
     "name": "angular-spring-data-rest",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "description": "An AngularJS module to ease the work with a Spring Data REST backend.",
     "main": "./dist/angular-spring-data-rest.js",
     "license": "MIT",
