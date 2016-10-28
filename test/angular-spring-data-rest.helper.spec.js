@@ -392,3 +392,40 @@ var mockDataAccident = function() {
         }
     });
 };
+
+var mockDataWithMultipleEmbeddedItemsAndSameLinks = function () {
+    return angular.copy(
+        {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/categories{?page,size,sort}",
+                    "templated": true
+                }
+            },
+            "_embedded": {
+                "categories": [
+                    {
+                        "version": 0,
+                        "creationDate": 1406219870650,
+                        "modificationDate": 1406219870650,
+                        "name": "Test category 1",
+                        "_links": {
+                            "self": {
+                                "href": "http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54"
+                            },
+                            "testCategory": {
+                                "href": "http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory"
+                            }
+                        }
+                    }
+                ]
+            },
+            "page": {
+                "size": 20,
+                "totalElements": 2,
+                "totalPages": 1,
+                "number": 0
+            }
+        }
+    );
+};

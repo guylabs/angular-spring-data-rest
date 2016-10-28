@@ -373,9 +373,20 @@ SpringDataRestAdapter.process(response, 'anotherLink', true).then(function(proce
 });
 ```
 
-Now the response of the `anotherLink` will be processed the same way as the main response was processed. But *be aware* when setting the recursive flag to true, because when your reponses of the links contain the same link name again, then it will end up in a infinite loop.
+Now the response of the `anotherLink` will be processed the same way as the main response was processed. But *be aware* when setting the recursive flag to true, because when your responses of the links contain the same link name again, then it will end up in a infinite loop.
 
 It will not fetch the `self` link as this would make no sense because the data is already in the response. The `self` key is also configurable. Read more [here](#configuration-of-the-springdatarestadapter).
+
+As a last configuration option you are able to set the fourth parameter called `fetchMultiple` of the `process` method which is used to define if a link is fetched multiple times if the same link is contained in multiple links and you want to resolve each one of them. The drawback
+is that it won't cache the responses in any way. So if you enable this then multiple network calls will be made. Here an example:
+
+```javascript
+SpringDataRestAdapter.process(response, 'anotherLink', true, true).then(function(processedResponse) {
+  ...
+});
+```
+
+:warning: If you set the `fetchMultiple` to `true` you could end up in an infinite loop if you have circular dependencies in your `_links`.
 
 #### Fetch multiple or all links
 
@@ -552,7 +563,7 @@ myApp.config(function (SpringDataRestAdapterProvider) {
     SpringDataRestAdapterProvider.config({
         fetchFunction: function (url, key, data, fetchLinkNames, recursive) {
             var $http = angular.injector(['ng']).get('$http');
-    
+
             $http.get('/rest/endpoint').then(function (responseData) {
                 console.log(responseData);
             })

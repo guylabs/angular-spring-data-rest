@@ -123,6 +123,51 @@ describe("the fetch function", function () {
         this.httpBackend.verifyNoOutstandingExpectation();
     });
 
+    it("must call all links with the same name of the given fetch link names array", function () {
+
+        var embeddedNewKey = this.config.embeddedNewKey;
+        var fetchLinkNames = ['testCategory'];
+
+        // the correct link href url
+        var testTestCategoryHref = 'http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory';
+        var testTestCategory2Href = 'http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory2';
+
+        // check if the underlying fetch function is called with the correct href
+        var testTestCategoryExpectedResult = {
+            "version": 0,
+            "creationDate": 1406219870650,
+            "modificationDate": 1406219870650,
+            "name": "Test category 1",
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/categories/f974f5ef-a951-43b4-9027-4d2163216e54"
+                },
+                "testCategory": {
+                    "href": "http://localhost:8080/categories/b5ba38d5-98d3-4579-8709-a28549406697/testCategory2"
+                }
+            }
+        };
+        var testTestCategory2ExpectedResult = {testCategory: 'test'};
+
+        this.httpBackend.whenGET(testTestCategoryHref).
+        respond(200, testTestCategoryExpectedResult);
+        this.httpBackend.expectGET(testTestCategoryHref);
+
+        this.httpBackend.whenGET(testTestCategory2Href).
+        respond(200, testTestCategory2ExpectedResult);
+        this.httpBackend.expectGET(testTestCategory2Href);
+
+        SpringDataRestAdapter.process(mockDataWithMultipleEmbeddedItemsAndSameLinks(), fetchLinkNames, true, true).then(function (processedData) {
+            // expect the fetched objects
+            expect(processedData[embeddedNewKey][0][fetchLinkNames[0]].name).toEqual("Test category 1");
+            expect(processedData[embeddedNewKey][0][fetchLinkNames[0]][fetchLinkNames[0]].testCategory).toEqual("test");
+        });
+
+        this.httpBackend.flush();
+        this.httpBackend.verifyNoOutstandingRequest();
+        this.httpBackend.verifyNoOutstandingExpectation();
+    });
+
     it("must process the fetched response recursively if the flag is set", function () {
 
         var embeddedNewKey = this.config.embeddedNewKey;
