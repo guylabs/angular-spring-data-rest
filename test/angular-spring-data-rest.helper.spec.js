@@ -429,3 +429,25 @@ var mockDataWithMultipleEmbeddedItemsAndSameLinks = function () {
         }
     );
 };
+
+var mockDataWithEmptyEmbeddedItemsArray = function () {
+    return angular.copy(
+        {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/categories{?page,size,sort}",
+                    "templated": true
+                }
+            },
+            "_embedded": {
+                "categories": []
+            },
+            "page": {
+                "size": 20,
+                "totalElements": 2,
+                "totalPages": 1,
+                "number": 0
+            }
+        }
+    );
+};

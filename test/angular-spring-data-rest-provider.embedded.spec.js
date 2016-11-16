@@ -177,4 +177,41 @@ describe("the response with the embedded values", function () {
         this.rootScope.$apply();
     });
 
+    it("must process empty embedded arrays", function () {
+        var embeddedNewKey = this.config.embeddedNewKey;
+
+        this.processedDataPromise = SpringDataRestAdapter.process(mockDataWithEmptyEmbeddedItemsArray());
+
+        this.processedDataPromise.then(function (processedData) {
+            // expect that the new embedded key is also an empty array
+            expect(processedData[embeddedNewKey] instanceof Array).toBe(true);
+            expect(processedData[embeddedNewKey].length).toBe(0);
+        }, function (error) {
+            fail(error)
+        });
+
+        this.rootScope.$apply();
+    });
+
+    it("must process empty embedded arrays with embedded named resources set to true", function () {
+        var embeddedNewKey = this.config.embeddedNewKey;
+
+        // set the embedded named resources to true
+        springDataRestAdapterProvider.config({
+            'embeddedNamedResources': true
+        });
+
+        this.processedDataPromise = SpringDataRestAdapter.process(mockDataWithEmptyEmbeddedItemsArray());
+
+        this.processedDataPromise.then(function (processedData) {
+            // expect that the new embedded key is also an empty array
+            expect(processedData[embeddedNewKey]['categories'] instanceof Array).toBe(true);
+            expect(processedData[embeddedNewKey]['categories'].length).toBe(0);
+        }, function (error) {
+            fail(error)
+        });
+
+        this.rootScope.$apply();
+    });
+
 });

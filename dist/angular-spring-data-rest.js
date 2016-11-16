@@ -306,7 +306,7 @@ angular.module("spring-data-rest").provider("SpringDataRestAdapter", function ()
                         angular.forEach(processedData[config.embeddedNewKey], function (value, key) {
 
                             // if the embeddedResourceName config variable is set to true, process each resource name array
-                            if (value instanceof Array && value.length > 0) {
+                            if (value instanceof Array) {
                                 var processedDataArray = [];
                                 var processedDataArrayPromise;
                                 angular.forEach(value, function (arrayValue, arrayKey) {
