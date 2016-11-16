@@ -7,6 +7,8 @@ describe("the response with the embedded values", function () {
 
         this.processedDataPromise.then(function (processedData) {
             expect(processedData[embeddedKey]).not.toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -17,6 +19,8 @@ describe("the response with the embedded values", function () {
 
         this.processedDataPromise.then(function (processedData) {
             expect(processedData[embeddedNewKey]).toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -29,6 +33,8 @@ describe("the response with the embedded values", function () {
             // expect that the embedded key value is an array of the size 2
             expect(processedData[embeddedNewKey] instanceof Array).toBe(true);
             expect(processedData[embeddedNewKey].length).toBe(2);
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -51,6 +57,8 @@ describe("the response with the embedded values", function () {
                 expectResourceExecution(processedData[embeddedNewKey][key], resourcesKey,
                     processedData[embeddedNewKey][key][linksKey]["self"].href, httpBackend, "self");
             }
+        }, function (error) {
+            fail(error)
         });
 
     });
@@ -88,6 +96,8 @@ describe("the response with the embedded values", function () {
                     i++;
                 }
             }
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -110,6 +120,8 @@ describe("the response with the embedded values", function () {
             // expect that the embedded key value is an array of the size 2
             expect(processedData[embeddedNewKey]['categories'] instanceof Array).toBe(true);
             expect(processedData[embeddedNewKey]['categories'].length).toBe(2);
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -140,6 +152,8 @@ describe("the response with the embedded values", function () {
             // expect that the second embedded key value is an object
             expect(processedData[embeddedNewKey]['item'] instanceof Object).toBe(true);
             expect(processedData[embeddedNewKey]['item'].name).toBe('Test item 1');
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -156,6 +170,8 @@ describe("the response with the embedded values", function () {
             expect(processedData[embeddedNewKey][0][embeddedNewKey].id).toBe(15);
             expect(processedData[embeddedNewKey][1].id).toBe(52);
             expect(processedData[embeddedNewKey][1][embeddedNewKey].id).toBe(15);
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();

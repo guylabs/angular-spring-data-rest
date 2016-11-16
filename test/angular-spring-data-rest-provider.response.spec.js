@@ -5,6 +5,8 @@ describe("the response", function () {
     it("must not be the same reference", function () {
         this.processedDataPromise.then(function (processedData) {
             expect(this.rawResponse !== processedData).toBe(true);
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -14,6 +16,8 @@ describe("the response", function () {
         this.processedDataPromise.then(function (processedData) {
             expect(typeof processedData).toBe("object");
             expect(processedData instanceof Array).toBe(false);
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -31,6 +35,8 @@ describe("the response", function () {
             // the resource value must be a valid function with the given parameters
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href, httpBackend, "self");
+        }, function (error) {
+            fail(error)
         });
     });
 
@@ -45,6 +51,8 @@ describe("the response", function () {
                     expect(processedData[key]).toEqual(rawResponse[key]);
                 }
             }
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();

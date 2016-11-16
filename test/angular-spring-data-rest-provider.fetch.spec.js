@@ -84,6 +84,8 @@ describe("the fetch function", function () {
             expect(processedData[embeddedNewKey][0]['parentCategory']).toEqual(firstParentCategoryExpectedResult);
             expect(processedData[embeddedNewKey][1]['parentCategory']).toEqual(secondParentCategoryExpectedResult);
             expect(processedData[embeddedNewKey][1]['testCategory']).toEqual(testParentCategoryExpectedResult);
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -116,6 +118,8 @@ describe("the fetch function", function () {
             // expect the fetched objects
             expect(processedData[fetchLinkNames[0]]).toEqual(testLinkExpectedResult);
             expect(processedData[embeddedNewKey][1][fetchLinkNames[1]]).toEqual(testParentCategoryExpectedResult);
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -161,6 +165,8 @@ describe("the fetch function", function () {
             // expect the fetched objects
             expect(processedData[embeddedNewKey][0][fetchLinkNames[0]].name).toEqual("Test category 1");
             expect(processedData[embeddedNewKey][0][fetchLinkNames[0]][fetchLinkNames[0]].testCategory).toEqual("test");
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -196,6 +202,8 @@ describe("the fetch function", function () {
                 toEqual(true);
             expect(typeof processedData[embeddedNewKey][1][fetchLinkName][resourcesKey] == 'function').
                 toEqual(true);
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -280,7 +288,7 @@ describe("the fetch function", function () {
             expect(processedData[embeddedNewKey][1][fetchLinkName]).toEqual(firstExpectedResult);
 
         }, function () {
-            throw new Error("Should not be called when the promise is rejected")
+            fail("Should not be called when the promise is rejected")
         });
 
         this.httpBackend.flush();
@@ -313,6 +321,8 @@ describe("the fetch function", function () {
             // expect the fetched objects
             expect(processedData[embeddedNewKey][0][fetchLinkName][embeddedNewKey][0]['name']).toEqual('Test category 1');
             expect(processedData[embeddedNewKey][1][fetchLinkName][embeddedNewKey][1]['name']).toEqual('Test category 2');
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();

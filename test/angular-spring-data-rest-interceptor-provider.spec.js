@@ -125,6 +125,8 @@ describe("if the spring data rest interceptor is added", function () {
                 // if the interceptor is added the _embeddedItems property must be added
                 expect(result[embeddedItemsKey]).toBeDefined();
             });
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();

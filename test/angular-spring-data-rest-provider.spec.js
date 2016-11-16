@@ -64,6 +64,8 @@ describe("the spring data rest adapter", function () {
             // expect that the links key and the resource method is not present
             expect(processedData[linksKey]).not.toBeDefined();
             expect(processedData[resourcesKey]).not.toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -78,6 +80,8 @@ describe("the spring data rest adapter", function () {
             // expect that the embedded key and value is not present
             expect(processedData[embeddedKey]).not.toBeDefined();
             expect(processedData[embeddedNewKey]).not.toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -102,6 +106,8 @@ describe("the spring data rest adapter", function () {
 
             // check that the original response is the one which is returned
             expect(rawResponse === processedData).toBe(true);
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -124,6 +130,8 @@ describe("the spring data rest adapter", function () {
             expect(processedData.accident).toBeDefined();
             expect(processedData.accident.report).toBeDefined();
             expect(processedData.accident.report.accident).not.toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -147,6 +155,8 @@ describe("the spring data rest adapter", function () {
                 // expect linkMap to be reinitialized after process method called twice
                 expect(JSON.stringify(processedData)).toEqual(JSON.stringify(processedData2));
             });
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();

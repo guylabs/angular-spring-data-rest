@@ -13,6 +13,8 @@ describe("the spring data rest adapter", function () {
             // expect a resource and embeddedKeys key
             expect(processedResponseData[resourcesKey]).toBeDefined();
             expect(processedResponseData[embeddedNewKey]).toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         testDeferred.resolve(mockData());
@@ -30,6 +32,8 @@ describe("the spring data rest adapter", function () {
             // expect a resource and embeddedKeys key
             expect(processedResponseData[resourcesKey]).toBeDefined();
             expect(processedResponseData[embeddedNewKey]).toBeDefined();
+        }, function (error) {
+            fail(error)
         });
 
         testDeferred.resolve({data: mockData()});

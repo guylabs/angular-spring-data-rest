@@ -29,6 +29,8 @@ describe("the resources property", function () {
             var result = processedData[resourcesKey](resourceName).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -53,6 +55,8 @@ describe("the resources property", function () {
             var result = processedData[resourcesKey](resourceObject).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -81,6 +85,8 @@ describe("the resources property", function () {
             var result = processedData[resourcesKey](resourceObject).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -109,6 +115,8 @@ describe("the resources property", function () {
             var result = processedData[resourcesKey](resourceObject).get(function () {
                 expect(result.categoryId).toEqual(expectedResult.categoryId);
             });
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -141,6 +149,8 @@ describe("the resources property", function () {
             expect(paramDefaults).toEqual('paramDefaults');
             expect(actions).toEqual('actions');
             expect(options).toEqual('options');
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -175,6 +185,8 @@ describe("the resources property", function () {
             expect(paramDefaults).toEqual('paramDefaults');
             expect(actions).toEqual('actions');
             expect(options).toEqual('options');
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -192,6 +204,8 @@ describe("the resources property", function () {
                 expectResourceExecution(processedData, resourcesKey,
                     "expectedUrl", httpBackend, {'wrongPropertyName': 'value'});
             }).toThrowError("The provided resource object must contain a name property.");
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -208,6 +222,8 @@ describe("the resources property", function () {
             // the parameters must not be used in the resources method
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href, httpBackend, "self")
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -227,6 +243,8 @@ describe("the resources property", function () {
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue", httpBackend, "self",
                 {'parameterName': 'parameterValue'});
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -245,6 +263,8 @@ describe("the resources property", function () {
             // the given resource name must be used
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href, httpBackend, {'name': 'self'})
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -264,6 +284,8 @@ describe("the resources property", function () {
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue",
                 httpBackend, {'name': 'self'}, {'parameterName': 'parameterValue'})
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -283,6 +305,8 @@ describe("the resources property", function () {
             expectResourceExecution(processedData, resourcesKey,
                 processedData[linksKey]["self"].href + "?parameterName=parameterValue",
                 httpBackend, {'name': 'self', 'parameters': {'parameterName': 'parameterValue'}})
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -303,6 +327,8 @@ describe("the resources property", function () {
                 processedData[linksKey]["self"].href + "?objectParameterName=objectParameterValue&parameterName=parameterValue",
                 httpBackend, {'name': 'self', 'parameters': {'objectParameterName': 'objectParameterValue'}},
                 {'parameterName': 'parameterValue'})
+        }, function (error) {
+            fail(error)
         });
 
         this.httpBackend.flush();
@@ -331,6 +357,8 @@ describe("the resources property", function () {
                     }
                 ]
             );
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -353,6 +381,8 @@ describe("the resources property", function () {
                     }
                 ]
             );
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -393,6 +423,8 @@ describe("the resources property", function () {
                     }
                 ]
             );
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -414,6 +446,8 @@ describe("the resources property", function () {
             expect(function () {
                 processedData[resourcesKey]({'name': 'self'})
             }).toThrowError("The provided resource name 'self' has no valid URL in the 'href' property.");
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -435,6 +469,8 @@ describe("the resources property", function () {
             expect(function () {
                 processedData[resourcesKey]({'name': 'self'})
             }).toThrowError("The provided resource name 'self' has no valid URL in the 'href' property.");
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
@@ -461,6 +497,8 @@ describe("the resources property", function () {
             var resourceResponse = processedData[resourcesKey](resourceObject);
             expect(resourceResponse).toEqual('foo');
             expect(url).toEqual(resourceHref + '/:id');
+        }, function (error) {
+            fail(error)
         });
 
         this.rootScope.$apply();
