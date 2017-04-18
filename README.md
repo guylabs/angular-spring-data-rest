@@ -11,7 +11,7 @@
 
 If you want to see the module in action, then check out the sample application which runs with Spring Boot and is super easy to setup: [angular-spring-data-rest-sample](https://github.com/guylabs/angular-spring-data-rest-sample)
 
-#Table of contents
+# Table of contents
 
 - [Quick start](#quick-start)
 - [Overview](#overview)
